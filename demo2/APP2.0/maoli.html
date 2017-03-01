@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css"/>
+		<style type="text/css">
+			.mui-table-view:after {
+				height: 0;
+			}
+			
+			.center {
+				background: none;
+				padding-top: 64px !important;
+			}
+			
+			#chartContainer,
+			#chartContainer2 {
+				width: 100%;
+				display: block;
+				height:240px;
+				position: relative;
+				display: block;
+			}
+			#demo2{
+				position: fixed;
+				right: 0;
+				top: 20px;
+				height: 44px;
+				width: 100px;
+				z-index:999;
+				opacity: 0;
+			}
+			.center #tips4 span{
+				display:block;
+				margin:15px auto 0;
+				width: 36px;
+				height: 36px;
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body style="background: #f2f2f2; height: 100%;">
+		<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="font-size: 1.8rem;">返回</a>
+			<h1 class="mui-title">毛利报表</h1>
+			<div class="select" id="select" style="background:none;width: 100px;line-height: 44px;color: #fff;" ></div>
+			<button id='demo2' data-options='{"type":"date","value":"2016-12-13","beginYear":2014,"endYear":2016}' class="btn mui-btn mui-btn-block">选择日期 ...</button>
+		</header>
+		<div class="mui-content center">
+			<div id="tips4"><span class="mui-spinner"></span></div>
+			<div id="chartContainer"></div>
+			<div id="chartContainer2"></div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function(){
+				var screenHei = window.innerHeight;
+				console.log(screenHei);
+				$("#chartContainer").css("height",(screenHei - 64) * 0.45);
+				$("#chartContainer2").css("height",(screenHei - 64) * 0.55);
+				
+				$("#select").text(GetDateStr(-1));
+				$("#demo2").attr("data-options",'{"type":"date","value":"'+GetDateStr(-1)+'","beginYear":2015,"endYear":'+_thisYear.getFullYear()+'}')
+			})
+		
+			mui.init();
+			var userId = JSON.parse(localStorage.token);//账户个人id信息
+			var _data=GetDateStr(-1);
+			var _thisYear = new Date(); 
+			GetChartData(_data);
+			
+			function GetChartData(time){
+				$("#tips4").show();
+				$("#chartContainer").hide();
+                $("#chartContainer2").hide();
+				var profitData = []; //利润
+				var profitRateData = []; //利润率
+				var stallSeries = []; //档口
+				var Amount = 0;
+				mui.ajax(localStorage.IP + 'report/grossreport/detail?date='+time, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+		            success: function (data) {
+		            	$("#tips4").hide();
+						$("#chartContainer").show();
+		                $("#chartContainer2").show();
+		                console.log(JSON.stringify(data));
+	                	for (var i = 0; i < data.length; i++) {
+		                	stallSeries[i] = data[i].WarehouseName;
+		                	if(parseFloat(data[i].RealAmount) == '0' && parseFloat(data[i].SystemAmount) == '0'){
+		                		profitRateData[i] = 0.1;
+		                		Amount = 0.1;
+		                		profitData.push({'value' : Amount , 'name' : data[i].WarehouseName})
+		                	}else{
+		                		profitRateData[i] = parseFloat(((parseFloat(data[i].RealAmount) -  parseFloat(data[i].SystemAmount))/parseFloat(data[i].RealAmount)*100).toFixed(2));
+		                		Amount = parseFloat((parseFloat(data[i].RealAmount) -  parseFloat(data[i].SystemAmount)).toFixed(2))
+		                		profitData.push({'value' : Amount , 'name' : data[i].WarehouseName})
+		                	}
+		                	
+		                }
+						
+						ShowTable(stallSeries,profitRateData,profitData);
+		            }
+		       	});
+			}
+			
+
+			function ShowTable(stallSeries,profitRateData,profitData){
+				var myChart = echarts.init(document.getElementById('chartContainer'));
+				var myChart2 = echarts.init(document.getElementById('chartContainer2'));
+				option = {
+				    color: ['#C23531'],
+				    tooltip : {
+				        trigger: 'axis',
+				        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+				            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				        }
+				    },
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        top: '15%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            data : stallSeries,
+				            axisTick: {
+				                alignWithLabel: true
+				            }
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            name:'毛利率%'
+				        }
+				    ],
+				    series : [
+				        {
+				            name:'毛利率',
+				            type:'bar',
+				            barWidth: '60%',
+				            data:profitRateData
+				        }
+				    ]
+				};
+				option2 = {
+					    title : {
+					        text: '各档口利润占比',
+					        subtext: '只有档口',
+					        x:'center',
+					        top: '0',
+					    },
+					    tooltip : {
+					        trigger: 'item',
+					        formatter: "{a} <br/>{b} : {c} ({d}%)"
+					    },
+					    legend: {
+					        orient: 'horizontal',
+					        top: '15%',
+					        left: 'left',
+					        data: stallSeries
+					    },
+					    series : [
+					        {
+					            name: '访问来源',
+					            type: 'pie',
+					            radius : '50%',
+					            center: ['55%', '65%'],
+					            data:profitData,
+					            itemStyle: {
+					                emphasis: {
+					                    shadowBlur: 10,
+					                    shadowOffsetX: 0,
+					                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+					                }
+					            }
+					        }
+					    ]
+					};
+				
+				myChart.setOption(option, true);
+				myChart2.setOption(option2, true);
+			}
+
+
+			(function($) {
+				$.init();
+				var result = $('#select')[0];
+				var btns = $('.btn');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						/*
+						 * 首次显示时实例化组件
+						 * 示例为了简洁，将 options 放在了按钮的 dom 上
+						 * 也可以直接通过代码声明 optinos 用于实例化 DtPicker
+						 */
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							result.innerText =rs.text;
+							_data = rs.text;
+							console.log(_data)
+							GetChartData(_data);
+							picker.dispose();
+						});
+					}, false);
+				});
+			})(mui);
+			
+			//获取当天时间
+			function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				if(m >= 1 && m <= 9) {
+					m = "0" + m;
+				}
+				if(d >= 0 && d <= 9) {
+					d = "0" + d;
+				}
+				return y+"-"+m+"-"+d; 
+			}
+		</script>
+	</body>
+
+</html>

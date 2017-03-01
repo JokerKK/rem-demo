@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.poppicker.css" />
+		<style type="text/css">
+			.nav-bar {
+				background: #f2f2f2;
+				position: fixed;
+				top: 64px;
+				z-index: 8;
+				width: 100%;
+				text-align: center;
+				padding: 10px 0;
+			}
+			.nav-bar span {
+				text-align: center;
+				display: inline-block;
+				width: 30%;
+				font-size: 1.6rem;
+				color: #dd3437;
+				border: 1px #dd3437 solid;
+				line-height: 34px;
+			}
+			
+			.nav-bar span:first-child {
+				border-radius: 9px 0 0 9px;
+			}
+			
+			.nav-bar span:last-child {
+				border-radius: 0 9px 9px 0;
+			}
+			
+			.nav-bar span.on {
+				color: #fff !important;
+				background: #dd3437;
+			}
+			
+			.mui-content {
+				padding: 106px 0 0 0 !important;
+			}
+			
+			.mui-content .title {
+				position: fixed;
+				display: block;
+				left: 0;
+				top: 105px;
+				height: 40px;
+				width: 100%;
+				text-align: center;
+				line-height: 40px;
+				font-size: 1.6rem;
+				background: #fff;
+				z-index: 9;
+			}
+			
+			.mui-content .title span {
+				display: inline-block;
+				width: 20%;
+			}
+			
+			.mui-content .title span:first-child {
+				width: 20%;
+			}
+		
+			
+			.mui-content> div.on {
+				display: block;
+			}
+			
+			.mui-content #cityResult,
+			.mui-content #cityResult1 {
+				width: 100%;
+				text-align: center;
+			}
+			
+			.mui-content #cityResult .item i,
+			.mui-content #cityResult1 .item i {
+				display: none;
+			}
+			
+			.mui-content #cityResult .item,
+			.mui-content #cityResult1 .item {
+				line-height: 40px;
+				width: 100%;
+				font-size: 1.4rem;
+				border: 1px #eee solid;
+				margin-top: -1px;
+				padding: 0;
+			}
+			
+			.mui-content #cityResult .item span,
+			.mui-content #cityResult1 .item span {
+				width: 20%;
+				height: 40px;
+				display: block;
+				float: left;
+				border-right: 1px #eee solid;
+			}
+			
+			.mui-content #cityResult .item span:first-child,
+			.mui-content #cityResult1 .item span:first-child {
+				width: 20%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			
+			.mui-content #cityResult .item span input,
+			.mui-content #cityResult1 .item span input {
+				margin: 0;
+				padding: 0;
+				text-align: center;
+				border: none;
+				background: none;
+				line-height: 40px;
+			}
+			.mui-content #cityResult #tips4 span{
+				display:block;
+				margin:15px auto 0;
+				width: 36px;
+				height: 36px;
+			}
+			#demo2{
+				position: fixed;
+				top: 64px;
+				background: #f00;
+				width: 100%;
+				height: 40px;
+				z-index:9;
+				padding: 0;
+				margin: 0;
+				opacity: 0;
+			}
+		</style>
+	</head>
+
+	<body style="overflow-x: hidden;">
+		<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+			<a class="mui-icon  mui-action-back mui-icon-left-nav mui-pull-left" id="back">返回</a>
+			<h1 class="mui-title">盘点报告</h1>
+			<div class="select" id="select">
+				<p></p>
+				<ul>
+					<!--<li onclick="slideUp($(this))">中厨</li>
+					<li onclick="slideUp($(this))">面点</li>
+					<li onclick="slideUp($(this))">冷菜</li>-->
+				</ul>
+				<div id="mask"></div>
+			</div>
+		</header>
+		<div class="nav-bar" id="nav-bar"></div>
+		<button id='demo2' data-options='{"type":"date","value":"2016-12-13","beginYear":2014,"endYear":2016}' class="btn mui-btn mui-btn-block">选择日期 ...</button>
+		<div class="mui-content">
+			<div class="mui-aside" style="padding-top: 40px;">
+				<div class="title">
+					<span>物料</span><span>系统库存</span><span>实际库存</span><span>盈亏量</span><span>单位</span>
+				</div>
+				<div id="cityResult">
+					<div id="tips4"><span class="mui-spinner"></span></div>
+					<!--<div class="item clearfix mui-table-view-cell">
+						<span>海天生抽酱油(500ml)</span>
+						<span><input type="number" placeholder="10"/></span>
+						<span><input type="number" placeholder="10"/></span>
+						<span>斤</span>
+					</div>-->
+				</div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script type="text/javascript">
+			function plusReady() {	
+				plus.nativeUI.closeWaiting();
+				mui.currentWebview.show();
+				$("#back").on('tap', function() {
+					
+					var ws=plus.webview.currentWebview();
+					plus.webview.close(ws);
+					mui.openWindow({
+									url:'index.html',
+									show:{
+									  autoShow: true,	
+								      aniShow:'slide-out-right',//页面显示动画，默认为”slide-in-right“；
+								      duration:300//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+								    },
+								    waiting: {
+										autoShow: false, //自动显示等待框，默认为true
+									}
+								});	
+				});
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			};
+		</script>-->
+		<script type="text/javascript">
+			mui.init({});
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID);
+			var _thisId;
+			var _Todady = GetDateStr(0);
+			var _thisYear = new Date(); 
+			var _cityResult = 'cityResult';
+			$(function(){
+				$("#nav-bar").text(GetDateStr(0));
+				$("#demo2").attr("data-options",'{"type":"date","value":"'+GetDateStr(-1)+'","beginYear":2016,"endYear":'+_thisYear.getFullYear()+'}')
+				
+			})
+			console.log(typeof localStorage.MasterChef);
+			if(localStorage.MasterChef == "true") {
+				//总厨权限仓库数据读取
+				mui.ajax(localStorage.IP + 'common/warehouse/list?hasAll=false', {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						//					console.log(JSON.stringify(data));
+						//					console.log(data.length);
+						_thisId = data[0].Id;
+						for(var i = 0; i < data.length; i++) {
+							//						console.log(data[i].Name);
+							//						console.log(data[i].Id);
+							$("#select ul").append('<li onclick="slideUp($(this))" id="' + data[i].Id + '">' + data[i].Name + '</li>');
+						}
+						$("#select p").text($("#select li").eq(0).text());
+						console.log(_thisId);
+						dishAjax(_thisId, _Todady, _cityResult);
+					}
+				});
+	
+			} else {
+				//管理员权限仓库数据读取
+				mui.ajax(localStorage.IP + 'common/warehouse/listforemployee', {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						//					console.log(JSON.stringify(data));
+						//					console.log(data.length);
+						_thisId = data[0].Id;
+						for(var i = 0; i < data.length; i++) {
+							//						console.log(data[i].Name);
+							//						console.log(data[i].Id);
+							$("#select ul").append('<li onclick="slideUp($(this))" id="' + data[i].Id + '">' + data[i].Name + '</li>');
+						}
+						$("#select p").text($("#select li").eq(0).text());
+						console.log(_thisId);
+						dishAjax(_thisId, _Todady, _cityResult);
+					}
+				});
+			}
+	
+			//仓库数据读取
+			function dishAjax(warehouseId, date, contentId) {
+				mui.ajax(localStorage.IP + 'ticketservice/countingticket/get?warehouseId=' + warehouseId + '&date=' + date, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						$("#cityResult").empty();
+						console.log(JSON.stringify(data));
+	//							console.log(data.Lines.length);
+						if(data.length > 0){
+							for(var i = 0; i < data.length; i++) {
+								$("#" + contentId).append(
+									'<div class="item clearfix mui-table-view-cell">' +
+									'<span>' + data[i].MaterialName + '</span>' +
+									'<span><input type="number" value="' + parseFloat(data[i].StockQuantitySnapshoot).toFixed(2) + '" placeholder="100"/></span>' +
+									'<span><input type="number" value="' + parseFloat(data[i].StockQuantity).toFixed(2) + '" placeholder="100"/></span>' +
+									'<span><input type="number" value="' + (parseFloat(data[i].StockQuantity).toFixed(2)-parseFloat(data[i].StockQuantitySnapshoot).toFixed(2)).toFixed(2) + '" placeholder="100"/></span>' +
+									'<span>' + data[i].StockUnit + '</span></div>'
+								);
+							}
+						}
+						
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						$("#tips4").append('<b>读取盘点报告失败</b>');
+						setTimeout(function(){
+							$("#tips4").hide().find("b").remove();
+						},1000);
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			};
+			
+			//获取当天时间
+			function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				if(m >= 1 && m <= 9) {
+					m = "0" + m;
+				}
+				if(d >= 0 && d <= 9) {
+					d = "0" + d;
+				}
+				return y+"-"+m+"-"+d; 
+			} 
+			//选择档口
+			$("#select p").click(function() {
+				$(this).next().slideToggle(150);
+				$(this).parent().find("#mask").slideToggle(0);
+			});
+
+			function slideUp(ement) {
+				var _this = ement.text();
+				ement.parent().hide(0).prev().text(_this);
+				ement.parent().next().hide(0);
+				_thisId = ement.attr("id");
+				console.log(_thisId);
+				$("#nav-bar").text(_Todady);
+//				_Todady = GetDateStr(0);
+				$("#cityResult").empty();
+				console.log(_Todady);
+				dishAjax(_thisId, _Todady, _cityResult);
+			}
+			
+			$("#mask").bind('click', function() {
+				$(this).hide(0);
+				$(this).prev().hide(0);
+
+			});
+
+			(function($) {
+				$.init();
+				var result = $('#nav-bar')[0];
+				var btns = $('.btn');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						/*
+						 * 首次显示时实例化组件
+						 * 示例为了简洁，将 options 放在了按钮的 dom 上
+						 * 也可以直接通过代码声明 optinos 用于实例化 DtPicker
+						 */
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							/*
+							 * rs.value 拼合后的 value
+							 * rs.text 拼合后的 text
+							 * rs.y 年，可以通过 rs.y.vaue 和 rs.y.text 获取值和文本
+							 * rs.m 月，用法同年
+							 * rs.d 日，用法同年
+							 * rs.h 时，用法同年
+							 * rs.i 分（minutes 的第二个字母），用法同年
+							 */
+							result.innerText =rs.text;
+							_Todady = rs.text;
+							console.log(_Todady);
+							console.log(_thisId);
+							dishAjax(_thisId, _Todady, _cityResult);
+							/* 
+							 * 返回 false 可以阻止选择框的关闭
+							 * return false;
+							 */
+							/*
+							 * 释放组件资源，释放后将将不能再操作组件
+							 * 通常情况下，不需要示放组件，new DtPicker(options) 后，可以一直使用。
+							 * 当前示例，因为内容较多，如不进行资原释放，在某些设备上会较慢。
+							 * 所以每次用完便立即调用 dispose 进行释放，下次用时再创建新实例。
+							 */
+							picker.dispose();
+						});
+					}, false);
+				});
+			})(mui);
+			
+//			$(function() {
+//				$(".nav-bar span").eq(0).addClass("on");
+//				$(".mui-content .mui-aside").eq(0).addClass("on");
+//				$(".nav-bar span").click(function() {
+//					var _thisIndex = $(this).index();
+//					$(this).parent().find("span").removeClass("on");
+//					$(this).addClass("on");
+//					$(this).parent().next().find(".mui-aside").eq(_thisIndex).addClass("on").siblings().removeClass("on");
+//
+//				})
+//			});
+		</script>
+	</body>
+
+</html>

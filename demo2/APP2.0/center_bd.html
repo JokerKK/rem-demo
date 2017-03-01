@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<style type="text/css">
+			body{
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+			}
+			.mui-table-view:after {
+				height: 0;
+			}
+			
+			.center {
+				background: none;
+				padding-top: 64px !important;
+			}
+			
+			.center ul {
+				position: fixed;
+				top: 164px;
+				left: 0;
+				width: 100%;
+				overflow-y: scroll;
+				-webkit-overflow-scrolling: touch; 
+			}
+			.center ul::-webkit-scrollbar { display: none; }
+			.center ul p{
+				text-align: center;
+				font-size: 20px;
+				line-height: 40px;
+				display: none;
+			}
+			.center ul .DishLines span{
+				width: 50%;
+			}
+			.center li {
+				background: #fff;
+				position: relative;
+				height: 36px;
+				line-height: 36px;
+				text-align: center;
+				border-bottom: 1px #ccc solid;
+			}
+			.center li  span{
+				display: block;
+				float: left;
+				width: 25%;
+				border-left: 1px #ccc solid;
+			}
+			.center li  span:first-child{
+				border-left: none;
+				width: 50%;
+			}
+			#result{
+				position: absolute;
+				right: 15px;
+				bottom: 0;
+				height: 44px;
+				line-height: 44px;
+				text-align: center;
+				color: #fff;
+				font-size: 16px;
+				margin: 0;
+				padding: 0;
+			}
+			#demo2{
+				position: fixed;
+				right: 0;
+				top: 0;
+				height: 64px;
+				width: 100px;
+				z-index: 99999;
+				opacity: 0;
+			}
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:30%;
+				z-index: 9999;
+				width: 40%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 1.6rem;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			nav{
+				height:50px;
+				background: #fff;
+				line-height: 50px;
+				text-align: center;
+				font-size: 18px;
+				overflow-y: scroll;
+				-webkit-overflow-scrolling: touch; 
+			}
+			nav::-webkit-scrollbar { display: none; }
+			nav span{
+				display: block;
+				width:100px;
+				float: left;
+			}
+			nav span.on{
+				color: #dd3437;
+			}
+			.title{
+				height:50px;
+				background: #fff;
+				line-height: 50px;
+				text-align: center;
+				font-size: 18px;
+				border-bottom: 1px #ccc solid;
+				border-top: 1px #ccc solid;
+			}
+			.title .DishLines{
+				display: none;
+			}
+			.title .DishLines span{
+				width: 50%;
+			}
+			.title span{
+				display: block;
+				float: left;
+				width: 25%;
+				border-left: 1px #ccc solid;
+			}
+			.title span:first-child{
+				border-left: none;
+				width: 50%;
+			}
+		</style>
+	</head>
+	<body style="background: #f2f2f2;">
+		<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+			<a class="mui-icon  mui-action-back mui-icon-left-nav mui-pull-left" id="back">返回</a>
+			<h1 class="mui-title">报单中心</h1>
+			<p id="result"></p>
+			<button id='demo2' class="btn mui-btn mui-btn-block"></button>
+		</header>
+		<div class="mui-content center">
+			<nav>
+				<div>
+					<!--<span class="on">中厨中厨中厨中厨</span>-->
+				</div>
+			</nav>
+			<div class="title">
+				<div class="Lines">
+					<span>物料</span>
+					<span>数量</span>
+					<span>单位</span>
+				</div>
+				<div class="DishLines">
+					<span>菜品名称</span>
+					<span>数量</span>
+				</div>
+			</div>
+			<ul class="mui-table-view">
+				<p>暂无报单记录</p>
+				<!--<li><span>鸡肉</span><span>100</span><span>斤</span></li>-->
+			</ul>
+		</div>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在刷新数据</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>刷新成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function(){
+				$("#result").text(GetDateStr(0));
+				$("#demo2").attr("data-options",'{"type":"date","value":"'+GetDateStr(-1)+'","beginYear":2016,"endYear":'+GetDateStr(0).split('-')[0]+'}');
+				$(".center ul").css("height",$("body").height()-164);
+			});
+			mui.init();
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var _warehouseId;
+			var orderNumber;
+			var startDate = GetDateStr(0);
+			
+			
+			//获取所有的档口
+			mui.ajax(localStorage.IP + 'common/warehouse/listforstalls?hasAll=false', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'GET', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					$("nav div").empty();
+					console.log(JSON.stringify(data));
+					for(var i=0;i<data.length;i++){
+						$("nav div").append('<span id="'+data[i].Id+'" onclick="SelectWarehouse($(this))">'+data[i].Name+'</span>')
+					}
+					$("nav div").css("width",$("nav div span").length*100);
+					$("nav span").eq(0).addClass('on');
+					_warehouseId = data[0].Id
+					findOrder(startDate,_warehouseId);
+					
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+			
+			function SelectWarehouse(id){
+				_warehouseId = id.attr("id");
+				id.addClass("on").siblings().removeClass("on");
+				findOrder(startDate,_warehouseId);
+				$("#tips").show();
+				$("#tips1").show();
+				$("#tips2").hide();
+				$("#tips3").hide();
+			}
+			
+			
+			//报单号和详细列表查询
+			function findOrder(startDate,warehouseId){
+				mui.ajax(localStorage.IP+'user/ticket/list?startDate='+startDate+'\&endDate='+startDate+'\&warehouseId='+warehouseId+'\&ticketTypeCategoryId=90', {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						if(data.length>0){
+							$(".center ul p").hide();
+							for(var i=0;i<data.length;i++){
+								findList(data[i].TicketNo);
+							}
+						}else{
+							$(".center ul").html("<p>暂无报单记录</p>");
+							$(".center ul p").show();
+							$("#tips").hide();
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").hide();
+						}
+						
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			}
+			
+			
+			//报单号和详细列表查询
+			function findList(orderNumber){
+				console.log(orderNumber);
+				mui.ajax(localStorage.IP + 'ticketservice/reportticket/get?ticketNo=' + orderNumber,{
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						$(".center ul").html("<p>暂无报单记录</p>");
+						console.log(JSON.stringify(data));
+						if(data.TicketTypeId == '91'){
+							$(".title div").eq(1).show().eq(0).hide();
+							for(var j=0;j<data.DishLines.length;j++){
+								$(".center ul").append('<li class="DishLines"><span>'+data.Lines[j].DishName+'</span>'+
+								'<span>'+data.Lines[j].ApplyQuantity+'</span></li>');
+							}
+						}else{
+								$(".title div").eq(0).show().eq(1).hide();
+								for(var j=0;j<data.Lines.length;j++){
+									$(".center ul").append('<li><span>'+data.Lines[j].MaterialName+'</span>'+
+									'<span>'+data.Lines[j].ApplyQuantity+'</span>'+
+									'<span>'+data.Lines[j].Unit+'</span></li>');
+								}
+						}
+						$("#tips1").hide();
+						$("#tips2").show();
+						$("#tips3").hide();
+						setTimeout(function(){
+							$("#tips").hide();
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").hide();
+						},1000)
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						$("#tips1").hide();
+						$("#tips2").hide();
+						$("#tips3").show();
+						setTimeout(function(){
+							$("#tips").hide();
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").hide();
+						},1000)
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			}
+			
+			//获取当天时间
+			function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				if(m >= 1 && m <= 9) {
+					m = "0" + m;
+				}
+				if(d >= 0 && d <= 9) {
+					d = "0" + d;
+				}
+				return y+"-"+m+"-"+d; 
+			}
+			
+			(function($) {
+				$.init();
+				var result = $('#result')[0];
+				var btns = $('.btn');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							result.innerText =rs.text;
+							startDate = rs.text;
+							findOrder(startDate,_warehouseId);
+							picker.dispose();
+							document.getElementById("tips").style.display='block';
+							document.getElementById("tips1").style.display='block';
+							document.getElementById("tips2").style.display='none';
+							document.getElementById("tips3").style.display='none';
+						});
+					}, false);
+				});
+			})(mui);
+		</script>
+	</body>
+
+</html>

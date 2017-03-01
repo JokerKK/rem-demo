@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<style>
+			.mui-content{
+				background: url(images/login_bg.jpg);
+				background-position: center top;
+				background-size: 100%; 
+				background-repeat: no-repeat;
+			}
+			.title h2 {
+				text-align: center;
+				font-size: 3.6rem;
+				font-weight: normal;
+				color: #333;
+				margin: 0;
+				color: #fff;
+				padding: 15% 0 10%;
+			}
+			.title p{
+				text-align: center;
+				color: #fff;
+				font-family: '宋体';
+				font-size: 1.4rem;
+				
+			}
+			.form {
+				padding: 25% 15px 0;
+			}
+			
+			.mui-input {
+				width: 100%;
+				height: 40px;
+				margin-bottom: 30px;
+				line-height: 40px;
+				border-bottom: 1px #d2d2d2 solid;
+			}
+			form .on{border-bottom: 1px #ff4951 solid;} 
+			
+			
+			.mui-input label {
+				text-align: right;
+				display: block;
+				width: 80%;
+				color: #d2d2d2;
+				height: 39px;
+				line-height: 39px;
+				 padding: 0;
+			}
+			.mui-input input {
+				margin: 0;
+				padding: 0 0 0 10px;
+				border: none;
+				background: none;
+				color: #3e3e3e !important;
+			}
+			
+			.mui-btn {
+				width: 100%;
+				margin: 0;
+				font-size: 1.8rem;
+				border-radius:40px;
+				border: 1px #ff4951 solid;
+				color: #ff4951 !important;
+			}
+			.mui-btn:active{
+				background: #ff4951;
+				color: #fff !important;
+			}
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:30%;
+				z-index: 9999;
+				width: 40%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 1.6rem;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="mui-content">
+			<div class="title">
+			<h2>烹&nbsp;烹</h2>
+			<p>自&nbsp;动&nbsp;库&nbsp;存&nbsp;系&nbsp;统</p>
+			</div>
+			<div class="form">
+				<div class="mui-input mui-row mui-input-row">
+					<div class="mui-col-sm-3 mui-col-xs-3">
+						<label>用户名:</label>
+					</div>
+					<div class="mui-col-sm-9 mui-col-xs-9">
+						<input type="text" id="username" autocomplete="off" class="mui-text mui-input-clear"  name="username" placeholder="请输入用户名"  />
+					</div>
+				</div>
+				<div class="mui-input mui-row mui-input-row">
+					<div class="mui-col-sm-3 mui-col-xs-3">
+						<label>密&nbsp;&nbsp;&nbsp;&nbsp;码:</label>
+					</div>
+					<div class="mui-col-sm-9 mui-col-xs-9">
+						<input id='password' type="password" name="password" autocomplete="off" class="mui-password mui-input-clear"  placeholder="请输入密码">
+					</div>
+				</div>
+				<div class="mui-input mui-row" style="border-bottom: 0;">
+					<div class="mui-col-sm-12 mui-col-xs-12">
+						<a type="button" id="login" class="mui-btn mui-btn-blue mui-btn-outlined">登录</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>登录失败</b></div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script src="js/common.js" type="text/javascript" charset="utf-8"></script>-->
+		<script type="text/javascript">
+			mui.init();
+			localStorage.IP = 'http://psiapi.panpom.com/';
+//			localStorage.IP = 'http://192.168.0.65:8082/';
+//			localStorage.IP = 'http://192.168.0.65:8082/';
+			var data;
+			function plusReady() {
+				if(showToken("LoadingMsg") != null){
+					$("#username").val(showToken("LoadingMsg").split('-')[0]);
+					$("#password").val(showToken("LoadingMsg").split('-')[1]);
+				}
+				
+				var wv=plus.webview.getWebviewById('index');
+					plus.webview.close(wv);
+				//用户名
+				$("#username").focus(function(){
+					$("#username").parents(".mui-input").addClass("on");
+				});
+				$("#username").blur(function(){
+					$("#username").parents(".mui-input").removeClass("on");
+				});
+				
+				//密码
+				$("#password").focus(function(){
+					$("#password").parents(".mui-input").addClass("on");
+				});
+				$("#password").blur(function(){
+					$("#password").parents(".mui-input").removeClass("on");
+				});
+				
+				
+				$("#login").bind('tap',function(){
+					var h=plus.webview.getLaunchWebview();
+						plus.webview.close(h);
+					
+					
+					
+					document.activeElement.blur();
+					var username = $("#username").val();
+					var password = $("#password").val();
+					//判断输入不能为空
+					if(!username) {
+						mui.alert('用户名不能为空', '友情提示');
+						return false;
+					} else if(!password) {
+						mui.alert('密码不能为空', '友情提示');
+						return false;
+					}
+					data = {
+						"username": username,
+						"password": password,
+						"grant_type": 'password',
+						"client_secret": 10013,
+						"client_id": "724459f0c5ea283aebc92c022a99ef8a"
+					};
+					$("#tips").fadeIn();
+					$("#tips1").show().find("b").text("正在登陆");
+					$("#tips2").hide();
+					$("#tips3").hide();
+					mui.ajax(localStorage.IP+'User/AppLogin',{
+						data : data,
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						headers:{'Content-Type':'application/json'},	              
+						success:function(data){
+							console.log(JSON.stringify(data));
+							if(data.code == "200"){
+								plus.storage.setItem("LoadingMsg",username+'-'+password);
+								localStorage.timestamp1 = new Date().getTime();
+								console.log(JSON.stringify(data));
+//								SetUserId(JSON.stringify(data.msg));
+								localStorage.token=JSON.stringify(data.msg);
+								plus.storage.setItem("token",JSON.stringify(data.msg));
+//								var wv=plus.webview.getLaunchWebview();
+//									wv.reload(true);
+								setTimeout(function(){
+									$("#tips").fadeOut();
+									$("#tips1").hide().find("b").text("正在提交，请稍后");
+									$("#tips2").hide();
+									$("#tips3").hide();
+									mui.openWindow({
+										url:'index.html',
+										id:'index',
+										show:{
+											  autoShow: true,
+										      aniShow:'pop-in',//页面显示动画，默认为”slide-in-right“；
+										      duration:300//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+										    },
+										waiting:{
+										     	autoShow:false
+										     }
+									});
+								},150);
+							}else{
+								$("#tips").fadeOut();
+								$("#tips1").hide().find("b").text("正在提交，请稍后");
+								$("#tips2").hide();
+								$("#tips3").hide();
+								mui.alert('账号或密码输入不正确，请重试', '友情提示');
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							//异常处理；
+							var errortext = xhr.responseText.split(":");
+							$("#tips").fadeIn();
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").show().find("b").text("请确保网络畅通");
+							setTimeout(function(){
+									$("#tips").fadeOut();
+									$("#tips1").hide();
+									$("#tips2").hide();
+									$("#tips3").hide();
+							},1500);
+							console.log(JSON.stringify(xhr.response));
+							console.log(JSON.stringify(xhr.responseText));
+							console.log(JSON.stringify(xhr.statusText));
+							console.log(JSON.stringify(type));
+							console.log(JSON.stringify(errorThrown));
+						}
+					});
+				});		
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			};
+			function showToken(id) {
+				return plus.storage.getItem(id);
+			}
+		</script>
+	</body>
+</html>

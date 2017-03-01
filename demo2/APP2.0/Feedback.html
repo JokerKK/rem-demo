@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<style>
+			body{
+				background: #f2f2f2;
+			}
+			.mui-content{
+				padding:0 15px;
+				background: none;
+			}
+			.mui-input-row{
+				margin:35px 0 0;
+			}
+			.mui-input-row textarea{
+				 color: #333;
+				 font-family: "微软雅黑";
+				 font-size: 1.5rem;
+				 padding:0 10px;
+				 line-height: 2;
+				 border-radius: 5px;
+				 margin: 0;
+			}
+			.mui-input-row input{
+				 color: #333;
+				 font-family: "微软雅黑";
+				 font-size: 1.5rem;
+				 padding: 0 10px;
+				 line-height: 2;
+				  border-radius: 5px;
+			}
+			.sure_buy{
+				border: none;
+				width: 100%;
+				margin: 50px auto 0;
+				border-radius: 5px;
+				position: relative;	
+				padding: 10px 0;
+				font-size:2rem;
+			}
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:30%;
+				z-index: 9999;
+				width: 40%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 1.6rem;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+		</style>
+	</head>
+
+	<body id="body" class="clearfix">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-icon  mui-action-back mui-icon-left-nav mui-pull-left" id="back">返回</a>
+			<h1 class="mui-title">意见反馈</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-input-row">
+					<textarea id="textarea" rows="5" placeholder="请您给我们提出宝贵意见"></textarea>
+				</div>
+				<!--<div class="mui-input-row" >
+					<input type="number" id="telphone" placeholder="请留下您的手机号码">
+				</div>-->
+				<button type="button" class="mui-btn mui-btn-block sure_buy" id="btn">提&nbsp;&nbsp;交</button>
+		</div>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			function plusReady() {
+//				plus.nativeUI.closeWaiting();
+//				//显示当前页面
+//	   			mui.currentWebview.show();	
+//		   		$("#back").on('tap', function() {
+//					var ws=plus.webview.currentWebview();
+//					plus.webview.close(ws);
+//					mui.openWindow({
+//									url:'index.html',
+//									show:{
+//									  autoShow: true,	
+//								      aniShow:'slide-out-right',//页面显示动画，默认为”slide-in-right“；
+//								      duration:300//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+//								    },
+//								    waiting: {
+//										autoShow: false, //自动显示等待框，默认为true
+//									}
+//								});	
+//				});
+				
+				
+			var userId = JSON.parse(localStorage.token);//账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID);
+			var data;
+			$("#btn").bind('tap',function(){ 
+				if($("#textarea").val() == ''){
+					mui.alert('请输入反馈意见', '友情提示');
+					return ;
+				}
+				var text = $("#textarea").val();
+				data = {
+					"Content": text
+				};
+				console.log(JSON.stringify(data));
+				$("#tips").fadeIn();
+				$("#tips1").show(0);
+				$("#tips2").hide(0);
+				$("#tips3").hide(0);
+				$("#btn").attr("disabled",true);
+				mui.ajax(localStorage.IP+'user/feedback/save',{
+					data : data,
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},	              
+					success:function(data){
+						console.log(JSON.stringify(data));
+						if(data == true){
+							$("#tips").fadeIn(0);
+							$("#tips1").hide();
+							$("#tips2").show();
+							$("#tips3").hide(0);
+							setTimeout(function(){
+								$("#tips").fadeOut(300);
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide(0);	
+							},1000);
+							$("#btn").attr("disabled",false);
+							$("#textarea").val('');
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						$("#tips").fadeIn(0);
+						$("#tips1").hide();
+						$("#tips2").hide();
+						$("#tips3").show(0);
+						setTimeout(function(){
+							$("#tips").fadeOut(300);
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").hide(0);	
+						},1000);
+						$("#btn").attr("disabled",false);
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			});
+			
+				plus.nativeUI.closeWaiting();
+				//显示当前页面
+				mui.currentWebview.show();
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			};	
+		</script>
+	</body>
+</html>

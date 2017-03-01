@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<script src="js/hotcss.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			#mark1{
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				left: 0;
+				top:calc(2.13333rem + 20px);
+				background: #fff;
+				z-index: 99;
+				text-align: center;
+				line-height: 100px;
+				font-size: 1.4rem;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<a class="back mui-action-back" id="back">返回</a>
+				<h2>我的报单</h2>
+				<div class="select">
+					<p></p>
+					<ul>
+						<i></i>
+						<!--<li onclick="WarehouseSelect($(this));">中厨档口</li>-->
+					</ul>
+					
+				</div>
+				<div id="mark"></div>
+			</header>
+			<div class="content">
+				<aside class="aside">
+					<p>报单号：</p>
+					<select>
+						<!--<option value="12313546464">12313546464</option>-->
+					</select>
+				</aside>
+				<aside class="bdlist">
+					<ul>
+						<!--<li><span>鸡肉1鸡肉1鸡肉1</span><span>只</span><span>100</span></li>-->
+					</ul>
+				</aside>
+				<div id="mark1">暂无数据</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID); //门店信息
+			var _WarehouseId,
+				_ticketTypeId = '';
+			//仓库数据读取
+			mui.ajax(localStorage.IP + 'common/warehouse/listforemployee', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));
+					if(data.length > 0){
+						for(var i=0;i<data.length;i++){
+						$("header ul").append('<li id='+data[i].Id+' onclick="WarehouseSelect($(this));">'+data[i].Name+'</li>')
+						}
+						$("header .select p").text(data[0].Name);
+						_WarehouseId = data[0].Id.toString();
+						console.log(GetDateStr(-1));
+						console.log(GetDateStr(0));
+						console.log(_WarehouseId);
+						findOrder(GetDateStr(-1),GetDateStr(0),_WarehouseId);
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+			
+			//档口选择
+			function WarehouseSelect(id){
+				id.parent().prev().text(id.text());
+				id.parent().fadeOut(0);
+				$("#mark").fadeOut(0);
+				_WarehouseId = id.attr("id");
+				console.log(GetDateStr(-1));
+				console.log(GetDateStr(0));
+				console.log(_WarehouseId);
+				$("#mark1").hide();
+				$(".aside select").empty();
+				$(".bdlist ul").empty();
+				findOrder(GetDateStr(-1),GetDateStr(0),_WarehouseId);
+			}
+			
+			$(".aside select").change(function(){
+				var optionID = $(this).find("option:selected").attr("value");
+				$(this).attr("id",optionID);
+				_ticketTypeId = $(this).attr("id");
+				console.log(_ticketTypeId);
+				$(".bdlist ul").empty();
+				findList(_ticketTypeId);
+			})
+			//报单号和详细列表查询
+			function findOrder(startDate,endDate,warehouseId){
+				mui.ajax(localStorage.IP+'user/ticket/list?startDate='+startDate+'\&endDate='+endDate+'\&warehouseId='+warehouseId+'\&ticketTypeCategoryId=90', {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						if(data.length>0){
+							for(var i=0;i<data.length;i++){
+							$(".aside select").append('<option id='+data[i].TicketTypeId+' value='+data[i].TicketNo+'>'+data[i].TicketNo+'</option>');
+							}
+							$(".aside select").find("option").eq(0).attr("selected",true);
+							_ticketTypeId = data[0].TicketNo;
+							console.log(_ticketTypeId);
+							findList(_ticketTypeId);
+						}else{
+							//处理暂无数据
+							$("#mark1").show();
+						}
+						
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			}
+			
+			
+			//报单号和详细列表查询
+			function findList(orderNumber){
+				console.log(orderNumber);
+				mui.ajax(localStorage.IP + 'ticketservice/reportticket/get?ticketNo=' + orderNumber,{
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						if(data.TicketTypeId == '91'){
+							for(var j=0;j<data.DishLines.length;j++){
+								$(".bdlist ul").append('<li><span>'+data.Lines[j].DishName+'</span>'+
+								'<span>'+data.Lines[j].ApplyQuantity+'</span></li>');
+							}
+						}else{
+								for(var j=0;j<data.Lines.length;j++){
+									$(".bdlist ul").append('<li><span>'+data.Lines[j].MaterialName+'</span>'+
+									'<span>'+data.Lines[j].Unit+'</span>'+
+									'<span>'+data.Lines[j].ApplyQuantity+'</span></li>');
+								}
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			}
+			
+			//获取当天时间
+			function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				if(m >= 1 && m <= 9) {
+					m = "0" + m;
+				}
+				if(d >= 0 && d <= 9) {
+					d = "0" + d;
+				}
+				return y+"-"+m+"-"+d; 
+			} 
+			
+			$(function(){
+				$(".content").css("height",$(".container").height()-$("header").innerHeight());
+				$(".bdlist").css("height",$(".container").height()-($("header").innerHeight()+$(".aside").innerHeight()));
+				
+				$(".select p").on('tap',function(){
+					$(this).next().fadeToggle(0);
+					$("#mark").fadeToggle(0);
+					if($("#mark").css("display") == 'block'){
+						$("input").attr("disabled",true);
+					}
+				});
+				$("#mark").on('tap',function(){
+					$(".select ul").fadeOut(0);
+					$(this).fadeOut(0);
+					setTimeout(function(){
+						$("input").attr("disabled",false);
+					},350);
+				})
+			})
+			
+		</script>
+	</body>
+</html>

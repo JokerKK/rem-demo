@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>首页</title>
+		<!--重置浏览器样式-->
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<script src="js/hotcss.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div class="container" id="container">
+			<header>
+				<a class="back mui-action-back" id="back">返回</a>
+				<h2>物料分配</h2>
+			</header>
+			<div class="fenpei_title clearfix" style="background: #eaeaea;">
+				<span>物料</span>
+				<span>本次总量</span>
+				<span>未分配量</span>
+				<span>单位</span>
+			</div>
+			<ul class="distribution">
+				<p>暂无可分配物料</p>
+			</ul>
+			<button id="Submit" type="button">确认分配</button>
+			<div class="wrapper">
+				<div class="sure">
+					<h2>确认提交？</h2>
+					<a class="S_Submit">确认</a><a class="cancel">取消</a>
+				</div>
+			</div>
+			<div id="tips">
+				<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+				<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+				<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+			</div>
+		</div>
+		<script type="text/javascript">
+		$(function(){
+			$(".distribution").css("height",$(".container").height()-($("header").innerHeight()+$(".fenpei_title").innerHeight()+$("#Submit").innerHeight()));
+			$("#Submit").on('tap',function(){
+				$(".wrapper").show();
+			})
+			$(".wrapper").find('a.cancel').on('tap',function(){
+				$(".wrapper").hide();
+			})
+		})
+		var userId = JSON.parse(localStorage.token); //账户个人id信息
+		var USERID = JSON.parse(localStorage.USERID); //门店信息
+		var _SourceWarehouseId;//默认库ID
+		var _SourceWarehouseName;//默认库名称
+		var MaterialData = [];
+		
+		//查询入库档口
+		mui.ajax(localStorage.IP + 'common/warehouse/default', {
+			dataType: 'json', //服务器返回json格式数据
+			type: 'get', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + userId.access_token
+			},
+			success: function(data) {
+				console.log(JSON.stringify(data));
+				_SourceWarehouseId= data.Id;
+				_SourceWarehouseName = data.Name;	
+			},
+			error: function(xhr, type, errorThrown) {
+				//异常处理；
+				console.log(JSON.stringify(xhr.response));
+				console.log(JSON.stringify(xhr.responseText));
+				console.log(JSON.stringify(xhr.statusText));
+				console.log(JSON.stringify(type));
+				console.log(JSON.stringify(errorThrown));
+			}
+		});	
+		
+			
+		//查询验收入库的所有物料
+		mui.ajax(localStorage.IP + 'ticketservice/inventorystock/list', {
+			dataType: 'json', //服务器返回json格式数据
+			type: 'get', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + userId.access_token
+			},
+			success: function(data) {
+				console.log(JSON.stringify(data));
+				if(data.length>0){
+					$(".distribution p").hide();
+					var MaterialTemporaryData = data;
+					for(var i = 0; i < data.length; i++) {
+						Ajax(data[i].MaterialId,MaterialTemporaryData);
+					};
+				}
+			},
+			error: function(xhr, type, errorThrown) {
+				//异常处理；
+				console.log(JSON.stringify(xhr.response));
+				console.log(JSON.stringify(xhr.responseText));
+				console.log(JSON.stringify(xhr.statusText));
+				console.log(JSON.stringify(type));
+				console.log(JSON.stringify(errorThrown));
+			}
+		});
+		
+		function Ajax(materialId,MaterialTemporaryData){
+			mui.ajax(localStorage.IP+'ticketservice/reportticket/warehouses?materialId='+materialId, {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					var count =0;
+					var aa = 0;
+					console.log(JSON.stringify(data));
+					for(var j = 0; j < data.length; j++){
+						count +=parseFloat(data[j].StockQuantity);
+					}
+					for(var i = 0; i < MaterialTemporaryData.length; i++) {
+						if(MaterialTemporaryData[i].MaterialId == materialId){
+							var count1 = parseFloat(MaterialTemporaryData[i].Quantity); 
+							var html = '<dl>';
+							for(var j = 0; j < data.length; j++) {
+								if(count == 0){
+									html+='<dd><span class="TargetWarehouse" id='+data[j].TargetWarehouseId+'>'+data[j].TargetWarehouseName+'</span>'+
+								'<input type="text" onclick="AllSelect($(this));" onblur="Numfenpei($(this));"  value="0" /><span>'+MaterialTemporaryData[i].Unit+'</span></dd>'
+								}else{
+									if(j == (data.length -1)){
+										html+='<dd><span class="TargetWarehouse" id='+data[j].TargetWarehouseId+'>'+data[j].TargetWarehouseName+'</span>'+
+								'<input type="text" onclick="AllSelect($(this));" onblur="Numfenpei($(this));"  value="'+(count1 - aa)+'" /><span>'+MaterialTemporaryData[i].Unit+'</span></dd>'
+									}else{
+										aa += parseFloat(((parseFloat(data[j].StockQuantity)/count)*count1).toFixed(2));
+										html+='<dd><span class="TargetWarehouse" id='+data[j].TargetWarehouseId+'>'+data[j].TargetWarehouseName+'</span>'+
+								'<input type="text" onclick="AllSelect($(this));" onblur="Numfenpei($(this));"  value="'+((parseFloat(data[j].StockQuantity)/count)*count1).toFixed(2)+'" /><span>'+MaterialTemporaryData[i].Unit+'</span></dd>'
+									}
+								}
+								
+							}
+							html += '</dl>';
+							var Materiallist = MaterialTemporaryData[i].MaterialId+'-'+MaterialTemporaryData[i].MaterialNo+'-'+MaterialTemporaryData[i].CategoryId+'-'+MaterialTemporaryData[i].CategoryName+'-'+MaterialTemporaryData[i].CostPrice;
+							if(count == 0){
+								$(".distribution").append('<li id='+Materiallist+'><div onclick="WarehouseSelect($(this));" class="fenpei_title clearfix">'+
+								'<span>'+MaterialTemporaryData[i].MaterialName+'</span><span>'+MaterialTemporaryData[i].Quantity+'</span>'+
+								'<span>'+MaterialTemporaryData[i].Quantity+'</span><span>'+MaterialTemporaryData[i].Unit+'<i></i></span></div>'+html+'</li>');
+							}else{
+								$(".distribution").append('<li id='+Materiallist+'><div onclick="WarehouseSelect($(this));" class="fenpei_title clearfix">'+
+								'<span>'+MaterialTemporaryData[i].MaterialName+'</span><span>'+MaterialTemporaryData[i].Quantity+'</span>'+
+								'<span>0.00</span><span>'+MaterialTemporaryData[i].Unit+'<i></i></span></div>'+html+'</li>');
+							};
+							
+							$(".distribution").find("li").eq((MaterialTemporaryData.length -1)).css("marginBottom",11.5+'rem');
+							
+							return false;
+						}
+						
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+				}
+			});
+		}
+			
+		//物料分配提交
+		$(".wrapper").find('a.S_Submit').on('tap',function(){
+			$(".wrapper").hide();
+			$("#tips").show();
+			$("#tips1").show();	
+			$("#tips2").hide();
+			$("#tips3").hide();
+			var Submit = 0;
+			var _this = $(".distribution li");	
+			for(var i = 0; i < _this.length; i++){
+				var Temporary=_this.eq(i).attr("id").split('-');
+				console.log(JSON.stringify(Temporary));
+				var MaterialName = _this.eq(i).find(".fenpei_title").find("span").eq(0).text();
+				var StockUnit = _this.eq(i).find(".fenpei_title").find("span").eq(3).text();
+				for(var j = 0; j < _this.eq(i).find("dd").length; j++){
+					var StockQuantity = parseFloat(_this.eq(i).find("dd").eq(j).find("input").val()).toFixed(2);
+					var TargetWarehouseId = _this.eq(i).find("dd").eq(j).find("span.TargetWarehouse").attr("id");
+					var TargetWarehouseName = _this.eq(i).find("dd").eq(j).find("span.TargetWarehouse").text();
+					if(parseFloat(_this.eq(i).find("dd").eq(j).find("input").val())>0){
+						MaterialData.push({
+						    "MaterialId": Temporary[0],
+						    "MaterialNo": Temporary[1],
+						    "MaterialName": MaterialName,
+						    "CategoryId":Temporary[2],
+						    "MaterialCategoryName": Temporary[3],
+						    "StockUnit": StockUnit,
+						    "StockQuantity": StockQuantity,
+						    "CostPrice": Temporary[4],
+						    "TargetWarehouseId": TargetWarehouseId,
+						    "TargetWarehouseName": TargetWarehouseName,
+						    "TargetDepartmentId": USERID.BranchId,
+						    "TargetDepartmentName": USERID.BranchName,
+						    "TicketTypeId": 135,
+						    "OperatorId": USERID.Id,
+						    "OperatorName":  USERID.Name,
+						    "BranchId":USERID.BranchId,
+						    "BranchName": USERID.BranchName,
+						    "SourceWarehouseId":_SourceWarehouseId,//默认库ID
+						    "SourceWarehouseName":_SourceWarehouseName,//默认库名称
+						    "SourceDepartmentId": USERID.BranchId,
+						    "SourceDepartmentName": USERID.BranchName,
+						    "GroupId":  USERID.GroupId,
+						    "CreateUser": USERID.Id,
+						    "ModifyUser": USERID.Id
+						})
+					}
+					
+				};
+				Submit += parseFloat(_this.eq(i).find(".fenpei_title").find("span").eq(2).text());
+			}
+			console.log(JSON.stringify(MaterialData));
+			console.log(Submit);
+			console.log(typeof Submit);
+			if(MaterialData.length>0){
+				if(Submit == 0){
+					mui.ajax(localStorage.IP + 'ticketservice/distributioninout/save', {
+						data:MaterialData,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'POST', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': 'Bearer ' + userId.access_token
+						},
+						success: function(data) {
+							console.log(JSON.stringify(data));
+							$("#tips1").hide();
+							$("#tips2").show();
+							$("#tips3").hide();
+							setTimeout(function() {
+								$("#tips").hide();
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide();
+								$(".distribution").html("<p>暂无可分配物料</p>");
+							}, 1500);
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							var errortext = xhr.responseText.split(":");
+							var aa = errortext.length;
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").show().find("b").text(errortext[aa-1]);
+							setTimeout(function() {
+								$("#tips").fadeOut(300);
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide().find("b").text("提交失败");
+							}, 1500);
+							MaterialData = [];
+						}
+					});
+				}else{
+					$(".wrapper").hide();
+					$("#tips").fadeIn();
+					$("#tips1").hide();
+					$("#tips2").hide();
+					$("#tips3").show().find("b").text("物料未分配完");
+					setTimeout(function() {
+						$("#tips").fadeOut(300);
+						$("#tips1").hide();
+						$("#tips2").hide();
+						$("#tips3").hide().find("b").text("提交失败");
+					}, 1500);
+					MaterialData=[];
+				}
+			}else{
+				$(".wrapper").hide();
+				$("#tips").fadeIn();
+				$("#tips1").hide();
+				$("#tips2").hide();
+				$("#tips3").show().find("b").text("没有可分配物料");
+				setTimeout(function() {
+					$("#tips").fadeOut(300);
+					$("#tips1").hide();
+					$("#tips2").hide();
+					$("#tips3").hide().find("b").text("提交失败");
+				}, 1500);
+			}
+		})
+		
+		function AllSelect(id){
+				id.focus().select();
+			}
+			
+		function WarehouseSelect(id){
+			for(var i=0;i<id.parents("ul").find("li").length;i++){
+				id.parents("ul").find("li").eq(i).children(".fenpei_title").find("span").eq(3).removeClass("on");
+			}
+			var Isshow=id.next().css("display");
+			if(Isshow == 'none'){
+				id.next().show();
+				id.find("span").eq(3).addClass("on");
+			}else{
+				id.next().hide();
+				id.find("span").eq(3).removeClass("on");
+			}
+			id.parent().siblings().find("dl").hide();
+			
+		}
+			
+		function Numfenpei(id){
+			var TotNum = 0;
+			var _thisNum = id.val();
+			for(var i =0; i<id.parents("dl").find("dd").length;i++){
+				if(isNaN(parseFloat(id.parents("dl").find("dd").eq(i).find("input").val()))){
+					id.parents("dl").find("dd").eq(i).find("input").val("0");
+				}
+				TotNum += parseFloat(id.parents("dl").find("dd").eq(i).find("input").val());
+			};
+//			console.log(TotNum);
+			if(isNaN(TotNum)){
+				$("#tips").fadeIn();
+				$("#tips3").show().find("b").text("输入数量格式不正确！！！");
+				setTimeout(function(){
+					$("#tips").fadeOut();
+					$("#tips3").hide().find("b").text("提交失败");
+				},1000)
+				id.focus().select();
+			}else{
+				var aa = parseFloat(id.parents("li").find(".fenpei_title").find("span").eq(1).text());
+				if(TotNum > aa){
+					$("#tips").fadeIn();
+					$("#tips3").show().find("b").text("分配数量已超过总量！！！");
+					setTimeout(function(){
+						$("#tips").fadeOut();
+						$("#tips3").hide().find("b").text("提交失败");
+					},1000);
+					id.parents("li").find(".fenpei_title").find("span").eq(2).text((aa - TotNum).toFixed(2))
+				}else{
+					id.parents("li").find(".fenpei_title").find("span").eq(2).text((aa - TotNum).toFixed(2))
+				}
+				
+			}
+		}
+		</script>
+	</body>
+</html>

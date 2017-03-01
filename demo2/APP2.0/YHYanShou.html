@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<script src="js/hotcss.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			#mark1{
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				left: 0;
+				top:calc(2.13333rem + 20px);
+				background: #fff;
+				z-index: 99;
+				text-align: center;
+				line-height: 100px;
+				font-size: 1.4rem;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<a class="back mui-action-back" id="back">返回</a>
+				<h2>要货验收</h2>
+			</header>
+			<div class="content">
+				<aside class="aside" style="border-bottom: 1px #f2f2f2 solid;">
+					<p>要货单号：</p>
+					<select>
+						<!--<option value="12313546464">12313546464</option>-->
+					</select>
+				</aside>
+				<aside class="bdlist">
+					<div class="title">
+						<span>物料名称</span>
+						<span>配送量</span>
+						<span>入库量</span>
+						<span>单位</span>
+					</div>
+					<ul>
+						<!--<li>
+							<span>鸡肉1鸡肉1鸡肉1</span>
+							<span>100.00</span>
+							<span><input type="number" value="100.00"/></span>
+							<span>只</span>
+						</li>-->
+						
+					</ul>
+				</aside>
+				<button type="button" id="materialbtn">确认验收</button>
+				<div id="mark1">暂无数据</div>
+			</div>
+			
+			<div id="tips">
+				<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+				<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+				<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+			</div>
+			<div class="wrapper">
+				<div class="sure">
+					<h2>确认提交？</h2>
+					<a class="S_Submit">确认</a><a class="cancel">取消</a>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function(){
+				$(".content").css("height",$(".container").height()-$("header").innerHeight());
+				$(".bdlist").css("height",$(".container").height()-($("header").innerHeight()+$(".aside").innerHeight()+$("#materialbtn").innerHeight()));
+				$("#materialbtn").on('tap',function(){
+				$(".wrapper").show();
+				})
+				$(".wrapper").find('a.cancel').on('tap',function(){
+					$(".wrapper").hide();
+				})
+			})
+			
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID); //门店信息
+			console.log(localStorage.token);
+			var _TicketId;//订到号ID
+			var _TicketNo;//订单号；
+			
+			var MaterialData = {
+					"PreTicketId":null,//_OrderId订单数据Id值
+					"PreTicketNo":null,//_Order订单号
+					"IsTimeout": false,
+  					"IsReturn": false,
+					"Lines": [],
+					"TicketTypeId":123,//提交类型 菜品(91)或者原料(92)
+					"OperatorId": USERID.Id,//用户ID
+					"OperatorName": USERID.Name,//用户名
+					"BranchId": USERID.BranchId,//门店ID
+					"BranchName": USERID.BranchName,//门店名称
+					"Memo":null,//订单备注
+					"SourceDepartmentId": USERID.BranchId,//门店ID
+					"SourceDepartmentName": USERID.BranchName,//门店名称
+					"TargetObjectId":0,//_SupplierId
+					"TargetObjectName":null,//_SupplierName
+					"TicketNo":null, //_Order订单号
+					"Guid":null,
+					"GroupId": USERID.GroupId,
+					"CreateUser": USERID.Id,
+					"ModifyUser": USERID.Id
+				};
+//			console.log(localStorage.token);
+			//单号数据读取
+			mui.ajax(localStorage.IP + 'ticketservice/distributionticket/distributionlist', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					$(".aside select").html(' ');
+					console.log(JSON.stringify(data));
+					if(data.length>0){
+						for(var i=0;i<data.length;i++){
+							$(".aside select").append('<option id='+data[i].TicketId+' value='+data[i].TicketNo+'>'+data[i].TicketNo+'</option>');
+						}
+						$(".aside select").find("option").eq(0).attr("selected",true);
+						_TicketId = data[0].TicketId;
+						_TicketNo = data[0].TicketNo
+						Ajax(_TicketId,_TicketNo);
+					}else{
+						$("#mark1").show();
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+			
+			//选择订单号查询不同物料
+			$(".aside select").change(function(){
+				var optionID = $(this).find("option:selected").attr("value");
+				$(this).attr("id",optionID);
+				_TicketId = $(this).find("option:selected").attr("id");
+				_TicketNo = $(this).find("option:selected").attr("value");
+				console.log(_TicketId);
+				console.log(_TicketNo);
+				$(".bdlist ul").empty();
+				Ajax(_TicketId,_TicketNo);
+			})
+			
+			
+			//根据订单号查物料详情
+			function Ajax(id,No){
+				$(".bdlist ul").attr("data-id",' ');
+				$(".bdlist ul").attr("data-No",' ');
+				mui.ajax(localStorage.IP + 'ticketservice/distributionticket/get?id='+id, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						$(".bdlist ul").attr("data-id",id);
+						$(".bdlist ul").attr("data-No",No);
+						for(var i=0;i<data.Lines.length;i++){
+							var aa = data.Lines[i].MaterialId+'-'+data.Lines[i].MaterialNo+'-'+data.Lines[i].CategoryId+'-'+data.Lines[i].CategoryName+'-'+
+									data.Lines[i].Unit+'-'+data.Lines[i].Stock2ApplyFactor+'-'+data.Lines[i].StockUnit+'-'+data.Lines[i].CostPrice+'-'+
+									data.Lines[i].PurchasePrice+'-'+data.Lines[i].VendorId+'-'+data.Lines[i].VendorName;
+							$(".bdlist ul").append(
+								'<li id="'+aa+'"><span>'+data.Lines[i].MaterialName+'</span><span>'+data.Lines[i].ApplyQuantity+'</span>'+
+								'<span><input type="number" value="'+data.Lines[i].ApplyQuantity+'"/></span>'+
+								'<span>'+data.Lines[i].Unit+'</span></li>')
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			}
+			
+			//验收提交
+			$(".wrapper").find('a.S_Submit').on('tap',function(){
+				$(".wrapper").hide();
+				$("#tips").show();
+				$("#tips1").show();
+				$("#tips2").hide();
+				$("#tips3").hide();
+				var _this=$(".bdlist ul").find("li");
+				MaterialData.PreTicketId = _this.parent().attr("data-id");
+				MaterialData.PreTicketNo = _this.parent().attr("data-No");
+				for(var i=0;i<_this.length;i++){
+					var bb = _this.attr("id").split('-');
+					var MaterialName = _this.eq(i).find("span").eq(0).text();
+					var ApplyQuantity = _this.eq(i).find("input").val();
+					var GroupId = USERID.GroupId;
+					var CreateUser = USERID.Id;
+					var ModifyUser = USERID.Id;
+					MaterialData.Lines.push({
+						"MaterialId": bb[0],
+						"MaterialNo": bb[1],
+						"MaterialName": MaterialName,
+						"CategoryId": bb[2],
+						"CategoryName": bb[3],
+						"Unit": bb[4],
+						"ApplyQuantity": ApplyQuantity,
+						"Stock2ApplyFactor":bb[5],
+						"StockUnit": bb[6],
+						"CostPrice": bb[7],
+						"PurchasePrice": bb[8],
+						"TotalAmount": (parseFloat(bb[7]) * parseFloat(ApplyQuantity)).toFixed(2),
+						"VendorId": bb[9],
+					    "VendorName": bb[10],
+						"GroupId": GroupId,
+						"CreateUser": CreateUser,
+						"ModifyUser": ModifyUser,
+					})
+				}
+				console.log(JSON.stringify(MaterialData));
+				mui.ajax(localStorage.IP + 'ticketservice/purchaseticket/in', {
+					data:MaterialData,
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						if(data == true){
+							$("#tips1").hide();
+							$("#tips2").show();
+							$("#tips3").hide();
+							setTimeout(function(){
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide();
+								$("#tips").fadeOut();
+								location.reload();//提交成功后自动刷新本页面
+							},1000);
+						}else{
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").show();
+							setTimeout(function(){
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide();
+								$("#tips").hide();
+							},1000);
+							MaterialData.Lines=[];
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						var errortext = xhr.responseText.split(":");
+						$("#tips1").hide();
+						$("#tips2").hide();
+						$("#tips3").show().find("b").text(errortext[1]);
+						$("#tips").show();
+						setTimeout(function(){
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").hide();
+							$("#tips").hide();
+						},1000);
+						MaterialData.Lines=[];
+					}
+				});
+			})
+			
+			
+		</script>
+	</body>
+</html>

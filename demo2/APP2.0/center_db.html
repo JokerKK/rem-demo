@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<style type="text/css">
+			body{
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+			}
+			.mui-table-view:after {
+				height: 0;
+			}
+			#result{
+				position: absolute;
+				right: 15px;
+				bottom: 0;
+				height: 44px;
+				line-height: 44px;
+				text-align: center;
+				color: #fff;
+				font-size: 16px;
+				margin: 0;
+				padding: 0;
+			}
+			#demo2{
+				position: fixed;
+				right: 0;
+				top: 0;
+				height: 64px;
+				width: 100px;
+				z-index: 99999;
+				opacity: 0;
+			}
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:30%;
+				z-index: 9999;
+				width: 40%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 1.6rem;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			.center{
+				padding-top: 64px !important;
+			}
+			.NoList{
+				height: 50px;
+				line-height: 50px;
+				background: #fff;
+				font-size: 16px;
+			}
+			.NoList span{
+				display: block;
+				float: left;
+				width:40%;
+				height: 100%;
+				text-align: center;
+			}
+			.NoList span:nth-child(2),ul li span:nth-child(2){
+				width: 20% !important;
+				overflow: hidden;
+			}
+			.center ul{
+				position: fixed !important;
+				top: 120px;
+				left: 0;
+				width: 100%;
+				overflow-y: scroll;
+				-webkit-overflow-scrolling: touch;
+				background:none !important;
+			}
+			.center ul .PP{
+				text-align: center;
+				line-height: 40px;
+				font-size: 18px;
+				
+			}
+			.center ul::-webkit-scrollbar { display: none; }
+			.center ul li{
+				height: 60px;
+				margin: 5px 0 0;
+				background: #fff;
+			}
+			.center ul li p{
+				height: 20px;
+				line-height: 20px;
+				margin: 0;
+				font-size: 12px;
+				padding-right: 15px;
+				float: left;
+				width: 100%;
+				text-align: right;
+			}
+			.center ul li span{
+				display: block;
+				line-height: 40px;
+				float: left;
+				width:40%;
+				height:40px;
+				text-align: center;
+			}
+			.wrapper{
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				background: rgba(50,50,50,0.6);
+				z-index: 999999;
+				display: none;
+			}
+			.wrapper .content{
+				width: 80%;
+				background: #fff;
+				margin: 25% auto 0;
+				overflow: hidden;
+				border-radius: 5px;
+			}
+			.wrapper .content .title{
+				height: 40px;
+				font-size: 16px;
+				color: #000;
+				text-align: center;
+				border-bottom: 1px #ccc solid;
+			}
+			.wrapper .content .title span{
+				display: block;
+				height: 100%;
+				line-height: 40px;
+				width: 25%;
+				float: left;
+				border-left: 1px #ccc solid;
+			}
+			.wrapper .content .title span:first-child,.wrapper .content .List li span:first-child{
+				width: 50% !important;
+				border-left:none;
+			}
+			.wrapper .content .List{
+				max-height: 300px;
+				overflow-y: scroll;
+				-webkit-overflow-scrolling: touch;
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			.wrapper .content .List::-webkit-scrollbar { display: none; }
+			.wrapper .content .List li{
+				height: 30px;
+				font-size: 15px;
+				text-align: center;
+				line-height: 30px;
+				border-bottom: 1px #ccc solid;
+			}
+			.wrapper .content .List li span{
+				display: block;
+				height: 100%;
+				vertical-align:center;
+				width: 25% !important;
+				float: left;
+				border-left: 1px #ccc solid;
+			}
+		</style>
+	</head>
+
+	<body style="background: #f2f2f2;">
+		<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+			<a class="mui-icon  mui-action-back mui-icon-left-nav mui-pull-left" id="back">返回</a>
+			<h1 class="mui-title">调拨记录</h1>
+			<p id="result"></p>
+			<button id='demo2' class="btn mui-btn mui-btn-block"></button>
+		</header>
+		<div class="wrapper">
+			<div class="content" id="content">
+				<div class="title"><span>物料</span><span>数量</span><span>单位</span></div>
+				<ul class="List">
+					<!--<li><span>鸡肉</span><span>100</span><span>只</span></li>-->
+				</ul>
+			</div>
+		</div>
+		<div class="mui-content center">
+			<div class="NoList">
+				<span>调出仓库</span><span></span><span>调入仓库</span>
+			</div>
+			<ul class="mui-table-view">
+				<!--<li>
+					
+					<span>二级库</span><span>>>>>>>>>>>>>>>>></span><span>中厨</span>
+					<p>调拨时间&nbsp;&nbsp;&nbsp;12:25:00</p>
+				</li>-->
+			</ul>
+		</div>
+		
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在刷新数据</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>刷新成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>刷新失败</b></div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function(){
+				$("#result").text(GetDateStr(0));
+				$("#demo2").attr("data-options",'{"type":"date","value":"'+GetDateStr(-1)+'","beginYear":2016,"endYear":'+GetDateStr(0).split('-')[0]+'}');
+				$(".center ul").css("height",$("body").height()-120);
+				$(".wrapper").on("tap",function(){
+					$(this).hide();
+				})
+				$(".wrapper .content").on("tap",function(event){
+					event.stopPropagation();
+				})
+				
+			})
+			mui.init();
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var orderNumber;
+			var startDate = GetDateStr(0);
+			NoList(startDate);
+			
+			
+			//获取分配单号
+			function NoList(day){
+				mui.ajax(localStorage.IP + 'user/ticket/list?startDate='+day+'\&endDate='+day+'\&ticketTypeId=137', {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'GET', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+//						console.log(JSON.stringify(data));
+						$(".center ul").empty();
+						if(data.length>0){
+							for(var i=0;i<data.length;i++){
+								console.log(data[i].CreateTime);
+								$(".center ul").append(
+									'<li onclick="ShowList($(this))" id="'+data[i].Id+'"><span>'+data[i].SourceWarehouseName+'</span>'+
+									'<span>\>\>\>\>\>\>\>\>\>\>\></span>'+
+									'<span>'+data[i].TargetWarehouseName+'</span>'+
+									'<p>调拨时间&nbsp;&nbsp;&nbsp;'+data[i].CreateTime.split('T')[1]+'</p></li>');
+							}
+						}else{
+							$(".center ul").html("<p class='PP'>暂无调拨数据</p>");
+						}
+						$("#tips1").hide();
+						$("#tips2").show();
+						$("#tips3").hide();
+						setTimeout(function(){
+							$("#tips").hide();
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").hide();
+						},1000)
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						$("#tips1").hide();
+						$("#tips2").hide();
+						$("#tips3").show();
+						setTimeout(function(){
+							$("#tips").hide();
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").hide();
+						},1000)
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			}
+			
+			function ShowList(id){
+				var _Id =id.attr("id");
+				console.log(_Id);
+				ShowMerList(_Id);
+			}
+			
+			//查询调拨详情
+			function ShowMerList(id){
+				mui.ajax(localStorage.IP + 'user/ticketline/list?id='+id, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'GET', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						$(".wrapper").show().find(".List").empty();
+						console.log(JSON.stringify(data));
+						for(var i=0;i<data.length;i++){
+							$(".wrapper .List").append('<li><span>'+data[i].MaterialName+'</span>'+
+							'<span>'+data[i].ApplyQuantity+'</span><span>'+data[i].Unit+'</span></li>');
+						}
+						
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			}
+			
+			//获取当天时间
+			function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				if(m >= 1 && m <= 9) {
+					m = "0" + m;
+				}
+				if(d >= 0 && d <= 9) {
+					d = "0" + d;
+				}
+				return y+"-"+m+"-"+d; 
+			}
+			
+			(function($) {
+				$.init();
+				var result = $('#result')[0];
+				var btns = $('.btn');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							result.innerText =rs.text;
+							startDate = rs.text;
+							NoList(startDate);
+							picker.dispose();
+							document.getElementById("tips").style.display='block';
+							document.getElementById("tips1").style.display='block';
+							document.getElementById("tips2").style.display='none';
+							document.getElementById("tips3").style.display='none';
+						});
+					}, false);
+				});
+			})(mui);
+		</script>
+	</body>
+
+</html>

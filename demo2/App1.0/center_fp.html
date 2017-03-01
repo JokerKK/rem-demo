@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<style>
+			.caigoudan .title span,.caigoudan .mui-section .item span{ width:25%;}
+			.caigoudan .title span.on,.caigoudan .mui-section .item span.on{ width: 50%;}
+			.mui-content  #tips4 span{
+				display:block;
+				margin:15px auto 0;
+				width: 36px;
+				height: 36px;
+			}
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:30%;
+				z-index: 9999;
+				width: 50%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 1.6rem;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips #tips4{
+				display: none;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#tips #tips4 span.mui-icon-closeempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			.mui-content #cityResult #tips4 span{
+				display:block;
+				margin:15px auto 0;
+				width: 36px;
+				height: 36px;
+			}
+		</style>
+	</head>
+
+	<body id="center">
+		<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+			<a class="mui-icon  mui-action-back mui-icon-left-nav mui-pull-left" id="back">返回</a>
+			<h1 class="mui-title">今日分配</h1>
+			<div class="select" id="select">
+				<p></p>
+				<ul></ul>
+			</div>
+		</header>
+		<div class="mui-content caigoudan">
+			<div class="title">
+				<span class="on">名称</span><span>分配量</span><span>单位</span>
+			</div>
+
+			<div class="mui-section">
+				<div id="tips4"><span class="mui-spinner"></span></div>
+				<!--<div class="item clearfix">
+					<span class="on">海天生抽酱油海天生抽酱油</span>
+					<span>10</span>
+					<span>斤</span>
+				</div>-->
+			</div>
+		</div>
+		<p style="height: 50px;text-align: center;font-size: 1.3rem; color: #dc2f37; line-height: 20px; margin: 0;position: fixed;left: 0;bottom: 0; width: 100%;background: #efefef; padding-top: 6px;">注：今日分配数据将会根据下一次分配<br/>调拨而覆盖原来的数据</p>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+			<div id="tips4"><span class="mui-icon mui-icon-closeempty"></span><b>请确认是否盘点完所有物料</b></div>
+			
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script type="text/javascript">
+			function plusReady() {
+				plus.nativeUI.closeWaiting();
+				//显示当前页面
+	   			mui.currentWebview.show();	
+		   		$("#back").on('tap', function() {
+					var ws=plus.webview.currentWebview();
+					plus.webview.close(ws);
+					mui.openWindow({
+									url:'index.html',
+									show:{
+									  autoShow: true,	
+								      aniShow:'slide-out-right',//页面显示动画，默认为”slide-in-right“；
+								      duration:300//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+								    },
+								    waiting: {
+										autoShow: false, //自动显示等待框，默认为true
+									}
+								});	
+				});
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			};
+		</script>-->
+		<script type="text/javascript">
+			mui.init();
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID); //门店信息
+			var _thisId;
+			var _thisName;
+			var _data;
+			
+			//仓库数据读取
+			mui.ajax(localStorage.IP+'common/warehouse/listforemployee', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));	
+//					console.log(data.length);
+					if(data.length == 0){
+						_thisId = 0;
+						$("#tips").fadeIn();
+						$("#tips3").show().find("b").text('无可查询仓库');
+						setTimeout(function() {
+							$("#tips").fadeOut(300);
+							$("#tips3").hide().find("b").text('提交失败');
+							$(".mui-section").empty();
+						}, 1500);
+					}else{
+						_thisId = data[0].Id;
+					}
+					for(var i = 0; i < data.length; i++) {
+//						console.log(data[i].Name);
+//						console.log(data[i].Id);
+						$("#select ul").append('<li onclick="slideUp($(this))" id="' + data[i].Id + '">' + data[i].Name + '</li>');
+					}
+					$("#select p").text($("#select li").eq(0).text());
+					dishAjax();
+				}
+			});
+			
+			//物料领用数据读取
+			function dishAjax() {
+				getNowFormatDate();
+				console.log(_data);
+				console.log(_thisId);
+				mui.ajax(localStorage.IP + 'user/mytransfer/list?date='+_data+'\&warehouseId='+_thisId, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						$(".mui-section").empty();
+						console.log(JSON.stringify(data));
+						console.log(data.length);
+						for(var i = 0; i < data.length; i++) {
+							$(".mui-section").append(
+								'<div class="item clearfix">'+
+								'<span class="on">'+data[i].MaterialName+'</span>'+
+								'<span>'+data[i].StockQuantity+'</span><span>'+data[i].StockUnit+'</span></div>'
+							);	
+						}
+						
+					}
+				});
+			};
+			
+			
+			
+			function getNowFormatDate() {
+			    var date = new Date();
+			    var seperator1 = "/";
+			    var month = date.getMonth() + 1;
+			    var strDate = date.getDate();
+			    if (month >= 1 && month <= 9) {
+			        month = "0" + month;
+			    }
+			    if (strDate >= 0 && strDate <= 9) {
+			        strDate = "0" + strDate;
+			    }
+			    _data = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+			    return _data;
+			}
+			
+			//选择档口
+			$("#select p").click(function() {
+				$(this).next().slideToggle(150);
+				$(this).parent().find("#mask").slideToggle(0);
+			});
+
+			function slideUp(ement) {
+				var _this = ement.text();
+				_thisId = ement.attr("id");//获取档口ID
+				console.log(_thisId);
+				ement.parent().hide(0).prev().text(_this);
+				ement.parent().next().hide(0);
+				$(".mui-section").empty();
+				dishAjax();
+			}
+			$(function(){
+			$(".center").css({
+								"overflow" : "auto",
+								"paddingBottom": 60,
+								"paddingTop": 45
+							});
+			$(".center table").find("th").css("width",17 + "%");
+		    $(".center table").find("th").eq(0).css("width",32 + "%");
+			})
+		</script>
+	</body>
+
+</html>

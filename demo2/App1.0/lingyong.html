@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.poppicker.css" />
+		<style type="text/css">
+			.nav-bar {
+				background: #fff;
+				position: fixed;
+				top: 64px;
+				z-index: 9;
+				width: 100%;
+				text-align: center;
+				padding: 10px 0;
+			}
+			
+			.nav-bar span {
+				text-align: center;
+				display: inline-block;
+				width: 30%;
+				font-size: 1.6rem;
+				color: #dd3437;
+				border: 1px #dd3437 solid;
+				line-height: 34px;
+			}
+			
+			.nav-bar span:first-child {
+				border-radius: 9px 0 0 9px;
+			}
+			
+			.nav-bar span:last-child {
+				border-radius: 0 9px 9px 0;
+			}
+			
+			.nav-bar span.on {
+				color: #fff !important;
+				background: #dd3437;
+			}
+			
+			.mui-content {
+				padding: 121px 0 65px 0 !important;
+			}
+			
+			.mui-content .title {
+				position: fixed;
+				display: block;
+				left: 0;
+				top: 120px;
+				height: 40px;
+				width: 100%;
+				text-align: center;
+				line-height: 40px;
+				font-size: 1.6rem;
+				background: #f2f2f2;
+				z-index: 9;
+			}
+			
+			.mui-content .title span {
+				display: inline-block;
+				width: 25%;
+			}
+			
+			.mui-content .title span:first-child {
+				width: 50%;
+			}
+			
+			.mui-content .mui-aside {
+				display: none;
+			}
+			
+			.mui-content> div.on {
+				display: block;
+			}
+			
+			.mui-content #cityResult {
+				width: 100%;
+				text-align: center;
+			}
+			
+			.mui-content #cityResult .item i {
+				display: none;
+			}
+			
+			.mui-content #cityResult .item {
+				line-height: 40px;
+				width: 100%;
+				font-size: 1.4rem;
+				border: 1px #eee solid;
+				margin-top: -1px;
+				padding: 0;
+			}
+			
+			.mui-content #cityResult .item span {
+				width: 25%;
+				height: 40px;
+				display: block;
+				float: left;
+				border-right: 1px #eee solid;
+			}
+			
+			.mui-content #cityResult .item span:first-child {
+				width: 50%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			
+			.mui-content #cityResult .item span input {
+				margin: 0;
+				padding: 0;
+				text-align: center;
+				border: none;
+				background: none;
+				line-height: 40px;
+			}
+			.mui-content #cityResult .item .mui-btn {
+				padding: 0 15px;
+				background: #ff4951;
+				font-size: 1.4rem;
+			}
+			.mui-content .btn {
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+			}
+			
+			.mui-content .btn a {
+				background: #dc2f37;
+				display: block;
+				height: 55px;
+				color: #fff;
+				text-align: center;
+				line-height: 55px;
+				font-size: 1.8rem;
+				cursor: pointer;
+			}
+			
+			.mui-content .btn a:active {
+				background: #b7262d;
+			}
+			
+			.mui-content .btn .mui-add:active {
+				background: #e2ab21;
+			}
+			
+			.mui-content .btn .mui-bttn {
+				width: 52%;
+				float: left;
+			}
+			
+			.mui-content .btn .mui-add {
+				width: 38%;
+				background: #ffc125;
+			}
+			
+			.mui-content #cityResult1 {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+			}
+			
+			.mui-content #cityResult1 li p {
+				margin: 0;
+				line-height: 2;
+				background: #f2f2f2;
+				padding: 0 15px;
+			}
+			
+			.mui-content #cityResult1 li h2 {
+				margin: 0;
+				font-size: 1.8rem;
+				font-weight: normal;
+				padding: 15px;
+				position: relative;
+				color: #282828;
+			}
+			
+			.mui-content #cityResult1 li h2 span {
+				font-size: 1.2rem;
+				position: absolute;
+				right: 15px;
+				top: 15px;
+			}
+			
+			.mui-content #cityResult1 li h3 {
+				margin: 0;
+				font-size: 1.7rem;
+				font-weight: normal;
+				padding: 15px;
+				color: #656565;
+			}
+			
+			.mui-content #cityResult1 li h3 span {
+				color: #dc2f37;
+				padding-left: 15px;
+				font-size: 1.4rem;
+			}
+			
+			
+			#wrapper {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background:rgba(50,50,50,0.5);
+				display: none;
+				z-index: 9999;
+			}
+			
+			#wrapper .choose_content {
+				width: 75%;
+				margin:50% auto 0;
+				background: #fff;
+				border-radius: 5px;
+			}
+			
+			#wrapper .choose_content ul {
+				list-style: none;
+				margin: 0;
+				padding: 25px 15px 0;
+			}
+			
+			#wrapper .choose_content ul li {
+				padding: 25px 0;
+				text-align: center;
+			}
+			#wrapper .choose_content ul li strong{
+				font-weight: normal;
+				display: inline-block;
+				width: 48%;
+				text-align: center;
+				cursor: pointer;
+			}
+			#wrapper .choose_content ul li strong:active{
+				color: #dc2f37;
+			}
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:30%;
+				z-index: 9999;
+				width: 40%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 1.6rem;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+		</style>
+	</head>
+
+	<body style="overflow-x: hidden;">
+		<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+			<a class="mui-icon  mui-action-back mui-icon-left-nav mui-pull-left" id="back">返回</a>
+			<h1 class="mui-title">物料领用</h1>
+			<div class="select" id="select">
+				<p></p>
+				<ul>
+					<!--<li onclick="slideUp($(this))">中厨</li>
+					<li onclick="slideUp($(this))">面点</li>
+					<li onclick="slideUp($(this))">冷菜</li>-->
+				</ul>
+				<div id="mask"></div>
+			</div>
+		</header>
+		<div class="nav-bar">
+			<span>物料领用</span><span>领用记录</span>
+		</div>
+		<div class="mui-content">
+			<div class="mui-aside" style="padding-top: 40px;">
+				<div class="title">
+					<span>物料</span><span>数量</span><span>单位</span>
+				</div>
+				<div id="cityResult">
+					<!--<div class="item clearfix mui-table-view-cell">
+						<div class="mui-slider-handle">
+							<span id="MaterialName" onclick="removeNode($(this).parents('.item'));">海天生抽酱油(500ml)</span>
+							<span><input type="number" placeholder="10"/></span>
+							<span id ="Unit">瓶</span>
+						</div>
+						<div class="mui-slider-right mui-disabled">
+							<a class="mui-btn" onclick="removeNode($(this).parents('.item'));">删除</a>
+						</div>
+					</div>-->
+					
+				</div>
+				<div class="btn">
+					<a type="button" id='showCityPicker' class="mui-bttn mui-add">添加物料</a>
+					<a type="button" id="materialbtn">确认</a>
+				</div>
+			</div>
+
+			<div class="mui-aside">
+				<ul id="cityResult1">
+					<!--<li>
+						<p>2016-11-16 </p>
+						<div class="item">
+							<h2>面点房<span>8:40</span></h2>
+							<h3>酱油<span>数量：10瓶</span></h3>
+						</div>
+					</li>-->
+
+				</ul>
+			</div>
+		</div>
+		<div id="wrapper">
+			<div class="choose_content">
+				<ul>
+					<li>亲，确认以后不可修改哦！</li>
+					<li>
+						<strong id="close">取消</strong>
+						<strong id="sure">确定</strong>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.poppicker.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script type="text/javascript">
+			function plusReady() {
+				plus.nativeUI.closeWaiting();
+				//显示当前页面
+				mui.currentWebview.show();
+			$("#back").on('tap', function() {
+				var ws=plus.webview.currentWebview();
+				plus.webview.close(ws);
+				mui.openWindow({
+								url:'index.html',
+								show:{
+								  autoShow: true,	
+							      aniShow:'slide-out-right',//页面显示动画，默认为”slide-in-right“；
+							      duration:300//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+							    },
+							    waiting: {
+									autoShow: false, //自动显示等待框，默认为true
+								}
+							});	
+			});
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			};
+		</script>-->
+		<script type="text/javascript">
+			mui.init({});
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID); //门店信息
+			var _thisId;
+			var _thisName;
+			var _data;
+			var _TwoLevelLibraryId;//二级库ID
+			var MaterialData = {
+				"Lines": [
+//						{
+//					      "HeaderIds": null,
+//					      "HeaderId": null,
+//					      "MaterialId": null,
+//					      "MaterialNo": null,
+//					      "MaterialName": null,
+//					      "CategoryId": null,
+//					      "CategoryName":null,
+//					      "Unit": null,
+//					      "ApplyQuantity":null,
+//					      "Stock2ApplyFactor": null,
+//					      "StockUnit": null,
+//					      "CostPrice":null,
+//					      "PurchasePrice":null,
+//					      "TotalAmount": null,
+//					      "VendorId": null,
+//					      "VendorName": null,
+//					      "Id": null,
+//					      "GroupId": null,
+//					      "CreateUser": null,
+//					      "ModifyUser":null
+//					    }
+
+				],
+				"Guid": null,
+  				"TicketNo": null,
+				"TicketTypeId": 136, //提交类型 菜品(91)或者原料(92)
+				"OperatorId": USERID.Id, //用户ID
+				"OperatorName": USERID.Name, //用户名
+				"BranchId": USERID.BranchId, //门店ID
+				"BranchName": USERID.BranchName, //门店名称
+				"Memo":null,
+				"SourceWarehouseId": null, //仓库ID
+				"SourceWarehouseName": null, //仓库名称
+				"SourceDepartmentId": USERID.BranchId, //门店ID
+				"SourceDepartmentName": USERID.BranchName, //门店名称
+				"TargetWarehouseId": null,
+				"TargetWarehouseName": null,
+				"TargetDepartmentId": USERID.BranchId,
+				"TargetDepartmentName": USERID.BranchName,
+				"TargetObjectId": null,
+  				"TargetObjectName": null,
+  				"Id": null,
+				"GroupId": USERID.GroupId,
+				"CreateUser": USERID.Id,
+				"ModifyUser": USERID.Id
+			};
+			
+			//查询二级库
+			mui.ajax(localStorage.IP+'common/warehouse/list?hasAll=false', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));
+					for(var i = 0; i < data.length; i++) {
+						if(data[i].IsDefault==false && data[i].IsStalls ==false){
+							MaterialData.SourceWarehouseId = data[i].Id;
+							MaterialData.SourceWarehouseName = data[i].Name;
+							_TwoLevelLibraryId = data[i].Id;
+						}
+					}	
+					console.log(_TwoLevelLibraryId);
+					warehousematerial(_TwoLevelLibraryId);
+				},
+				error:function(xhr,type,errorThrown){
+						//异常处理；
+							console.log(JSON.stringify(xhr.response));
+							console.log(JSON.stringify(xhr.responseText));
+							console.log(JSON.stringify(xhr.statusText));
+							console.log(JSON.stringify(type));
+							console.log(JSON.stringify(errorThrown));
+					}
+			});
+			
+			//仓库数据读取
+			mui.ajax(localStorage.IP+'common/warehouse/listforstalls?hasAll=false', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));	
+//					console.log(data.length);
+					_thisId = data[0].Id;
+					for(var i = 0; i < data.length; i++) {
+//						console.log(data[i].Name);
+//						console.log(data[i].Id);
+						$("#select ul").append('<li onclick="slideUp($(this))" id="' + data[i].Id + '">' + data[i].Name + '</li>');
+					}
+					
+					$("#select p").text($("#select li").eq(0).text());
+					_thisName = $("#select li").eq(0).text();
+					MaterialData.TargetWarehouseId = _thisId;
+					MaterialData.TargetWarehouseName = _thisName;
+					getNowFormatDate();
+					console.log(_data);
+					console.log(_thisId);
+					dishAjax();
+				}
+			});
+			
+			//领用提交
+			$("#materialbtn").bind('click',function(){
+				console.log(JSON.stringify(MaterialData));
+				var _this = $("#cityResult .item");
+				for(var i = 0; i < _this.length; i++) {
+					var MaterialId = _this.eq(i).find("#MaterialId").text();
+					var MaterialNo = _this.eq(i).find("#MaterialNo").text();
+					var MaterialName =_this.eq(i).find("#MaterialName").text();
+					var CategoryId = _this.eq(i).find("#CategoryId").text();
+					var CategoryName = _this.eq(i).find("#CategoryName").text();
+					var StockUnit = _this.eq(i).find("#StockUnit").text();
+					var StockQuantity = parseFloat(_this.eq(i).find("input").val()).toFixed(2);
+					var CostPrice = _this.eq(i).find("#UnitPrice").text();
+					if(parseFloat(StockQuantity) != 0){
+						MaterialData.Lines.push({
+						  "HeaderIds": null,
+					      "HeaderId": null,
+					      "MaterialId": MaterialId,
+					      "MaterialNo": MaterialNo,
+					      "MaterialName": MaterialName,
+					      "CategoryId": CategoryId,
+					      "CategoryName":CategoryName,
+					      "Unit": StockUnit,
+					      "ApplyQuantity":StockQuantity,
+					      "Stock2ApplyFactor": 1,
+					      "StockUnit": StockUnit,
+					      "CostPrice":CostPrice,
+					      "PurchasePrice":CostPrice,
+					      "TotalAmount": CostPrice * StockQuantity,
+					      "Id": null,
+					      "GroupId":  USERID.GroupId,
+						  "CreateUser": USERID.Id,
+						  "ModifyUser": USERID.Id  
+						})
+					}
+				};
+				console.log(JSON.stringify(MaterialData));
+				if(MaterialData.Lines.length > 0){
+					$("#wrapper").show();
+					$("#sure").bind('click',function(){
+						mui.ajax(localStorage.IP + 'ticketservice/drawinoutticket/save', {
+							data:MaterialData,
+							dataType: 'json', //服务器返回json格式数据
+							type: 'POST', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							headers: {
+								'Content-Type': 'application/json',
+								'Authorization': 'Bearer ' + userId.access_token
+							},
+							success: function(data) {
+								console.log(JSON.stringify(data));
+								if(data == true){
+									$("#wrapper").hide();
+									$("#tips").show();
+									$("#tips2").show();
+									setTimeout(function(){
+										$("#tips").hide();
+										$("#tips2").hide();
+									},1000);
+									$("#cityResult").empty();
+								}
+								
+							},
+							error: function(xhr, type, errorThrown) {
+								//异常处理；
+								var errortext = xhr.responseText.split(":");
+								$("#wrapper").hide();
+								$("#tips").show();
+								$("#tips3").show().find("b").text(errortext[1]);;
+								setTimeout(function(){
+									$("#tips").hide();
+									$("#tips3").hide();
+								},1000)
+	//							console.log(JSON.stringify(xhr.response));
+	//							console.log(JSON.stringify(xhr.responseText));
+	//							console.log(JSON.stringify(xhr.statusText));
+	//							console.log(JSON.stringify(type));
+	//							console.log(JSON.stringify(errorThrown));
+							}
+						});
+					})
+				}else{
+					mui.alert('请至少选择一种菜品的数量', '友情提示');
+				}
+			})
+			
+			//物料领用数据读取
+			function dishAjax() {
+				getNowFormatDate();
+				console.log(_data);
+				console.log(_thisId);
+				mui.ajax(localStorage.IP + 'user/mydraw/list?date='+_data+'\&warehouseId='+_thisId, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						console.log(data.length);
+						for(var i = 0; i < data.length; i++) {
+//							console.log(data[i].CreateTime.substring(11,16));
+							$("#cityResult1").append(
+								'<li><p>'+data[i].CreateTime.substring(0,10)+'</p><div class="item">'+
+								'<h2>'+data[i].TargetWarehouseName+'<span>'+data[i].CreateTime.substring(11,16)+'</span></h2>'+
+								'<h3>'+data[i].MaterialName+'<span>数量：'+data[i].StockQuantity+'&nbsp;'+data[i].StockUnit+'</span></h3>'+
+								'</div></li>'
+							);	
+						}
+						
+					}
+				});
+			};
+			
+			function getNowFormatDate() {
+			    var date = new Date();
+			    var seperator1 = "/";
+			    var month = date.getMonth() + 1;
+			    var strDate = date.getDate();
+			    if (month >= 1 && month <= 9) {
+			        month = "0" + month;
+			    }
+			    if (strDate >= 0 && strDate <= 9) {
+			        strDate = "0" + strDate;
+			    }
+			    _data = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+			    return _data;
+			}
+			
+			//选择档口
+			$("#select p").bind('click',function() {
+				$(this).next().slideToggle(150);
+				$(this).parent().find("#mask").slideToggle(0);
+			});
+
+			function slideUp(ement) {
+				var _this = ement.text();
+				_thisId = ement.attr("id");
+				_thisName = _this;
+				ement.parent().hide(0).prev().text(_this);
+				ement.parent().next().hide(0);
+				$("#cityResult").empty();
+				$("#cityResult1").empty();
+				getNowFormatDate();
+				console.log(_data);
+				console.log(_thisId);
+				dishAjax();
+				MaterialData.TargetWarehouseId = _thisId;
+				MaterialData.TargetWarehouseName = _thisName;
+				MaterialData.Lines= [];
+			}
+			$("#mask").bind('click', function() {
+				$(this).hide(0);
+				$(this).prev().hide(0);
+
+			});
+			
+			
+			
+			$("#close").bind('click',function(){
+				$("#wrapper").hide();
+			});
+			
+
+			$(function() {
+				$(".nav-bar span").eq(0).addClass("on");
+				$(".mui-content .mui-aside").eq(0).addClass("on");
+				$(".nav-bar span").click(function() {
+					var _thisIndex = $(this).index();
+					$(this).parent().find("span").removeClass("on");
+					$(this).addClass("on");
+					$(this).parent().next().find(".mui-aside").eq(_thisIndex).addClass("on").siblings().removeClass("on");
+					
+
+				})
+			});
+			
+			//物料添加
+			var createFragment = function(count, MaterialId, MaterialNo,MaterialName,CategoryId,CategoryName,Unit,Stock2ApplyFactor,StockUnit,UnitPrice) {
+				var fragment = document.createDocumentFragment();
+				var li;
+				for(var i = 0; i < count; i++) {
+					li = document.createElement('div');
+					li.className = 'item clearfix mui-table-view-cell';
+					li.innerHTML = '<i id="MaterialId">'+MaterialId+'</i>'+
+					'<i id="MaterialNo">'+MaterialNo+'</i>'+
+					'<i id="CategoryId">'+CategoryId+'</i>'+
+					'<i id="CategoryName">'+CategoryName+'</i>'+
+					'<i id="Stock2ApplyFactor">'+Stock2ApplyFactor+'</i>'+
+					'<i id="StockUnit">'+StockUnit+'</i>'+
+					'<i id="UnitPrice">'+UnitPrice+'</i>'+
+					'<div class="mui-slider-handle">'+
+					'<span id="MaterialName" onclick="removeNode($(this).parents(' + '\'.item\'' + '));">' + MaterialName + '</span>'+
+					'<span><input type="number" placeholder="请输入"/></span>'+
+					'<span id ="Unit">' + Unit + '</span>'+
+					'</div><div class="mui-slider-right mui-disabled">'+
+					'<a class="mui-btn" onclick="removeNode($(this).parents(\'.item\'));">删除</a></div>'
+					fragment.appendChild(li);
+				}
+				return fragment;
+			};
+
+			var cityPicker3;
+			(function($, doc) {
+				$.ready(function() {
+					//-----------------------------------------
+					//级联示例
+					cityPicker3 = new $.PopPicker({
+						layer: 3
+					});
+					cityPicker3.setData(cityData3);
+					var showCityPickerButton = doc.getElementById('showCityPicker');
+					var cityResult3 = doc.getElementById('cityResult');
+					showCityPickerButton.addEventListener('tap', function(event) {
+						cityPicker3.show(function(items) {
+							var MaterialId = (items[1] || {}).value;//物料ID
+							var MaterialNo = (items[1] || {}).MaterialNo;//物料编号
+							var MaterialName = (items[1] || {}).text;//物料名称
+							var CategoryId = (items[0] || {}).value;//物料分类ID
+							var CategoryName = (items[0] || {}).text;//物料分类名称
+							var Unit = (items[1] || {}).Unit;//采购单位
+//							var ApplyQuantity = (items[1] || {}).text;//采购数量
+							var Stock2ApplyFactor = (items[1] || {}).Stock2PurchaseFactor;//采购单位与库存单位的比例
+							var StockUnit = (items[1] || {}).StockUnit;//库存单位
+							var UnitPrice = (items[1] || {}).UnitPrice;//库存价格
+//							var CostPrice = (items[1] || {}).value;//采购价格= UnitPrice*Stock2ApplyFactor
+//							var PurchasePrice = (items[2] || {}).text;//采购价格= UnitPrice*Stock2ApplyFactor
+//							var TotalAmount = (items[1] || {}).text;//总价
+							cityResult3.appendChild(createFragment(1, MaterialId, MaterialNo,MaterialName,CategoryId,CategoryName,Unit,Stock2ApplyFactor,StockUnit,UnitPrice));
+						});
+					}, false);
+				});
+			})(mui, document);
+			//物料删除
+			function removeNode(object) {
+				var btnArray = ['否', '是'];
+				mui.confirm('是否移除？', '友情提示', btnArray, function(e) {
+					if(e.index == 1) {
+						object.remove();
+					}
+				})
+			};
+		</script>
+	</body>
+
+</html>

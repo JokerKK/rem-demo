@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>首页</title>
+		<!--重置浏览器样式-->
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<script src="js/hotcss.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+	    // Firefox, Google Chrome, Opera, Safari, Internet Explorer from version 9
+	        function OnInput (event) {
+	            console.log("The new content: " + event.target.value);
+	            var searchTex = event.target.value;
+				console.log(typeof searchTex)
+				$("#materiel_content").find("ul").empty();
+				if(searchTex){
+					for(var i =0;i<TemporaryData.length;i++){
+						if(TemporaryData[i].Name.indexOf(searchTex) != -1){
+							$("#materiel_content ul").append(
+							'<li id="'+TemporaryData[i].Id+'"><span class="materielName">'+TemporaryData[i].Name+'</span>'+
+							'<input onblur="addNum($(this))" class="AlreadyProcessed"  type="number" placeholder="0" />'+
+							'<input onblur="addNum($(this))" class="Untreated" type="number" placeholder="0" />'+
+							'<span class="materielUnit">'+TemporaryData[i].StockUnit+'</span></li>');
+						}
+					}
+					$("#materiel_content").find("ul").css("paddingBottom",9+'rem');
+				}
+	       }
+	    // Internet Explorer
+	        function OnPropChanged (event) {
+	            if (event.propertyName.toLowerCase() == "value") {
+	                console.log("The new content: " + event.srcElement.value);
+	                var searchTex = event.srcElement.value;
+					console.log(typeof searchTex)
+					$("#materiel_content").find("ul").empty();
+					if(searchTex){
+						for(var i =0;i<TemporaryData.length;i++){
+							if(TemporaryData[i].Name.indexOf(searchTex) != -1){
+								$("#materiel_content ul").append(
+								'<li id="'+TemporaryData[i].Id+'"><span class="materielName">'+TemporaryData[i].Name+'</span>'+
+								'<input onblur="addNum($(this))" class="AlreadyProcessed"  type="number" placeholder="0" />'+
+								'<input onblur="addNum($(this))" class="Untreated" type="number" placeholder="0" />'+
+								'<span class="materielUnit">'+TemporaryData[i].StockUnit+'</span></li>');
+							}
+						}
+						$("#materiel_content").find("ul").css("paddingBottom",9+'rem');
+					}
+	            }
+	        }
+	    </script>
+	    <style type="text/css">
+	    	#materiel_content li span{
+	    		text-align: center;
+	    	}
+	    	.pandian .materielList .item li span.materielUnit,#materiel_content li span.materielUnit{
+	    		position: absolute;
+	    		right: 0;
+	    		top:0;
+	    	}
+	    </style>
+	</head>
+	<body>
+		<div class="container" id="container">
+			<header>
+				<a class="back mui-action-back" id="back">返回</a>
+				<h2>物料盘点</h2>
+				<div class="select">
+					<p></p>
+					<ul>
+						<i></i>
+						<!--<li onclick="WarehouseSelect($(this));">中厨档口</li>-->
+					</ul>
+				</div>
+				<div id="mark"></div>
+			</header>
+			<div class="content">
+				<div class="materiel pandian" style="height: 100%; display: block;">
+					<aside class="search">
+					<!--onblur="searchOut($(this));"-->
+						<input type="text" onfocus='searchIn($(this));' oninput="OnInput (event);" onpropertychange="OnPropChanged (event);"  id="search" placeholder="搜索" />
+						<span id="cancel">取消</span>
+					</aside>
+					<div id="materiel_content">
+						<h2>
+							<span>物料</span>
+							<span>已处理</span>
+							<span>未处理</span>
+							<span>单位</span>
+						</h2>
+						<ul>
+							<!--<li>
+								<span class="materielName">鸡肉1鸡肉1鸡肉1</span>
+								<input class="AlreadyProcessed"  type="number" placeholder="0" />
+								<input class="Untreated" type="number" placeholder="0" />
+								<span class="materielUnit">只</span>
+							</li>-->
+						</ul>
+					</div>
+					<section class="materiel_content">
+						<div class="materiel_menu">
+							<ul>
+								<!--<li onclick="materielSelect($(this))">最多1个字</li>-->
+							</ul>	
+						</div>
+						<div class="materielList">
+							<!--<div class="item">
+								<h2>
+									<span>物料</span>
+									<span>已处理</span>
+									<span>未处理</span>
+									<span>单位</span>
+								</h2>
+								<ul>
+									<li>
+										<span class="materielName">鸡肉1鸡肉1鸡肉1</span>
+										<input class="AlreadyProcessed"  type="number" placeholder="0" />
+										<input class="Untreated" type="number" placeholder="0" />
+										<span class="materielUnit">只</span>
+									</li>
+								</ul>
+							</div>-->
+						</div>
+					</section>
+					<button id="Submit" type="button">生成报告</button>
+				</div>
+			</div>
+			
+			<div id="tips">
+				<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+				<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+				<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+			</div>
+		</div>
+		<div class="wrapper">
+			<div class="sure">
+				<h2>确认提交？</h2>
+				<a class="S_Submit">确认</a><a class="cancel">取消</a>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID);		
+			var _warehouseId;//档口Id
+			var TemporaryData=[];//临时数据
+			var MaterialData = {
+				"Lines": [],
+				"Guid": null,
+  				"TicketNo": null,
+				"TicketTypeId": 102, //提交类型 菜品(91)或者原料(92)
+				"OperatorId": USERID.Id, //用户ID
+				"OperatorName": USERID.Name, //用户名
+				"BranchId": USERID.BranchId, //门店ID
+				"BranchName": USERID.BranchName, //门店名称
+				"Memo":null,
+				"SourceWarehouseId": null, //仓库ID
+				"SourceWarehouseName": null, //仓库名称
+				"SourceDepartmentId": USERID.BranchId, //门店ID
+				"SourceDepartmentName": USERID.BranchName, //门店名称
+				"TargetWarehouseId": null,
+				"TargetWarehouseName":null,
+				"TargetDepartmentId": USERID.BranchId,
+				"TargetDepartmentName": USERID.BranchName,
+				"TargetObjectId": null,
+  				"TargetObjectName": null,
+  				"Id": null,
+				"GroupId": USERID.GroupId,
+				"CreateUser": USERID.Id,
+				"ModifyUser": USERID.Id
+			};
+			//仓库数据读取
+			mui.ajax(localStorage.IP + 'common/warehouse/listforemployee', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));
+					if(data.length > 0){
+						for(var i = 0; i < data.length; i++) {
+							$("header .select ul").append('<li onclick="WarehouseSelect($(this));" id="' + data[i].Id + '" >'+data[i].Name+'</li>');
+						}
+						$("header .select p").text(data[0].Name);
+						_warehouseId = data[0].Id;
+						MaterialData.SourceWarehouseId = data[0].Id;
+						MaterialData.SourceWarehouseName = data[0].Name;
+						MaterialData.TargetWarehouseId = data[0].Id;
+						MaterialData.TargetWarehouseName =  data[0].Name;
+						console.log(_warehouseId);
+						dishAjax(_warehouseId);
+					}
+					
+				}
+			});
+			//菜品数据读取
+			function dishAjax(warehouseid) {
+				var CategoryNameList=[];
+				var CategoryNameList1 =[];
+				mui.ajax(localStorage.IP + 'ticketservice/countingmaterial/list?warehouseId='+warehouseid, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						TemporaryData = data;
+						for(var i=0;i<data.length;i++){
+							CategoryNameList1[i]=data[i].CategoryName;
+						}
+						first(CategoryNameList1,CategoryNameList);
+						for(var i=0;i<CategoryNameList.length;i++){
+							$(".materiel_menu ul").append('<li onclick="materielSelect($(this))">'+CategoryNameList[i]+'</li>');
+							$(".materielList").append('<div class="item"><h2><span>物料</span><span>已处理</span><span>未处理</span><span>单位</span></h2><ul></ul></div>');
+							for(var j=0;j<data.length;j++){
+								if(CategoryNameList[i] == data[j].CategoryName){
+									var aa = data[j].Id+'='+data[j].No+'='+data[j].CategoryId+'='+data[j].CategoryName+'='+data[j].NetFeedRate+'='+data[j].ViewStock+'='+data[j].UnitPrice;
+									$(".materielList .item").eq(i).find("ul").append('<li id="'+data[j].Id+'" class="'+aa+'"><span class="materielName">'+data[j].Name+'</span>'+
+										'<input class="AlreadyProcessed"  type="number" placeholder="0" />'+
+										'<input class="Untreated" type="number" placeholder="0" />'+
+										'<span class="materielUnit">'+data[j].StockUnit+'</span></li>');
+								}
+							}
+						}
+						$(".materiel_menu li").eq(0).addClass("on");
+						$(".materielList .item").eq(0).show();
+					}
+				});
+			};
+			//盘点报告提交
+			$(".S_Submit").bind('click',function(){
+				$(".wrapper").hide();
+				$("#tips").fadeIn();
+				$("#tips1").show();
+				$("#tips2").hide();
+				$("#tips3").hide();
+				
+				var _this = $(".materielList .item");
+				for(var i = 0; i < _this.length; i++) {
+					var _thisLi = _this.eq(i).find("li");
+					for(var j = 0; j < _thisLi.length; j++){
+						var aa = _thisLi.eq(j).attr("class").split('=');
+						var MaterialName = _thisLi.eq(j).find("span.materielName").text();
+						var NetQuantity = _thisLi.eq(j).find("input.AlreadyProcessed").val();
+						var OrginalQuantity= _thisLi.eq(j).find("input.Untreated").val();
+						var StockUnit = _thisLi.eq(j).find("span.materielUnit").text();
+						var NetFeedRate = aa[4];
+						console.log(parseFloat(NetQuantity));
+						console.log(typeof parseFloat(NetQuantity));
+						console.log(parseFloat(OrginalQuantity));
+						console.log(typeof parseFloat(OrginalQuantity));
+						if((parseFloat(NetQuantity)==0) || (isNaN(parseFloat(NetQuantity)))){
+							NetQuantity =0;
+						}
+						if((parseFloat(OrginalQuantity)==0) || (isNaN(parseFloat(OrginalQuantity)))){
+							OrginalQuantity =0;
+						}
+						var totleCount = (parseFloat(NetQuantity)/parseFloat(NetFeedRate) + parseFloat(OrginalQuantity)).toFixed(2);
+						if(NetQuantity !=0 || OrginalQuantity !=0){
+							MaterialData.Lines.push({
+								  "HeaderIds": null,
+							      "HeaderId": null,
+							      "MaterialId": aa[0],
+							      "MaterialNo": aa[1],
+							      "MaterialName": MaterialName,
+							      "CategoryId": aa[2],
+							      "CategoryName":aa[3],
+							      "Unit": StockUnit,
+							      "NetQuantity":NetQuantity,
+							      "OrginalQuantity":OrginalQuantity,
+							      "NetFeedRate":aa[4],
+							      "Stock2ApplyFactor": 1,
+							      "StockUnit": StockUnit,
+							      "StockQuantitySnapshoot":aa[5],
+							      "CostPrice":aa[6],
+							      "PurchasePrice":aa[6],
+							      "TotalAmount": (parseFloat(aa[6]) * parseFloat(totleCount)).toFixed(2),
+							      "Id": null,
+							      "GroupId":  USERID.GroupId,
+								  "CreateUser": USERID.Id,
+								  "ModifyUser": USERID.Id 
+							});
+						}
+						
+					}
+				};
+				console.log(JSON.stringify(MaterialData));
+				if(MaterialData.Lines.length > 0){
+					mui.ajax(localStorage.IP + 'ticketservice/countingticket/save', {
+						data:MaterialData,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'POST', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': 'Bearer ' + userId.access_token
+						},
+						success: function(data) {
+							console.log(JSON.stringify(data));
+							$("#tips1").hide();
+							$("#tips2").show();
+							$("#tips3").hide();
+							setTimeout(function(){
+								$("#tips").fadeOut();
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide();
+								location.reload();//提交成功后自动刷新本页面
+							},1000)
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							var errortext = xhr.responseText.split(":");
+							var aa = errortext.length;
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").show().find("b").text(errortext[aa-1]);
+							setTimeout(function() {
+								$("#tips").fadeOut(300);
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide().find("b").text("提交失败");
+							}, 1500);
+							MaterialData.Lines = [];
+						}
+					});
+				}else{
+					$("#tips1").hide();
+					$("#tips2").hide();
+					$("#tips3").show().find("b").text("未盘点物料,请不要偷懒哟");
+					setTimeout(function(){
+						$("#tips").fadeOut(300);
+						$("#tips1").hide();
+						$("#tips2").hide();
+						$("#tips3").hide().find("b").text("提交失败");
+						MaterialData.Lines=[];
+					},1000);
+				}
+						
+			})
+			
+			function addNum(id){
+				var _thisNum = id.val();
+				var _thisId = id.parent().attr("id");
+				var _thisClass = id.attr("class");
+				console.log(_thisClass);
+				if(_thisClass == 'AlreadyProcessed'){
+					$(".materielList").find("#"+_thisId).find("input.AlreadyProcessed").val(_thisNum);
+				}else{
+					$(".materielList").find("#"+_thisId).find("input.Untreated").val(_thisNum);
+				}
+				
+			}
+			
+			$(function(){
+				$(".content").css("height",$(".container").height() - $("header").innerHeight());
+				$(".materiel_content").css("height",$(".materiel").height() - ($(".search").innerHeight()+$("#Submit").innerHeight()));
+				$("#materiel_content").css("height",$(".materiel").height() - ($(".search").innerHeight()+$("#Submit").innerHeight()));
+				$(".materielList item h2").css("top",$(".search").innerHeight()+$("header").innerHeight());
+				$(".select p").on('tap',function(){
+					$(this).next().fadeToggle(0);
+					$("#mark").fadeToggle(0);
+					if($("#mark").css("display") == 'block'){
+						$("input").attr("disabled",true);
+					}
+				});
+				$("#mark").on('tap',function(){
+					$(".select ul").fadeOut(0);
+					$(this).fadeOut(0);
+					setTimeout(function(){
+						$("input").attr("disabled",false);
+					},350);
+				});
+				$("#cancel").on('tap',function(){
+					$("#materiel_content").hide().find("ul").empty();
+					$(this).hide();
+					$(".materiel_content").show();
+					setTimeout(function(){
+						$("#cancel").prev().attr("class","").val('');
+					},350);
+				});
+				$("#Submit").on('tap',function(){
+					$(".wrapper").show();
+					$(".materielList input").attr("disabled",true);
+				});
+				
+				$(".wrapper").on('tap',function(){
+					$(".wrapper").hide();
+					setTimeout(function(){
+						$(".materielList input").attr("disabled",false);
+					},350);
+				});
+				$(".wrapper .cancel").on('tap',function(){
+					$(".wrapper").hide();
+					setTimeout(function(){
+						$(".materielList input").attr("disabled",false);
+					},350);
+				});
+				$(".wrapper .sure").on("tap", function() {
+					if(document.all) {
+						window.event.cancelBubble = true;
+					} else {
+						event.stopPropagation();
+					}
+				});
+			});
+			//搜索获取焦点时触发搜索结果
+			function searchIn(id){
+				$("#materiel_content").show();
+				id.attr("class","text");
+				id.next().show();
+				$(".materiel_content").hide();
+				
+				
+			}
+			//物料分类选择
+			function materielSelect(id){
+				id.addClass("on").siblings().removeClass("on");
+				$(".materielList .item").eq(id.index()).show().siblings().hide();
+				$(".materielList").scrollTop(1);
+			}
+			//档口选择
+			function WarehouseSelect(id){
+				id.parent().prev().text(id.text());
+				id.parent().fadeOut(0);
+				$("#mark").fadeOut(0);
+				_warehouseId = id.attr("id");
+				$(".materiel_menu ul").empty();
+				$(".materielList").empty();
+				setTimeout(function(){
+						$("input").attr("disabled",false);
+					},350);
+				MaterialData.SourceWarehouseId = _warehouseId;
+				MaterialData.SourceWarehouseName = id.text();
+				MaterialData.TargetWarehouseId = _warehouseId;
+				MaterialData.TargetWarehouseName =  id.text();
+				dishAjax(_warehouseId);
+				MaterialData.Lines=[];
+			}
+			//去除数据重复
+			function first(args1,args2){
+			    for(i=0;i<args1.length;i++){
+			        if(args2.indexOf(args1[i])<0){
+			            args2.push(args1[i])
+			        }
+			    }
+			    return args2;
+			}
+		</script>
+	</body>
+</html>

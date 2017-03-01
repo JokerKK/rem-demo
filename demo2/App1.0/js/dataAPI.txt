@@ -1,0 +1,78 @@
+ //物料api接口数据
+ [{
+ 	"value":"10900",								//分类ID
+ 	"text":"干调类",									//分类名称
+ 	"MaterialNo":null,								//物料编号
+ 	"UnitPrice":0,									//库存价格
+ 	"Stock2PurchaseFactor":0,						//采购单位与库存单位的比例
+ 	"Unit":null,									//采购单位
+ 	"StockUnit":null,								//库存单位
+ 		"children":[{
+ 			"value":"10900",						//物料ID
+ 			"text":"南德调料",						//物料名称
+ 			"MaterialNo":"WL0001",					//物料编号
+ 			"UnitPrice":2,							//库存价格
+ 			"Stock2PurchaseFactor":10,				//采购单位与库存单位的比例
+ 			"Unit":"箱",								//采购单位
+ 			"StockUnit":"袋",						//库存单位
+ 				"children":[{
+ 					"value":"箱",					//采购单位id
+ 					"text":"箱",						//采购单位
+ 					"MaterialNo":null,				//物料编号
+ 					"UnitPrice":0,					//库存价格
+ 					"Stock2PurchaseFactor":0,		//采购单位与库存单位的比例
+ 					"Unit":null,					//采购单位
+ 					"StockUnit":null,				//库存单位
+ 						"children":[]
+ 							}]
+ 				}]
+}]
+
+//菜品和物料提交数据
+ {
+					"DishLines":[
+//						{
+//						      "DishId": 2,     //菜品ID
+//						      "DishName": " ", //菜品名称
+//						      "CategoryId": 4, //菜品分类
+//						      "CategoryName": "",//菜品分类名称
+//						      "ApplyQuantity": 7.0,//数量
+//						      "GroupId": 12,
+//						      "CreateUser": 14,
+//						      "ModifyUser": 17
+//						}
+					],
+					"Lines": [
+//						{
+//						  "MaterialId": 3,//物料ID
+//					      "MaterialNo": "sample string 4",//物料编号
+//					      "MaterialName": "sample string 5",
+//					      "CategoryId": 6,//物料分类id
+//					      "CategoryName": "sample string 7",//物料分类名称
+//					      "Unit": "sample string 8",
+//					      "ApplyQuantity": 9.0,
+//					      "Stock2ApplyFactor": 10.0,//库存单位与采购单位比例
+//					      "StockUnit": "sample string 11",//库存单位
+//					      "CostPrice": 12.0,//采购价格= UnitPrice*Stock2ApplyFactor
+//					      "PurchasePrice": 13.0,//采购价格= UnitPrice*Stock2ApplyFactor
+//					      "TotalAmount": 14.0,//总价
+//					      "GroupId": 16,
+//					      "CreateUser": 18,
+//					      "ModifyUser": 21
+//						}
+					      
+						
+						],
+					"TicketTypeId":0,//提交类型 菜品(91)或者原料(92)
+					"OperatorId": USERID.Id,//用户ID
+					"OperatorName": USERID.Name,//用户名
+					"BranchId": USERID.BranchId,//门店ID
+					"BranchName": USERID.BranchName,//门店名称
+					"SourceWarehouseId": _thisId,//仓库ID
+					"SourceWarehouseName": _thisName,//仓库名称
+					"SourceDepartmentId": USERID.BranchId,//门店ID
+					"SourceDepartmentName": USERID.BranchName,//门店名称
+					"GroupId": USERID.GroupId,
+					"CreateUser": USERID.Id,
+					"ModifyUser": USERID.Id
+				};

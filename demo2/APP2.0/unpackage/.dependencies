@@ -1,0 +1,300 @@
+{
+  "login.html": {
+    "href": "login.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "refer": [],
+    "priority": 0
+  },
+  "lingyong.html": {
+    "href": "lingyong.html",
+    "resources": [
+      "images/icon4.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "priority": 1
+  },
+  "pdbaobiao.html": {
+    "href": "pdbaobiao.html",
+    "resources": [
+      "images/icon4.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "priority": 2
+  },
+  "Neworder.html": {
+    "href": "Neworder.html",
+    "resources": [
+      "images/icon4.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png",
+      "images/radio_1.png",
+      "images/radio.png",
+      "images/down_1.png",
+      "images/down.png",
+      "images/icon15.png"
+    ],
+    "priority": 3
+  },
+  "diaobodisplay.html": {
+    "href": "diaobodisplay.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "priority": 4
+  },
+  "Newyanshou.html": {
+    "href": "Newyanshou.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png",
+      "images/fail.png",
+      "images/icon12.png",
+      "images/icon13.png",
+      "images/icon14.png",
+      "images/down_1.png",
+      "images/down.png"
+    ],
+    "priority": 5
+  },
+  "orderdetail.html": {
+    "href": "orderdetail.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "priority": 6
+  },
+  "orderlist.html": {
+    "href": "orderlist.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "refer": [],
+    "priority": 6
+  },
+  "Newaddorder.html": {
+    "href": "Newaddorder.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png",
+      "images/fail.png",
+      "images/radio_1.png",
+      "images/radio.png",
+      "images/down_1.png",
+      "images/down.png",
+      "images/icon15.png"
+    ],
+    "refer": [],
+    "priority": 6
+  },
+  "Newfenpei.html": {
+    "href": "Newfenpei.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png",
+      "images/icon12.png",
+      "images/icon13.png",
+      "images/icon14.png",
+      "images/radio_1.png",
+      "images/radio.png",
+      "images/icon15.png"
+    ],
+    "priority": 7
+  },
+  "Newpandian.html": {
+    "href": "Newpandian.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png",
+      "images/icon14.png",
+      "images/radio_1.png",
+      "images/radio.png",
+      "images/down_1.png",
+      "images/down.png",
+      "images/icon15.png"
+    ],
+    "priority": 8
+  },
+  "order.html": {
+    "href": "order.html",
+    "resources": [
+      "images/icon4.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "refer": [],
+    "priority": 9
+  },
+  "maoli.html": {
+    "href": "maoli.html",
+    "resources": [
+      "images/icon4.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "priority": 10
+  },
+  "center_dd.html": {
+    "href": "center_dd.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "refer": [],
+    "priority": 11
+  },
+  "center_bd.html": {
+    "href": "center_bd.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png",
+      "images/loading.gif",
+      "images/success.png",
+      "images/fail.png",
+      "images/icon14.png",
+      "images/radio_1.png",
+      "images/radio.png",
+      "images/down_1.png",
+      "images/down.png",
+      "images/icon15.png"
+    ],
+    "priority": 12
+  },
+  "center_ly.html": {
+    "href": "center_ly.html",
+    "resources": [
+      "images/icon4.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "priority": 13
+  },
+  "center_fp.html": {
+    "href": "center_fp.html",
+    "resources": [
+      "images/icon4.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "priority": 14
+  },
+  "Feedback.html": {
+    "href": "Feedback.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "images/index_bg.jpg",
+      "images/centerBg.jpg",
+      "images/tx.png",
+      "images/icon.png",
+      "images/icon1.png",
+      "images/icon2.png"
+    ],
+    "priority": 15
+  },
+  "index.html": {
+    "href": "index.html",
+    "resources": [
+      "images/icon4.png",
+      "images/icon3.png",
+      "js/update.js"
+    ],
+    "refer": [],
+    "priority": 0
+  }
+}

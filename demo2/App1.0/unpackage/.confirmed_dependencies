@@ -1,0 +1,549 @@
+{
+  "index.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/openWebview.js",
+      "images/tx.png",
+      "js/jquery-3.1.1.min.js",
+      "js/jquery-1.11.3.min.js",
+      "images/index_icon_19.png",
+      "images/index_icon_28.png",
+      "images/index_icon_14.png",
+      "images/index_bg.jpg",
+      "images/index_icon_08.png",
+      "images/icon2.png",
+      "images/index_icon_05.png",
+      "images/index_icon_03.png",
+      "images/index_icon_17.png",
+      "images/centerBg.jpg",
+      "images/index_icon_32.png",
+      "images/index_icon_25.png",
+      "images/icon1.png",
+      "images/icon.png",
+      "login.html",
+      "images/icon0_1.png",
+      "images/icon2_1.png",
+      "js/common.js",
+      "js/update.js",
+      "images/icon_openApp.png"
+    ],
+    "refer": [
+      "order_all.html",
+      "yanshou.html",
+      "addorder.html",
+      "fenpei.html",
+      "pandian.html",
+      "diaobo.html",
+      "lingyong.html",
+      "pdbaobiao.html",
+      "center.html",
+      "login.html",
+      "center_dd.html",
+      "diaobodisplay.html",
+      "order.html",
+      "Feedback.html",
+      "center_ly.html",
+      "center_fp.html",
+      "maoli.html",
+      "Neworder.html",
+      "center_bd.html",
+      "Newaddorder.html",
+      "Newfenpei.html",
+      "Newyanshou.html",
+      "Newpandian.html"
+    ]
+  },
+  "lingyong.html": {
+    "refer": [
+      "lingyongdisplay.html"
+    ],
+    "resources": [
+      "js/city.data.js",
+      "js/mui.picker.min.js",
+      "js/jquery-1.11.3.min.js",
+      "js/mui.poppicker.js",
+      "images/icon3.png",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/city.data-3.js"
+    ]
+  },
+  "order_all.html": {
+    "resources": [
+      "images/1.jpg",
+      "fonts/mui.ttf",
+      "js/mui.min.js",
+      "css/common.css",
+      "css/mui.min.css",
+      "images/icon3.png",
+      "images/pic.png",
+      "js/jquery-3.1.1.min.js",
+      "js/openWebview.js",
+      "js/mui.picker.min.js",
+      "js/mui.poppicker.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "js/city.data-3.js",
+      "js/jquery-1.11.3.min.js",
+      "js/common.js"
+    ],
+    "refer": [
+      "wuliao.html",
+      "orderlist.html"
+    ]
+  },
+  "login.html": {
+    "resources": [
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "css/mui.min.css",
+      "images/login_bg.jpg",
+      "fonts/mui.ttf",
+      "index.html",
+      "js/common.js"
+    ],
+    "refer": [
+      "index.html",
+      "index_2.html",
+      "center_ly.html"
+    ]
+  },
+  "center_ly.html": {
+    "resources": [
+      "images/icon3.png",
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "js/openWebview.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "index.html"
+    ]
+  },
+  "center.html": {
+    "resources": [
+      "images/icon1.png",
+      "images/center_bg.jpg",
+      "images/icon.png",
+      "fonts/mui.ttf",
+      "images/icon2.png",
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "js/openWebview.js",
+      "css/mui.min.css",
+      "images/tx.png"
+    ],
+    "refer": [
+      "center_ly.html",
+      "index.html",
+      "login.html",
+      "fenpei.html",
+      "center_fp.html"
+    ]
+  },
+  "center_fp.html": {
+    "resources": [
+      "images/icon3.png",
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "js/openWebview.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": []
+  },
+  "orderlist.html": {
+    "resources": [
+      "images/share.png",
+      "js/openWebview.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-1.11.3.min.js",
+      "js/common.js"
+    ],
+    "refer": [
+      "orderdetail.html"
+    ]
+  },
+  "orderdetail.html": {
+    "resources": [
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/share.png",
+      "js/common.js"
+    ],
+    "refer": []
+  },
+  "index_2.html": {
+    "resources": [
+      "images/index_icon_19.png",
+      "images/index_icon_28.png",
+      "images/index_bg.jpg",
+      "images/index_icon_14.png",
+      "images/icon2.png",
+      "images/index_icon_08.png",
+      "images/index_icon_05.png",
+      "images/index_icon_03.png",
+      "images/index_icon_17.png",
+      "images/centerBg.jpg",
+      "images/icon4.png",
+      "images/icon1.png",
+      "images/icon.png",
+      "images/icon0.png",
+      "images/index_icon_31.png",
+      "images/index_icon_25.png",
+      "fonts/mui.ttf",
+      "js/jquery-3.1.1.min.js",
+      "css/common.css",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "images/index_icon_32.png",
+      "images/icon0_1.png",
+      "images/icon10.png"
+    ],
+    "refer": [
+      "order_all.html",
+      "login.html",
+      "addorder.html",
+      "center_ly.html",
+      "center_fp.html",
+      "yanshou.html",
+      "fenpei.html",
+      "diaobo.html",
+      "lingyong.html",
+      "pandian.html",
+      "pdbaobiao.html",
+      "mlbaobiao.html",
+      "order.html",
+      "center_dd.html",
+      "center_ys.html",
+      "Feedback.html",
+      "diaobodisplay.html"
+    ]
+  },
+  "addorder.html": {
+    "resources": [
+      "js/city.data.js",
+      "js/mui.picker.min.js",
+      "js/jquery-1.11.3.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/icon3.png",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "js/city.data-3.js",
+      "images/icon11.png",
+      "js/common.js"
+    ],
+    "refer": [
+      "orderlist.html",
+      "index.html"
+    ]
+  },
+  "diaobo.html": {
+    "resources": [
+      "images/icon5.png",
+      "js/jquery-1.11.3.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "diaobodisplay.html"
+    ]
+  },
+  "diaobodisplay.html": {
+    "resources": [
+      "images/icon6.png",
+      "images/icon7.png",
+      "js/mui.picker.min.js",
+      "js/jquery-1.11.3.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/city.data.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "js/city.data-3.js"
+    ],
+    "refer": []
+  },
+  "yanshou.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "images/radio_1.png",
+      "images/radio.png",
+      "js/jquery-1.11.3.min.js",
+      "images/icon7.png",
+      "images/icon8.png",
+      "images/icon9.png",
+      "js/common.js"
+    ],
+    "refer": [
+      "index.html"
+    ]
+  },
+  "fenpei.html": {
+    "resources": [
+      "js/jquery-1.11.3.min.js",
+      "images/icon7.png",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/city.data-3.js",
+      "js/common.js"
+    ],
+    "refer": [
+      "index.html"
+    ]
+  },
+  "mlbaobiao.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": []
+  },
+  "order.html": {
+    "resources": [
+      "js/city.data.js",
+      "js/mui.picker.min.js",
+      "js/jquery-1.11.3.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/icon3.png",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "js/city.data-3.js",
+      "js/common.js"
+    ],
+    "refer": [
+      "orderlist.html"
+    ]
+  },
+  "pdbaobiao.html": {
+    "resources": [
+      "js/jquery-1.11.3.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/icon3.png",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "js/mui.picker.min.js"
+    ],
+    "refer": [
+      "index.html"
+    ]
+  },
+  "center_dd.html": {
+    "resources": [
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/common.js"
+    ],
+    "refer": [
+      "orderlist.html",
+      "index.html"
+    ]
+  },
+  "center_ys.html": {
+    "resources": [
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "center_ysdisplay.html"
+    ]
+  },
+  "center_ysdisplay.html": {
+    "resources": [
+      "js/jquery-1.11.3.min.js"
+    ],
+    "refer": []
+  },
+  "Feedback.html": {
+    "resources": [
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "index.html"
+    ]
+  },
+  "pandian.html": {
+    "resources": [
+      "js/jquery-1.11.3.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/icon3.png",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css"
+    ],
+    "refer": []
+  },
+  "maoli.html": {
+    "resources": [
+      "js/echarts-all.js",
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/icon3.png",
+      "css/mui.picker.min.css",
+      "js/mui.picker.min.js",
+      "js/echarts.min.js"
+    ],
+    "refer": []
+  },
+  "Neworder.html": {
+    "resources": [
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/icon3.png",
+      "css/default.css",
+      "js/hotcss.js",
+      "images/back.png",
+      "images/icon12.png",
+      "images/icon13.png",
+      "images/icon14.png",
+      "images/loading.gif",
+      "images/success.png",
+      "images/fail.png",
+      "js/common.js"
+    ],
+    "refer": [
+      "index.html"
+    ]
+  },
+  "center_bd.html": {
+    "resources": [
+      "images/back.png",
+      "css/default.css",
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "js/hotcss.js",
+      "css/common.css",
+      "images/icon12.png",
+      "images/60x60.gif",
+      "images/icon13.png"
+    ],
+    "refer": []
+  },
+  "Newaddorder.html": {
+    "resources": [
+      "images/back.png",
+      "css/default.css",
+      "js/hotcss.js",
+      "images/icon12.png",
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "css/common.css",
+      "images/icon13.png",
+      "images/icon14.png",
+      "images/loading.gif",
+      "images/success.png"
+    ],
+    "refer": [
+      "orderlist.html"
+    ]
+  },
+  "Newfenpei.html": {
+    "resources": [
+      "images/back.png",
+      "css/default.css",
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "js/hotcss.js",
+      "css/common.css",
+      "images/fail.png",
+      "images/loading.gif",
+      "images/success.png",
+      "images/down.png",
+      "images/down_1.png"
+    ],
+    "refer": []
+  },
+  "Newyanshou.html": {
+    "resources": [
+      "images/back.png",
+      "css/default.css",
+      "js/jquery-3.1.1.min.js",
+      "js/mui.min.js",
+      "js/hotcss.js",
+      "css/common.css",
+      "images/icon15.png",
+      "images/radio_1.png",
+      "images/radio.png",
+      "images/loading.gif",
+      "images/success.png"
+    ],
+    "refer": []
+  },
+  "Newpandian.html": {
+    "resources": [
+      "images/back.png",
+      "css/default.css",
+      "js/jquery-3.1.1.min.js",
+      "js/hotcss.js",
+      "images/icon12.png",
+      "js/mui.min.js",
+      "css/common.css",
+      "images/icon13.png",
+      "images/fail.png",
+      "images/loading.gif",
+      "images/success.png"
+    ],
+    "refer": []
+  }
+}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<style type="text/css">
+			.mui-table-view:after {
+				height: 0;
+			}
+			
+			.center {
+				background: none;
+				padding-top: 64px !important;
+			}
+			
+			.center ul {
+				margin-top: 0 !important;
+				padding: 0;
+				background: none;
+			}
+			
+			.center li {
+				margin: 15px 0;
+				padding: 10px 15px 0;
+				background: #fff;
+				position: relative;
+			}
+			
+			.center li span {
+				position: absolute;
+				right: 15px;
+				bottom: 5px;
+				font-size: 1.2rem;
+			}
+			
+			.center li i {
+				position: absolute;
+				right: 15px;
+				top: 50%;
+				font-size: 3rem;
+				color: #c3c3c3;
+				margin-top: -15px;
+			}
+			
+			.center li h2 {
+				font-size: 1.6rem;
+				font-weight: normal;
+				margin: 0 0 15px 0;
+			}
+			
+			.center li p {
+				font-size: 1.4rem;
+				padding-bottom: 5px;
+			}
+			
+			.center li h2 strong {
+				font-weight: normal;
+			}
+		</style>
+	</head>
+
+	<body style="background: #f2f2f2;">
+		<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+			<a class="mui-icon  mui-action-back mui-icon-left-nav mui-pull-left" id="back">返回</a>
+			<h1 class="mui-title">今日采购单</h1>
+		</header>
+		<div class="mui-content center">
+			<ul class="mui-table-view">
+				<!--<li id="orderlist.html">
+					<h2>蔬菜供应商</h2>
+					<p><span id="orderNumber">订单编号：ZZ123456</span><span>08:20</span></p>
+					<i class="mui-icon mui-icon mui-icon-arrowright"></i>
+				</li>-->
+			</ul>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+
+		<script type="text/javascript">
+		
+		function plusReady() {
+			
+//			plus.nativeUI.closeWaiting();
+//			//显示当前页面
+// 			mui.currentWebview.show();	
+//	   		$("#back").on('tap', function() {
+//				var ws=plus.webview.currentWebview();
+//				plus.webview.close(ws);
+//				mui.openWindow({
+//								url:'index.html',
+//								show:{
+//								  autoShow: true,	
+//							      aniShow:'slide-out-right',//页面显示动画，默认为”slide-in-right“；
+//							      duration:300//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+//							    },
+//							    waiting: {
+//									autoShow: false, //自动显示等待框，默认为true
+//								}
+//							});	
+//			});
+			
+			mui.init();
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var orderNumber;
+			var startDate = null;
+			var endDate = null;
+
+			mui.ajax(localStorage.IP + 'user/ticket/list?startDate=' + startDate + '\&endDate=' + endDate, {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'GET', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));
+					for(var i = 0; i < data.length; i++) {
+						$(".mui-table-view").append(
+							'<li id="orderlist.html">' +
+							'<h2>订单编号\：<strong id="orderNumber">' + data[i].TicketNo + '</strong></h2>' +
+							'<p>创建时间\：' + data[i].CreateTime + '</p>' +
+							'<i class="mui-icon mui-icon mui-icon-arrowright"></i></li>'
+						);
+					}
+					plus.nativeUI.closeWaiting();
+					//显示当前页面
+					mui.currentWebview.show();
+
+					$(".mui-table-view li").on('tap', function() {
+						var _this = $(this).attr("id");
+						var data = $(this).find("#orderNumber").text();
+						console.log(_this);
+						console.log(data);
+						mui.openWindow({
+							url: _this,
+							show: {
+								aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+								duration: 0, //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+							},
+							extras: {
+								orderNumber: data
+							}
+						});
+					});
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+		}
+		if(window.plus) {
+			plusReady();
+		} else {
+			document.addEventListener("plusready", plusReady, false);
+		};
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>首页</title>
+		<!--重置浏览器样式-->
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<script src="js/hotcss.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			.materielList button{
+				margin: 0.21333rem 0 11.5rem !important;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container" id="container">
+			<header>
+				<a class="back mui-action-back" id="back">返回</a>
+				<h2>物料验收</h2>
+			</header>
+			<div class="content">
+				<div class="materiel" style="display: block;">
+					<section class="materiel_content" style="height: 100%;">
+						<div class="materiel_menu">
+							<ul>
+								<!--<li onclick="materielSelect($(this));">最多1个字</li>-->
+							</ul>	
+						</div>
+						<div class="materielList" style="display: block;">
+							<div class="item">
+								<dl>
+								</dl>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+			<div class="wrapper">
+				<div class="OrderStatusSelect">
+					<ul>
+						<li class="clearfix">
+							<label>是否超时</label>
+							<span class="on" id="false">否<i></i></span>
+							<span id="true">是<i></i></span>
+							
+						</li>
+						<li class="clearfix">
+							<label>是否有退货</label>
+							<span class="on" id="false">否<i></i></span>
+							<span id="true">是<i></i></span>
+							
+						</li>
+						<li class="clearfix">
+							<a id="cancel">取消</a>
+							<a id="confirm">确认</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div id="tips">
+				<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+				<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+				<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID); //门店信息
+			var _SupplierId;//供应商Id
+			var _SupplierName;//供应商名称
+			var _Order;//订单号
+			var _OrderId;//订单号Id
+			var OrderData=[];//订单号列表
+			var _IsTimeout;//是否超时
+			var _IsReturn;//是否有退货
+			var MaterialData = {
+					"PreTicketId":null,//_OrderId订单数据Id值
+					"PreTicketNo":null,//_Order订单号
+					"IsTimeout": false,
+  					"IsReturn": false,
+					"Lines": [],
+					"TicketTypeId":113,//提交类型 菜品(91)或者原料(92)
+					"OperatorId": USERID.Id,//用户ID
+					"OperatorName": USERID.Name,//用户名
+					"BranchId": USERID.BranchId,//门店ID
+					"BranchName": USERID.BranchName,//门店名称
+					"Memo":null,//订单备注
+					"SourceDepartmentId": USERID.BranchId,//门店ID
+					"SourceDepartmentName": USERID.BranchName,//门店名称
+					"TargetObjectId":null,//_SupplierId
+					"TargetObjectName":null,//_SupplierName
+					"TicketNo":null, //_Order订单号
+					"Guid":null,
+					"GroupId": USERID.GroupId,
+					"CreateUser": USERID.Id,
+					"ModifyUser": USERID.Id
+				};
+		
+			//查询供应商
+			mui.ajax(localStorage.IP + 'common/vendor/list', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));
+					for(var i = 0; i < data.length; i++) {
+						$(".materiel_menu ul").append('<li id='+data[i].Id+' onclick="materielSelect($(this));">'+data[i].Name+'</li>');
+					}
+					$(".materiel_menu li").eq(0).addClass("on");
+					_SupplierId = data[0].Id;
+					_SupplierName =  data[0].Name;
+					FindOrder(_SupplierId);
+					
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+		
+			//查询供应商对应未处理订单
+			function FindOrder(vendorId){
+				$(".materielList .item dl").empty();
+				mui.ajax(localStorage.IP + 'ticketservice/ticketrecord/list?vendorId='+vendorId, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						if(data.length>0){
+							OrderData = data;
+							for(var i = 0; i < data.length; i++){
+								materielList(_SupplierId,data[i].TicketNo,OrderData);
+							}
+							
+						}else{
+							$(".materielList .item dl").html('<h2>暂无可验收订单</h2>');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			}
+			
+			//物料查询
+			function materielList(Supplier,Order,OrderData){
+				mui.ajax(localStorage.IP + 'ticketservice/reportticket/get?ticketNo='+Order+'\&vendorId='+Supplier, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						if(data.IsSelectedVendor == false){
+							for(var i = 0; i < OrderData.length; i++){
+								if(OrderData[i].TicketNo == Order){
+									var html = '<ul id="'+data.Guid+','+data.TargetObjectId+','+data.TargetObjectName+'">';
+									for(var j = 0; j < data.Lines.length; j++){
+										var aa = data.Lines[j].MaterialId+','+data.Lines[j].MaterialNo+','+data.Lines[j].CategoryId+','+data.Lines[j].CategoryName+','+data.Lines[j].Unit+','+data.Lines[j].PurchasePrice+','+data.Lines[j].VendorId+','+data.Lines[j].VendorName;
+										html+='<li id="'+aa+'"><span class="MaterialName">'+data.Lines[j].MaterialName+'</span><input class="count" type="text" value='+data.Lines[j].ApplyQuantity+' onclick="AllSelect($(this));" /><input class="price"  onclick="AllSelect($(this));" type="text" value="'+data.Lines[j].CostPrice+'" disabled/><span class="StockUnit">'+data.Lines[j].StockUnit+'</span></li>';
+									}
+									html+='<button onclick="ShowSubmit($(this));" type="button">确认验收</button></ul>';
+									$(".materielList .item dl").append('<dd id="'+OrderData[i].Id+'"><p onclick="ShowList($(this));">'+OrderData[i].TicketNo+'</p>'+html+'</dd>');
+									return false;
+								}
+							}
+						}else{
+							for(var i = 0; i < OrderData.length; i++){
+								if(OrderData[i].TicketNo == Order){
+									var html = '<ul id="'+data.Guid+','+data.TargetObjectId+','+data.TargetObjectName+'">';
+									for(var j = 0; j < data.Lines.length; j++){
+										var aa = data.Lines[j].MaterialId+','+data.Lines[j].MaterialNo+','+data.Lines[j].CategoryId+','+data.Lines[j].CategoryName+','+data.Lines[j].Unit+','+data.Lines[j].PurchasePrice+','+data.Lines[j].VendorId+','+data.Lines[j].VendorName;
+										html+='<li id="'+aa+'"><span class="MaterialName">'+data.Lines[j].MaterialName+'</span><input class="count" type="text" value='+data.Lines[j].ApplyQuantity+'  onclick="AllSelect($(this));" /><input class="price"  onclick="AllSelect($(this));" type="text" value="'+data.Lines[j].CostPrice+'" /><span class="StockUnit">'+data.Lines[j].StockUnit+'</span></li>';
+									}
+									html+='<button onclick="ShowSubmit($(this));" type="button">确认验收</button></ul>';
+									$(".materielList .item dl").append('<dd id="'+OrderData[i].Id+'"><p onclick="ShowList($(this));">'+OrderData[i].TicketNo+'</p>'+html+'</dd>');
+									return false;
+								}
+							}
+						}
+						
+						MaterialData.Guid = data.Guid;
+						
+					},
+					error: function(xhr, type, errorThrown){
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			}
+			
+			$("#confirm").on('tap',function(){
+				$(".wrapper").hide();
+				$("#tips1").show();
+				$("#tips2").hide();
+				$("#tips3").hide();
+				$("#tips").fadeIn();
+				MaterialData.Lines=[];
+				var _this=$("#"+$(this).attr("class")).find("li");
+				var aa = $("#"+$(this).attr("class")).find("ul").attr("id").split(",");
+				_IsTimeout = $(".wrapper ul").find("li").eq(0).find("span.on").attr("id");
+				_IsReturn = $(".wrapper ul").find("li").eq(1).find("span.on").attr("id");
+				MaterialData.IsTimeout = _IsTimeout;
+				MaterialData.IsReturn = _IsReturn;
+				MaterialData.PreTicketId = $(this).attr("class");
+				MaterialData.PreTicketNo = $("#"+$(this).attr("class")).find("p").text();
+				MaterialData.TargetObjectId = aa[1];
+				MaterialData.TargetObjectName = aa[2];
+				MaterialData.TicketNo = $("#"+$(this).attr("class")).find("p").text();
+				MaterialData.Guid = aa[0];
+				for(var i=0;i<_this.length;i++){
+					var bb = _this.eq(i).attr("id").split(",");
+					console.log(JSON.stringify(bb));
+					var MaterialName = _this.eq(i).find("span.MaterialName").text();
+					var StockUnit = _this.eq(i).find("span.StockUnit").text();
+					var CostPrice = parseFloat(_this.eq(i).find("input.price").val());
+					var ApplyQuantity = parseFloat(_this.eq(i).find("input.count").val());
+					var GroupId = USERID.GroupId;
+					var CreateUser = USERID.Id;
+					var ModifyUser = USERID.Id;
+					MaterialData.Lines.push({
+						"MaterialId": bb[0],
+						"MaterialNo": bb[1],
+						"MaterialName": MaterialName,
+						"CategoryId": bb[2],
+						"CategoryName": bb[3],
+						"Unit": bb[4],
+						"ApplyQuantity": ApplyQuantity.toFixed(2),
+						"Stock2ApplyFactor": 1,
+						"StockUnit": StockUnit,
+						"CostPrice": CostPrice.toFixed(2),
+						"PurchasePrice": bb[5],
+						"TotalAmount": parseFloat(CostPrice * ApplyQuantity).toFixed(2),
+						"VendorId": bb[6],
+					    "VendorName": bb[7],
+						"GroupId": GroupId,
+						"CreateUser": CreateUser,
+						"ModifyUser": ModifyUser,
+					})
+				}
+				console.log(JSON.stringify(MaterialData));
+				mui.ajax(localStorage.IP + 'ticketservice/purchaseticket/in', {
+					data:MaterialData,
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						if(data == true){
+							$("#tips1").hide();
+							$("#tips2").show();
+							$("#tips3").hide();
+							setTimeout(function(){
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide();
+								$("#tips").fadeOut();
+								location.reload();//提交成功后自动刷新本页面
+							},1000);
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						var errortext = xhr.responseText.split(":");
+						$("#tips1").hide();
+						$("#tips2").hide();
+						$("#tips3").show().find("b").text(errortext[1]);
+						$("#tips").fadeIn();
+						setTimeout(function(){
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").hide();
+							$("#tips").fadeOut();
+						},1000);
+						MaterialData.Lines=[];
+					}
+				});
+			})
+			
+			
+			
+			
+			
+			$(function(){
+				$(".materiel").css("height",$(".container").height()-($("header").innerHeight()));
+				
+				$(".materielList .item").eq(0).show();
+				
+				$("#cancel").bind('click',function(){
+					$(".wrapper").hide();
+				});
+				
+				$(".wrapper ul li").find("span").bind('click',function(){
+					var _thisClassName =$(this).attr("class");
+					if(_thisClassName == "on"){
+						$(this).removeClass("on").siblings("span").addClass("on");
+					}else{
+						$(this).attr("class","on").siblings("span").removeClass("on");
+					}
+				})
+				
+				
+			});
+			
+			function AllSelect(id){
+				id.focus().select();
+			}
+			
+			function ShowSubmit(id){
+				$(".wrapper").show();
+				$("#confirm").attr('class',id.parents("dd").attr("id"));
+			}
+			
+			function ShowList(id){
+				id.parent().siblings().find("ul").slideUp(100);
+				id.parent().siblings().find("button").slideUp(100);
+				id.parent().find("ul").slideToggle();
+				id.parent().find("button").slideToggle();
+			}
+			//物料分类选择
+			function materielSelect(id){
+				id.addClass("on").siblings().removeClass("on");
+				_SupplierId = id.attr("id");
+				_SupplierName = id.text();
+				console.log(_SupplierId);
+				FindOrder(_SupplierId);
+			}
+		</script>
+	</body>
+</html>

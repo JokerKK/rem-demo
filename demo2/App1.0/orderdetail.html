@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var USERID = JSON.parse(localStorage.USERID);
+			var shares = null;
+			var vendorId ;
+			var Intent = null,
+				File = null,
+				Uri = null,
+				main = null;
+			// H5 plus事件处理
+			function plusReady() {
+				updateSerivces();
+				if(plus.os.name == "Android") {
+					main = plus.android.runtimeMainActivity();
+					Intent = plus.android.importClass("android.content.Intent");
+					File = plus.android.importClass("java.io.File");
+					Uri = plus.android.importClass("android.net.Uri");
+				}
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			}
+			/**
+			 * 更新分享服务
+			 */
+			function updateSerivces() {
+				plus.share.getServices(function(s) {
+					shares = {};
+					for(var i in s) {
+						var t = s[i];
+						shares[t.id] = t;
+					}
+				}, function(e) {
+					outSet("获取分享服务列表失败：" + e.message);
+				});
+			}
+			/**
+			 * 调用系统分享
+			 * 调用
+			 */
+			function shareSystem() {
+				if(plus.os.name !== "Android") {
+					plus.nativeUI.alert("此平台暂不支持系统分享功能!");
+					return;
+				}
+				var intent = new Intent(Intent.ACTION_SEND);
+				var p = "";
+				if(pic && pic.realUrl) {
+					p = pic.realUrl;
+					if(p.substr(0, 7) === "file://") {
+						p = p.substr(7);
+					} else if(p.sub(0) !== "/") {
+						p = plus.io.convertLocalFileSystemURL(p);
+					}
+				}
+				var f = new File(p);
+				var uri = Uri.fromFile(f);
+				if(f.exists() && f.isFile()) {
+					console.log("image/*");
+					intent.setType("image/*");
+					intent.putExtra(Intent.EXTRA_STREAM, uri);
+				} else {
+					console.log("text/plain");
+					intent.setType("text/plain");
+				}
+				intent.putExtra(Intent.EXTRA_SUBJECT, "HBuilder");
+				intent.putExtra(Intent.EXTRA_TEXT, "这是分享的内容介绍");
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				main.startActivity(Intent.createChooser(intent, "系统分享"));
+			}
+			/**
+			 * 分享操作
+			 * @param {JSON} sb 分享操作对象s.s为分享通道对象(plus.share.ShareService)
+			 * @param {Boolean} bh 是否分享链接
+			 */
+			function shareAction(sb, bh) {
+//				outSet("分享操作：");
+				if(!sb || !sb.s) {
+					outLine("无效的分享服务！");
+					return;
+				}
+				console.log(localStorage.IP);
+				console.log(orderNumber);
+				console.log(vendorId);
+				console.log(_vendorName);
+				var msg = {
+					href:localStorage.IP+'SharePage/OrderDetail?ticketNo='+orderNumber+'\&vendorId='+vendorId+'\&branchId='+USERID.BranchId+'\&groupId='+USERID.GroupId,
+					title:USERID.BranchName+'采购单',
+					content:_vendorName+'采购单',
+					extra: {
+						scene: sb.x
+					}
+				};
+				// 发送分享
+				if(sb.s.authenticated) {
+//					outLine("---已授权---");
+					shareMessage(msg, sb.s);
+				} else {
+//					outLine("---未授权---");
+					sb.s.authorize(function() {
+						shareMessage(msg, sb.s);
+					}, function(e) {
+						outLine("认证授权失败：" + e.code + " - " + e.message);
+					});
+				}
+			}
+			/**
+			 * 发送分享消息
+			 * @param {JSON} msg
+			 * @param {plus.share.ShareService} s
+			 */
+			function shareMessage(msg, s) {
+//				outLine(JSON.stringify(msg));
+				s.send(msg, function() {
+					outLine("分享到\"" + s.description + "\"成功！ ");
+				}, function(e) {
+					outLine("分享到\"" + s.description + "\"失败: " + JSON.stringify(e));
+				});
+			}
+
+			// 分析链接
+			function shareHref() {
+				var shareBts = [];
+				// 更新分享列表
+				var ss = shares['weixin'];
+				ss && ss.nativeClient && (
+					shareBts.push({
+						title: '微信好友',
+						s: ss,
+						x: 'WXSceneSession'
+					}));
+				ss = shares['qq'];
+				ss && ss.nativeClient && shareBts.push({
+					title: 'QQ',
+					s: ss
+				});
+				// 弹出分享列表
+				shareBts.length > 0 ? plus.nativeUI.actionSheet({
+					title: '分享链接',
+					cancel: '取消',
+					buttons: shareBts
+				}, function(e) {
+					(e.index > 0) && shareAction(shareBts[e.index - 1], true);
+				}) : plus.nativeUI.alert('当前环境无法支持分享链接操作!');
+			}
+		</script>
+		<style>
+			.mui-pull-right {
+				background: url(images/share.png);
+				background-repeat: no-repeat;
+				background-position: center;
+				background-size: 100%;
+				display: block;
+				width: 30px;
+				height: 44px;
+			}
+			.caigoudan .title span,.caigoudan .mui-section .item span{ width: 20%;}
+			.caigoudan .title span.on,.caigoudan .mui-section .item span.on{ width: 60%;}
+			.sure_buy{ width: 100%; color: #000;z-index: 90; height: 55px;}
+			.sure_buy a{position: absolute;left: 0;top: 0;border-radius: 0;background:#ff4951; color: #fff;z-index:100; }
+			.sure_buy select{position: absolute;left: 0;top: 0;z-index: 110;height:55px;opacity: 0; }
+		</style>
+	</head>
+
+	<body id="body" class="clearfix">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="font-size: 1.8rem;">返回</a>
+			<h1 class="mui-title">分供应商导出</h1>
+			<a class="mui-pull-right" id="share" ></a>
+			
+		</header>
+		<div class="mui-content caigoudan">
+			<div class="title">
+				<span class="on">物料</span><span>数量</span><span>单位</span>
+			</div>
+
+			<div class="mui-section">
+				<!--<div class="item clearfix">
+					<span class="on">海天生抽酱油海天生抽酱油</span>
+					<span>10</span>
+					<span>斤</span>
+				</div>-->
+				
+			</div>
+		</div>
+		<div id="sharecontent"></div>
+		<div class="sure_buy">
+			<a class="mui-btn mui-btn-block">选择供应商</a>
+			<select id="select">
+				<option value="请选择" id="11">请选择</option>
+			</select>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			var orderNumber;
+			var _vendorName;
+			var userId = JSON.parse(localStorage.token);//账户个人id信息
+			function plusReady() {
+				var ws = plus.webview.currentWebview();
+				orderNumber = ws.orderNumber;
+				console.log(orderNumber);
+				var str=[];
+				var str1=[];
+				var str2=[];
+				var str3=[];
+				function first(args1,args2){
+			        for(i=0;i<args1.length;i++){
+			            if(args2.indexOf(args1[i])<0){
+			                args2.push(args1[i])
+			            }
+			        }
+			        return args2;
+			    }
+				
+				
+				mui.ajax(localStorage.IP + 'ticketservice/reportticket/get?ticketNo=' + orderNumber, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'GET', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+							'Content-Type': 'application/json',
+							'Authorization': 'Bearer ' + userId.access_token
+						},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						for(var i = 0; i < data.Lines.length; i++){
+							console.log(data.Lines[i].VendorId);
+							str.push(data.Lines[i].VendorId);//获取所有供应商ID生成数组str
+							str1.push(data.Lines[i].VendorName);//获取所有供应商名称生成数组str1					
+						}
+						first(str,str2);//去掉重复ID后生成新的ID数组str2
+						first(str1,str3);//去掉重复供应商名称后生成新的供应商名称数组str3
+						for(var j=0;j<str2.length;j++){
+						   $("#select").append('<option id='+str2[j]+' value='+str3[j]+'>'+str3[j]+'</option>');
+						}	
+					}
+				});
+				
+				$(".sure_buy select").change(function(){
+					$(this).prev().text($(this).val());
+					var optionID = $(this).find("option:selected").attr("id");
+					$(this).attr("name",optionID);
+					vendorId = $(this).attr("name");
+					_vendorName = $(this).val();
+					console.log($(this).attr("name"));
+					console.log($(this).val());
+					console.log(typeof $(this).val());
+					$(".mui-section").empty();
+					console.log(orderNumber);
+					console.log(vendorId);
+					$("#share").unbind('click');
+					if(vendorId !="11"){
+						$("#share").bind('click',function(){
+							shareHref();
+						})
+					}	
+					mui.ajax(localStorage.IP + 'ticketservice/reportticket/get?ticketNo='+ orderNumber+'\&vendorId='+vendorId, {
+						dataType: 'json', //服务器返回json格式数据
+						type: 'GET', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+								'Content-Type': 'application/json',
+								'Authorization': 'Bearer ' + userId.access_token
+							},
+						success: function(data) {
+							console.log(JSON.stringify(data));
+							for(var i = 0; i < data.Lines.length; i++){
+								$(".mui-section").append(
+										'<div class="item clearfix">'+
+										'<span class="on">'+data.Lines[i].MaterialName+'</span>'+
+										'<span>'+data.Lines[i].ApplyQuantity+'</span>'+
+										'<span>'+data.Lines[i].Unit+'</span></div>'
+									);
+							}
+						}
+					});	
+					
+				});
+				
+				
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			};
+				
+		</script>
+	</body>
+</html>

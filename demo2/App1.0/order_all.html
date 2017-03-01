@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.poppicker.css" />
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+
+		<style type="text/css">
+			.nav-bar {
+				background: #f2f2f2;
+				position: fixed;
+				top: 64px;
+				z-index: 9;
+				width: 100%;
+				text-align: center;
+				padding: 10px 0;
+			}
+			
+			.nav-bar span {
+				text-align: center;
+				display: inline-block;
+				width: 30%;
+				font-size: 1.6rem;
+				color: #dd3437;
+				border: 1px #dd3437 solid;
+				line-height: 34px;
+			}
+			
+			.nav-bar span:first-child {
+				border-radius: 9px 0 0 9px;
+			}
+			
+			.nav-bar span:last-child {
+				border-radius: 0 9px 9px 0;
+			}
+			
+			.nav-bar span.on {
+				color: #fff !important;
+				background: #dd3437;
+			}
+			
+			.mui-content {
+				padding: 120px 0 56px 0 !important;
+			}
+			
+			.mui-content .mui-aside {
+				display: none;
+			}
+			
+			.mui-content> div.on,
+			.mui-content> div.on .title {
+				display: block;
+			}
+			
+			.mui-content li {
+				padding: 0 15px;
+				position: relative;
+				border-bottom: 1px #c8c7cc solid;
+			}
+			/*.mui-content li img {
+				display: block;
+				max-width: 65px;
+				line-height: 65px;
+				height: 65px;
+				float: left;
+				margin-right: 15px;
+			}*/
+			
+			.mui-content li h2 {
+				margin: 0px;
+				font-size: 1.8rem;
+				font-weight: normal;
+				padding: 0;
+				line-height: 40px;
+			}
+			
+			.mui-content li span {
+				display: none;
+			}
+			
+			.mui-content li .mui-input-row {
+				position: absolute;
+				right: 15px;
+				top: 0;
+				width: 120px;
+				height: 40px;
+				font-size: 1.6rem;
+				line-height: 40px;
+			}
+			
+			.mui-content li .mui-input-row input {
+				width: 85px;
+				border: none;
+				text-align: center;
+				padding: 0;
+				margin: 0;
+				float: right;
+			}
+			
+			.mui-content .btn {
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+			}
+			
+			.mui-content .btn button {
+				background: #dc2f37;
+				display: block;
+				height: 55px;
+				color: #fff;
+				text-align: center;
+				line-height: 55px;
+				font-size: 1.8rem;
+				cursor: pointer;
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				border-radius: 0;
+				border: none;
+			}
+			
+			.mui-content .btn button:active {
+				background: #b7262d;
+			}
+			
+			.mui-content .btn .mui-add:active {
+				background: #e2ab21;
+			}
+			
+			.mui-content .btn .mui-bttn {
+				width: 62%;
+				float: left;
+			}
+			
+			.mui-content .btn .mui-add {
+				width: 38%;
+				background: #ffc125;
+			}
+			
+			.mui-content .title {
+				position: fixed;
+				display: none;
+				left: 0;
+				top: 120px;
+				height: 40px;
+				width: 100%;
+				text-align: center;
+				line-height: 40px;
+				font-size: 1.8rem;
+				border-bottom: 1px #c8c7cc solid;
+				background: #fff;
+				z-index: 8;
+			}
+			
+			.mui-content .title span {
+				display: inline-block;
+				width: 25%;
+			}
+			
+			.mui-content .title span:first-child {
+				width: 50%;
+			}
+			
+			.mui-content #cityResult {
+				width: 100%;
+				text-align: center;
+			}
+			
+			.mui-content #cityResult .item {
+				line-height: 40px;
+				width: 100%;
+				font-size: 1.6rem;
+				border: 1px #eee solid;
+				margin-top: -1px;
+				padding: 0;
+			}
+			
+			.mui-content #cityResult .item i {
+				display: none;
+			}
+			
+			.mui-content #cityResult .item span {
+				width: 25%;
+				height: 40px;
+				display: block;
+				float: left;
+				border-right: 1px #eee solid;
+			}
+			
+			.mui-content #cityResult .item span:first-child {
+				width: 50%;
+			}
+			
+			.mui-content #cityResult .item span input {
+				margin: 0;
+				padding: 0;
+				text-align: center;
+				border: none;
+				background: none;
+			}
+			
+			.mui-content #cityResult .item .mui-btn {
+				padding: 0 15px;
+				background: #ff4951;
+				font-size: 1.8rem;
+			}
+			
+			#tips {
+				position: fixed;
+				top: 30%;
+				left: 30%;
+				z-index: 9999;
+				width: 40%;
+				height: 120px;
+				padding-top: 80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 1.6rem;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			
+			#tips #tips1,
+			#tips #tips4 {
+				display: none;
+			}
+			
+			#tips #tips2 {
+				display: none;
+			}
+			
+			#tips #tips3 {
+				display: none;
+			}
+			
+			#tips span {
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			
+			#tips #tips2 span.mui-icon-checkmarkempty {
+				font-size: 8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			
+			#tips #tips3 span.mui-icon-closeempty {
+				font-size: 8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			
+			#dish:after {
+				height: 0px;
+			}
+			
+			#dish #tips4 span {
+				display: block;
+				margin: 15px auto 0;
+				width: 36px;
+				height: 36px;
+			}
+			#dishBtn:disabled{
+				opacity: 1 !important;
+			}
+		</style>
+	</head>
+
+	<body style="overflow-x: hidden;">
+		<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+			<a class="mui-icon mui-icon-left-nav mui-pull-left" onclick="back(false);">返回</a>
+			<h1 class="mui-title">采购报单</h1>
+			<div class="select" id="select">
+				<p></p>
+				<ul></ul>
+				<div id="mask"></div>
+			</div>
+		</header>
+		<div class="nav-bar">
+			<span>菜品报单</span><span>物料报单</span>
+		</div>
+		<div class="mui-content">
+			<div class="mui-aside">
+				<ul class="mui-table-view" id="dish">
+					<div id="tips4"><span class="mui-spinner"></span></div>
+				</ul>
+				<div class="btn">
+					<button type="button" id="dishBtn">确认报单</button>
+				</div>
+
+			</div>
+			<div class="mui-aside" style="padding-top:40px;">
+				<div class="title">
+					<span>物料</span><span>数量</span><span>单位</span>
+				</div>
+				<div id="cityResult">
+				</div>
+
+				<div class="btn">
+					<button type="button" id='showCityPicker' class="mui-bttn mui-add">添加物料</button>
+					<button type="button" class="mui-bttn" id="materialbtn">确认报单</button>
+				</div>
+			</div>
+		</div>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.poppicker.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			function plusReady() {
+				plus.nativeUI.closeWaiting();
+				//显示当前页面
+				mui.currentWebview.show();
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			};
+		</script>
+		<script type="text/javascript">
+			mui.init({});
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID); //门店信息
+			console.log(123231);
+			console.log(userId.access_token);
+			var _thisId;
+			var _thisName;
+			//报单提交数据格式初始化
+			var MaterialData = {
+				"DishLines": [
+					//						{
+					//						      "DishId": 2,     //菜品ID
+					//						      "DishName": " ", //菜品名称
+					//						      "CategoryId": 4, //菜品分类
+					//						      "CategoryName": "",//菜品分类名称
+					//						      "ApplyQuantity": 7.0,//数量
+					//						      "GroupId": 12,
+					//						      "CreateUser": 14,
+					//						      "ModifyUser": 17
+					//						}
+				],
+				"Lines": [
+					//						{
+					//						   "MaterialId": 3,
+					//					      "MaterialNo": "sample string 4",//物料编号
+					//					      "MaterialName": "sample string 5",
+					//					      "CategoryId": 6,//物料分类id
+					//					      "CategoryName": "sample string 7",//物料分类名称
+					//					      "Unit": "sample string 8",
+					//					      "ApplyQuantity": 9.0,
+					//					      "Stock2ApplyFactor": 10.0,//库存单位与采购单位比例
+					//					      "StockUnit": "sample string 11",//库存单位
+					//					      "CostPrice": 12.0,//采购价格= UnitPrice*Stock2ApplyFactor
+					//					      "PurchasePrice": 13.0,//采购价格= UnitPrice*Stock2ApplyFactor
+					//					      "TotalAmount": 14.0,//总价
+					//					      "GroupId": 16,
+					//					      "CreateUser": 18,
+					//					      "ModifyUser": 21
+					//						}
+
+				],
+				"TicketTypeId": 0, //提交类型 菜品(91)或者原料(92)
+				"OperatorId": USERID.Id, //用户ID
+				"OperatorName": USERID.Name, //用户名
+				"BranchId": USERID.BranchId, //门店ID
+				"BranchName": USERID.BranchName, //门店名称
+				"SourceWarehouseId": _thisId, //仓库ID
+				"SourceWarehouseName": _thisName, //仓库名称
+				"SourceDepartmentId": USERID.BranchId, //门店ID
+				"SourceDepartmentName": USERID.BranchName, //门店名称
+				"GroupId": USERID.GroupId,
+				"CreateUser": USERID.Id,
+				"ModifyUser": USERID.Id
+			};
+
+			//仓库数据读取
+			mui.ajax(localStorage.IP + 'common/warehouse/listforemployee', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));
+					console.log(data.length);
+					if(data.length == 0){
+						_thisId =0;
+						_thisName=' ';
+						MaterialData.SourceWarehouseId=null;
+						MaterialData.SourceWarehouseName=null;
+						$("#tips").fadeIn();
+						$("#tips3").show().find("b").text('无可报单仓库');
+						setTimeout(function() {
+							$("#tips").fadeOut(300);
+							$("#tips3").hide().find("b").text('提交失败');
+							$("#cityResult").empty();
+						}, 1500);
+						$("#dishBtn").attr("disabled", true);
+						$("#materialbtn").attr("disabled", true);
+					}else{
+						_thisId = data[0].Id;
+						for(var i = 0; i < data.length; i++) {
+							//						console.log(data[i].Name);
+							//						console.log(data[i].Id);
+							$("#select ul").append('<li onclick="slideUp($(this))" id="' + data[i].Id + '">' + data[i].Name + '</li>');
+	
+						}
+						$("#select p").text($("#select li").eq(0).text());
+						_thisName = $("#select li").eq(0).text();
+						_thisId = $("#select li").eq(0).attr("id");
+						MaterialData.SourceWarehouseId = data[0].Id;
+						MaterialData.SourceWarehouseName = _thisName;
+					}
+//					
+					console.log(_thisId);
+					console.log(_thisName);
+					dishAjax();
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+
+			//选择档口
+			$("#select p").click(function() {
+				$(this).next().slideToggle(150);
+				$(this).parent().find("#mask").slideToggle(0);
+			});
+
+			function slideUp(ement) {
+				var _this = ement.text();
+				_thisId = ement.attr("id"); //获取档口ID
+				_thisName = _this; //获取档口名称
+				console.log(_thisId);
+				console.log(_thisName);
+				ement.parent().hide(0).prev().text(_this);
+				ement.parent().next().hide(0);
+				$("#dish").empty(); //选择档口时清空菜品列表
+				$("#cityResult").empty(); //选择档口时清空物料列表
+				MaterialData.SourceWarehouseId = _thisId;
+				MaterialData.SourceWarehouseName = _thisName;
+				MaterialData.DishLines = [];
+				MaterialData.Lines = [];
+				dishAjax();
+			}
+			$("#mask").bind('click', function() {
+				$(this).hide(0);
+				$(this).prev().hide(0);
+
+			})
+
+			//菜品数据读取
+			function dishAjax() {
+				mui.ajax(localStorage.IP + 'common/dish/listforwarehouse?warehouseId=' + _thisId, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						$("#dish").empty();
+						console.log(JSON.stringify(data));
+						//						console.log(data.length);
+						for(var i = 0; i < data.length; i++) {
+							//							console.log(data[i].DishName);
+							$("#dish").append('<li class="clearfix"><span id="DishId">' + data[i].DishId + '</span><span id="CategoryId">' + data[i].CategoryId + '</span><h2>' + data[i].DishName + '</h2><div class="mui-input-row">数量<input type="number" placeholder="请输入" /></div></li>');
+						}
+
+					}
+				});
+			};
+
+			//菜品报单提交
+			$("#dishBtn").bind('tap', function() {
+				console.log(JSON.stringify(MaterialData));
+				var _this = $("#dish li")
+				for(var i = 0; i < _this.length; i++) {
+					var DishId = _this.eq(i).find("#DishId").text();
+					var DishName = _this.eq(i).find("h2").text();
+					var CategoryId = _this.eq(i).find("#CategoryId").text();
+					var ApplyQuantity = _this.eq(i).find("input").val();
+					var GroupId = USERID.GroupId;
+					var CreateUser = USERID.Id;
+					var ModifyUser = USERID.Id;
+					if(ApplyQuantity != 0) {
+						MaterialData.DishLines.push({
+							"DishId": DishId,
+							"DishName": DishName,
+							"CategoryId": CategoryId,
+							"ApplyQuantity": ApplyQuantity,
+							"GroupId": GroupId,
+							"CreateUser": CreateUser,
+							"ModifyUser": ModifyUser
+						})
+						MaterialData.TicketTypeId = 91;
+					}
+
+				}
+				console.log(JSON.stringify(MaterialData));
+				if(MaterialData.DishLines.length > 0) {
+					$("#tips1").show();
+					$("#tips2").hide();
+					$("#tips3").hide();
+					$("#tips").fadeIn();
+					$("#dishBtn").attr("disabled", true);
+					mui.ajax(localStorage.IP + 'ticketservice/reportticket/save', {
+						data: MaterialData,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': 'Bearer ' + userId.access_token
+						},
+						success: function(data) {
+							console.log(JSON.stringify(data));
+
+							if(JSON.stringify(data) == "true") {
+								$("#tips1").hide();
+								$("#tips2").show();
+								$("#tips3").hide();
+								setTimeout(function() {
+									$("#tips").fadeOut(300);
+									$("#dish").empty();
+									dishAjax();
+								}, 1500);
+								$("#dishBtn").attr("disabled", false);
+								console.log(JSON.stringify(data));
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							var errortext = xhr.responseText.split(":");
+							var aa = errortext.length;
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").show().find("b").text(errortext[aa-1]);
+							setTimeout(function() {
+								$("#tips").fadeOut(300);
+							}, 1500);
+							$("#dishBtn").attr("disabled", false);
+							MaterialData.DishLines = [];
+						}
+					});
+				} else {
+					mui.alert('请至少选择一种菜品的数量', '友情提示');
+				}
+
+			});
+
+			//物料报单提交
+			$("#materialbtn").bind('tap', function() {
+				console.log(JSON.stringify(MaterialData));
+				var _this = $("#cityResult .item")
+				for(var i = 0; i < _this.length; i++) {
+					var MaterialId = _this.eq(i).find("#MaterialId").text();
+					var MaterialNo = _this.eq(i).find("#MaterialNo").text();
+					var MaterialName = _this.eq(i).find("#MaterialName").text();
+					var CategoryId = _this.eq(i).find("#CategoryId").text();
+					var CategoryName = _this.eq(i).find("#CategoryName").text();
+					var Unit = _this.eq(i).find("#Unit").text();
+					var ApplyQuantity = parseFloat(_this.eq(i).find("input").val()).toFixed(2);
+					var Stock2ApplyFactor = _this.eq(i).find("#Stock2ApplyFactor").text();
+					var StockUnit = _this.eq(i).find("#StockUnit").text();
+					var UnitPrice = _this.eq(i).find("#UnitPrice").text(); //库存价格
+					var CostPrice = UnitPrice * Stock2ApplyFactor;
+					var PurchasePrice = UnitPrice * Stock2ApplyFactor;
+					var TotalAmount = UnitPrice * Stock2ApplyFactor * ApplyQuantity;
+					var GroupId = USERID.GroupId;
+					var CreateUser = USERID.Id;
+					var ModifyUser = USERID.Id;
+					if(parseFloat(ApplyQuantity) != 0) {
+						MaterialData.Lines.push({
+							"MaterialId": MaterialId,
+							"MaterialNo": MaterialNo,
+							"MaterialName": MaterialName,
+							"CategoryId": CategoryId,
+							"CategoryName": CategoryName,
+							"Unit": Unit,
+							"ApplyQuantity": ApplyQuantity,
+							"Stock2ApplyFactor": Stock2ApplyFactor,
+							"StockUnit": StockUnit,
+							"CostPrice": CostPrice,
+							"PurchasePrice": PurchasePrice,
+							"TotalAmount": TotalAmount,
+							"GroupId": GroupId,
+							"CreateUser": CreateUser,
+							"ModifyUser": ModifyUser
+						})
+						MaterialData.TicketTypeId = 92;
+					}
+
+				}
+				console.log(JSON.stringify(MaterialData));
+				if(MaterialData.Lines.length > 0) {
+					$("#tips1").show();
+					$("#tips2").hide();
+					$("#tips3").hide();
+					$("#tips").fadeIn();
+					$("#materialbtn").attr("disabled", true);
+					mui.ajax(localStorage.IP + 'ticketservice/reportticket/save', {
+						data: MaterialData,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 100000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': 'Bearer ' + userId.access_token
+						},
+						success: function(data) {
+							console.log(JSON.stringify(data));
+							if(JSON.stringify(data) == "true") {
+								$("#tips1").hide();
+								$("#tips2").show();
+								$("#tips3").hide();
+								setTimeout(function() {
+									$("#tips").fadeOut(300);
+									$("#cityResult").empty();
+								}, 1500);
+								$("#materialbtn").attr("disabled", false);
+								console.log(JSON.stringify(data));
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							var errortext = xhr.responseText.split(":");
+							var aa = errortext.length;
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").show().find("b").text(errortext[aa-1]);
+							setTimeout(function() {
+								$("#tips").fadeOut(300);
+							}, 1500);
+							$("#materialbtn").attr("disabled", false);
+							MaterialData.Lines = [];
+						}
+					});
+				} else {
+					mui.alert('请至少选择一种物料和数量', '友情提示');
+				}
+
+			});
+
+			//报单选择菜品或者物料		
+			$(function() {
+				$(".nav-bar span").eq(0).addClass("on");
+				$(".mui-content .mui-aside").eq(0).addClass("on");
+				$(".nav-bar span").click(function() {
+					var _thisIndex = $(this).index();
+					$(this).parent().find("span").removeClass("on");
+					$(this).addClass("on");
+					$(this).parent().next().find(".mui-aside").eq(_thisIndex).addClass("on").siblings().removeClass("on");
+
+				})
+			});
+
+			//物料添加
+			var createFragment = function(count, MaterialId, MaterialNo, MaterialName, CategoryId, CategoryName, Unit, Stock2ApplyFactor, StockUnit, UnitPrice) {
+				var fragment = document.createDocumentFragment();
+				var li;
+				for(var i = 0; i < count; i++) {
+					li = document.createElement('div');
+					li.className = 'item clearfix mui-table-view-cell';
+					li.innerHTML = '<i id="MaterialId">' + MaterialId + '</i>' +
+						'<i id="MaterialNo">' + MaterialNo + '</i>' +
+						'<i id="CategoryId">' + CategoryId + '</i>' +
+						'<i id="CategoryName">' + CategoryName + '</i>' +
+						'<i id="Stock2ApplyFactor">' + Stock2ApplyFactor + '</i>' +
+						'<i id="StockUnit">' + StockUnit + '</i>' +
+						'<i id="UnitPrice">' + UnitPrice + '</i>' +
+						'<div class="mui-slider-handle">' +
+						'<span id="MaterialName" onclick="removeNode($(this).parents(' + '\'.item\'' + '));">' + MaterialName + '</span>' +
+						'<span><input type="number" placeholder="请输入"/></span>' +
+						'<span id ="Unit">' + Unit + '</span>' +
+						'</div><div class="mui-slider-right mui-disabled">' +
+						'<a class="mui-btn" onclick="removeNode($(this).parents(\'.item\'));">删除</a></div>'
+					fragment.appendChild(li);
+				}
+				return fragment;
+			};
+
+			var cityPicker3;
+			(function($, doc) {
+				$.ready(function() {
+					//-----------------------------------------
+					//级联示例
+					cityPicker3 = new $.PopPicker({
+						layer: 3
+					});
+					cityPicker3.setData(cityData3);
+					var showCityPickerButton = doc.getElementById('showCityPicker');
+					var cityResult3 = doc.getElementById('cityResult');
+					showCityPickerButton.addEventListener('tap', function(event) {
+						cityPicker3.show(function(items) {
+							var MaterialId = (items[1] || {}).value; //物料ID
+							var MaterialNo = (items[1] || {}).MaterialNo; //物料编号
+							var MaterialName = (items[1] || {}).text; //物料名称
+							var CategoryId = (items[0] || {}).value; //物料分类ID
+							var CategoryName = (items[0] || {}).text; //物料分类名称
+							var Unit = (items[1] || {}).Unit; //采购单位
+							//							var ApplyQuantity = (items[1] || {}).text;//采购数量
+							var Stock2ApplyFactor = (items[1] || {}).Stock2PurchaseFactor; //采购单位与库存单位的比例
+							var StockUnit = (items[1] || {}).StockUnit; //库存单位
+							var UnitPrice = (items[1] || {}).UnitPrice; //库存价格
+							//							var CostPrice = (items[1] || {}).value;//采购价格= UnitPrice*Stock2ApplyFactor
+							//							var PurchasePrice = (items[2] || {}).text;//采购价格= UnitPrice*Stock2ApplyFactor
+							//							var TotalAmount = (items[1] || {}).text;//总价
+							cityResult3.appendChild(createFragment(1, MaterialId, MaterialNo, MaterialName, CategoryId, CategoryName, Unit, Stock2ApplyFactor, StockUnit, UnitPrice));
+						});
+					}, false);
+				});
+			})(mui, document);
+
+			//物料删除
+			function removeNode(object) {
+				var btnArray = ['否', '是'];
+				mui.confirm('是否移除？', '友情提示', btnArray, function(e) {
+					if(e.index == 1) {
+						object.remove();
+					}
+				})
+			};
+		</script>
+	</body>
+
+</html>

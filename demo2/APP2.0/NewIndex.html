@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>首页</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+	</head>
+
+	<body>
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable mui-scalable">
+			<!--侧滑菜单部分-->
+			<aside id="offCanvasSide" class="mui-off-canvas-left">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="title" id="NameJob">
+							<i><span></span></i>
+							<p></p>
+						</div>
+						<ul id="center">
+							<li id="Feedback.html"><span style="background:url(images/icon2.png);background-repeat:no-repeat ;background-size:60% ;background-position:center ;"></span>意见反馈</li>
+							<li class="StartApp"><span style="background:url(images/icon_openApp.png);background-repeat:no-repeat ;background-size:75% ;background-position:center ;"></span>烹烹大学</li>
+							<li><span style="background:url(images/icon2_1.png);background-repeat:no-repeat ;background-size:50% ;background-position:center ;"></span><i id="Version" style="font-style: normal;">版本号：0.0.0</i></li>
+						</ul>
+					</div>
+					<a class="mui-btn mui-btn-block mui-back" id="backLoading">退出登录</a>
+				</div>
+			</aside>
+			<!--主界面部分-->
+			<div class="mui-inner-wrap">
+				<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+					<a href="#offCanvasSide" class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a>
+					<!--<a class="mui-btn-link  mui-pull-right"></a>-->
+					<h1 class="mui-title" id="refresh"></h1>
+				</header>
+				<div id="offCanvasContentScroll" class="mui-scroll-wrapper" style="background-color: #efeff4; padding-top: 64px; height: 100%;">
+					<div class="mui-scroll">
+						<div class="mui-aside">
+							<p class="title" id="123123">昨日毛利率</p>
+							<h2 id="GrossProfit_content" title="maoli.html"><span id="GrossProfit">0</span><i>%</i></h2>
+							<div class="mui-row">
+								<div class="mui-col-sm-6 mui-col-xs-6">
+									<p>昨日销售额</p>
+									<span id="RealAmount">0元</span>
+								</div>
+								<div class="mui-col-sm-6 mui-col-xs-6">
+									<p>成本</p>
+									<span id="SystemAmount">0元</span>
+								</div>
+							</div>
+						</div>
+						<ul class="mui-table-view" id="mui-section" style="background: none;">
+							<li>
+								<p>要货采购</p>
+								<dl class="clearfix">
+									<dd><span style="background: url(images/index_icon1.png) center no-repeat;background-size:60% ;"></span>档口报单</dd>
+									<dd><span style="background: url(images/index_icon2.png) center no-repeat;background-size:60% ;"></span>门店要货</dd>
+									<dd><span style="background: url(images/index_icon3.png) center no-repeat;background-size:60% ;"></span>门店采购</dd>
+									<dd><span style="background: url(images/index_icon4.png) center no-repeat;background-size:60% ;"></span>临时采购</dd>
+								</dl>
+							</li>
+							<li>
+								<p>入库采购</p>
+								<dl class="clearfix">
+									<dd><span style="background: url(images/index_icon5.png) center no-repeat;background-size:60% ;"></span>采购验收</dd>
+									<dd><span style="background: url(images/index_icon6.png) center no-repeat;background-size:60% ;"></span>要货验收</dd>
+									<dd><span style="background: url(images/index_icon7.png) center no-repeat;background-size:60% ;"></span>物料分配</dd>
+									<dd></dd>
+								</dl>
+							</li>
+							<li>
+								<p>调拨盘点</p>
+								<dl class="clearfix">
+									<dd><span style="background: url(images/index_icon8.png) center no-repeat;background-size:60% ;"></span>物料调拨</dd>
+									<dd><span style="background: url(images/index_icon9.png) center no-repeat;background-size:60% ;"></span>库存盘点</dd>
+									<dd><span style="background: url(images/index_icon10.png) center no-repeat;background-size:60% ;"></span>库存报告</dd>
+									<dd></dd>
+								</dl>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!-- off-canvas backdrop -->
+				<div class="mui-off-canvas-backdrop" style="background:none;box-shadow: -11px 0 35px 15px rgba(30,32,53,.2), -11px 0 35px 15px rgba(30,32,53,.2);"></div>
+			</div>
+		
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui('#offCanvasSideScroll').scroll();
+			mui('#offCanvasContentScroll').scroll();
+		</script>
+		
+	</body>
+
+</html>

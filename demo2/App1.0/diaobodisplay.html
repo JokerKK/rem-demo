@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.poppicker.css"/>
+		<style>
+			.mui-content {
+				background: none;
+				padding:227px  0 60px !important;
+			}
+			
+			.mui-content .btn {
+				text-align: center;
+				width: 100%;
+				padding: 15px 0;
+				background: #fff;
+				position: fixed;
+				top: 174px;
+				left: 0;
+				z-index: 99;
+				border-bottom: 1px #c3c3c3 solid;
+			}
+			
+			.mui-content .btn i {
+				display: block;
+				width: 28px;
+				height: 28px;
+				background: url(images/icon6.png);
+				background-repeat: no-repeat;
+				background-size: 75%;
+				background-position: center;
+				position: absolute;
+				top: 12px;
+				left: 50%;
+				margin-left: 35px;
+			}
+			
+			.mui-content .item {
+				padding: 0 0 0 15px;
+				background: #fff;
+				position: relative;
+			}
+			
+			.mui-content .item h2 {
+				font-size: 1.8rem;
+				font-weight: normal;
+				color: #282828;
+				margin: 0;
+				line-height: 2;
+			}
+			
+			.mui-content .item p {
+				line-height: 2;
+				font-size: 1.4rem;
+				border-bottom: 1px #c3c3c3 solid;
+				color: #282828;
+			}
+			.mui-content .item p input{
+				    padding: 0;
+				    margin: 0;
+				    text-align: center;
+				    width: 50px;
+				    border: none;
+				    color: #282828;
+				    
+			}	
+			.mui-content .item span {
+				position: absolute;
+				right: 15px;
+				top: 25px;
+				color: #8f8f94;
+			}
+			.mui-content .item i{
+				display: none;
+			}
+			.mui-content .item strong{
+				font-weight: normal;
+			}
+			
+			.mui-content .item .mui-btn {
+				background: #ff4951;
+				font-size: 1.8rem;
+			}
+			
+			.choose {
+				position: fixed;
+				top: 64px;
+				width: 100%;
+				padding:15px;
+				list-style:none;
+				background: #fff;
+				margin: 0;
+				z-index: 99;
+			}
+			
+			.choose li {
+				height: 40px;
+				line-height: 40px;
+				position: relative;
+				color: #656565;
+				font-size: 1.6rem;
+				background: url(images/icon7.png);
+				background-repeat:no-repeat ;
+				background-size:3% ;
+				background-position:right 30px; 
+				border-bottom:1px #c3c3c3 solid ;
+			}
+			
+			.choose li label {
+				display: inline-block;
+				float: left;
+			}
+			
+			.choose li select {
+				height: 40px;
+				float: left;
+				width: 50%;
+				color: #282828;
+				font-size: 1.6rem;
+				margin: 0;
+				padding: 0;
+				position: absolute;
+				top: 0;
+				left: 35%;
+				background: none;
+			}
+			#btn {
+				border: none;
+				border-radius: 0;
+				background: #dc2f37;
+				color: #fff;
+				position: fixed;
+				bottom: 0;
+				margin: 0;
+			}
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:25%;
+				z-index: 9999;
+				width:50%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 1.6rem;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips #tips4{
+				display: none;
+				margin-top: -10px;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#tips #tips4 span.mui-icon-closeempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+			<a class="mui-icon  mui-action-back mui-icon-left-nav mui-pull-left" id="back">返回</a>
+			<h1 class="mui-title">物料调拨</h1>
+			<!--<a class="mui-pull-right">保存</a>-->
+		</header>
+		<ul class="choose">
+			<li>
+				<label>进货档口</label>
+				<select id="select">
+					<option  selected>请选择</option>
+					<!--<option value="中厨">中厨</option>
+					<option value="面点" selected>面点</option>
+					<option value="冷菜">冷菜</option>-->
+				</select>
+			</li>
+			<li>
+				<label>出货档口</label>
+				<select id="select1" disabled>
+					<option  selected>请选择</option>
+					<!--<option value="中厨">中厨</option>
+					<option value="面点">面点</option>
+					<option value="冷菜">冷菜</option>-->
+				</select>
+			</li>
+		</ul>
+		<div class="mui-content">
+			<div class="btn" id="showCityPicker">添加物料<i></i></div>
+			<div id="cityResult">
+			</div>
+		</div>
+		<button type="button" id="btn" class="mui-btn mui-btn-block" disabled>确认调拨</button>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+			<div id="tips4"><span class="mui-icon mui-icon-closeempty"></span><b>调拨档口不能相同<br />请重新选择</b></div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script src="js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.poppicker.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script type="text/javascript">
+			function plusReady() {
+				plus.nativeUI.closeWaiting();
+				//显示当前页面
+				mui.currentWebview.show();
+			$("#back").on('tap', function() {
+				var ws=plus.webview.currentWebview();
+				plus.webview.close(ws);
+				mui.openWindow({
+								url:'index.html',
+								show:{
+								  autoShow: true,	
+							      aniShow:'slide-out-right',//页面显示动画，默认为”slide-in-right“；
+							      duration:300//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+							    },
+							    waiting: {
+									autoShow: false, //自动显示等待框，默认为true
+								}
+							});	
+			});
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			};
+		</script>-->
+		<script type="text/javascript">
+			mui.init();
+			var userId = JSON.parse(localStorage.token);//账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID);//门店信息
+			var InWarehouseId;
+			var InWarehouseName;
+			var OutWarehouseId;
+			var OutWarehouseName;
+			var MaterialData = {
+				"Lines": [
+//						{
+//					      "HeaderIds": null,
+//					      "HeaderId": null,
+//					      "MaterialId": null,
+//					      "MaterialNo": null,
+//					      "MaterialName": null,
+//					      "CategoryId": null,
+//					      "CategoryName":null,
+//					      "Unit": null,
+//					      "ApplyQuantity":null,
+//					      "Stock2ApplyFactor": null,
+//					      "StockUnit": null,
+//					      "CostPrice":null,
+//					      "PurchasePrice":null,
+//					      "TotalAmount": null,
+//					      "VendorId": null,
+//					      "VendorName": null,
+//					      "Id": null,
+//					      "GroupId": null,
+//					      "CreateUser": null,
+//					      "ModifyUser":null
+//					    }
+
+				],
+				"Guid": null,
+				"TicketNo": null,
+				"TicketTypeId": 137, //提交类型 菜品(91)或者原料(92)
+				"OperatorId": USERID.Id, //用户ID
+				"OperatorName": USERID.Name, //用户名
+				"BranchId": USERID.BranchId, //门店ID
+				"BranchName": USERID.BranchName, //门店名称
+				"Memo":null,
+				"SourceWarehouseId": null, //出库仓库ID
+				"SourceWarehouseName": null, //出库仓库名称
+				"SourceDepartmentId": USERID.BranchId, //门店ID
+				"SourceDepartmentName": USERID.BranchName, //门店名称
+				"TargetWarehouseId": null,
+			  	"TargetWarehouseName": null,
+			  	"TargetDepartmentId": USERID.BranchId,
+			  	"TargetDepartmentName":USERID.BranchName,
+				"TargetObjectId": null,
+  				"TargetObjectName": null,
+  				"Id": null,
+				"GroupId": USERID.GroupId,
+				"CreateUser": USERID.Id,
+				"ModifyUser": USERID.Id
+			};
+			//仓库数据读取
+			mui.ajax(localStorage.IP+'common/warehouse/listforstalls?hasAll=false', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));
+//					console.log(data.length);
+					for(var i = 0; i < data.length; i++) {
+//						console.log(data[i].Name);
+//						console.log(data[i].Id);
+						$("#select").append('<option id="'+data[i].Id+'" value="'+data[i].Name+'">'+data[i].Name+'</option>');
+						$("#select1").append('<option id="'+data[i].Id+'" value="'+data[i].Name+'">'+data[i].Name+'</option>');
+					}
+					warehousematerial(-1);
+				},
+				error:function(xhr,type,errorThrown){
+						//异常处理；
+							console.log(JSON.stringify(xhr.response));
+							console.log(JSON.stringify(xhr.responseText));
+							console.log(JSON.stringify(xhr.statusText));
+							console.log(JSON.stringify(type));
+							console.log(JSON.stringify(errorThrown));
+					}
+			});
+			//收集调拨物料的数据
+			$("#select").change(function() {
+				$("#select1").attr("disabled",false);
+				InWarehouseName = $(this).val();
+				var InOptionId = $(this).find("option:selected").attr("id");
+				$(this).attr("name",InOptionId);
+				InWarehouseId = $(this).attr("name");
+				if(InWarehouseName == OutWarehouseName){
+					$("#tips").fadeIn();
+					$("#tips4").show();
+					setTimeout(function(){
+						$("#tips").fadeOut(300);
+						$("#tips4").hide();
+						
+					},1000)
+					$("#btn").attr("disabled",true);
+				}else{
+					$("#btn").attr("disabled",false);
+				}
+				$("#select1").change(function() {
+					$("#btn").attr("disabled",true);	
+					OutWarehouseName = $(this).val();
+					var OutOptionId = $(this).find("option:selected").attr("id");
+					$(this).attr("name",OutOptionId);
+					OutWarehouseId = $(this).attr("name");
+					if(OutWarehouseName == InWarehouseName){
+						$("#tips").fadeIn();
+						$("#tips4").show();
+						setTimeout(function(){
+							$("#tips").fadeOut(300);
+							$("#tips4").hide();
+							
+						},1000)
+					}else{
+						$("#btn").attr("disabled",false);
+						MaterialData.SourceWarehouseId = OutWarehouseId;//出货档口ID赋值
+						MaterialData.SourceWarehouseName = OutWarehouseName;//出货档口名称赋值
+						MaterialData.TargetWarehouseId = InWarehouseId;//进货档口ID赋值
+						MaterialData.TargetWarehouseName = InWarehouseName;//出货档口名称赋值
+						console.log(InWarehouseId)
+						console.log(InWarehouseName)
+						console.log(OutWarehouseId)
+						console.log(OutWarehouseName)
+					}
+					
+				});
+			});
+			
+			//调拨提交
+			$("#btn").bind('click',function(){
+				console.log(JSON.stringify(MaterialData));
+				var _this = $("#cityResult .item");
+				for(var i = 0; i < _this.length; i++) {
+					var MaterialId = _this.eq(i).find("#MaterialId").text();
+					var MaterialNo = _this.eq(i).find("#MaterialNo").text();
+					var MaterialName =_this.eq(i).find("#MaterialName").text();
+					var CategoryId = _this.eq(i).find("#CategoryId").text();
+					var CategoryName = _this.eq(i).find("#CategoryName").text();
+					var StockUnit = _this.eq(i).find("#StockUnit").text();
+					var StockQuantity = parseFloat(_this.eq(i).find("input").val()).toFixed(2);
+					var CostPrice = _this.eq(i).find("#UnitPrice").text();
+					if(parseFloat(StockQuantity) != 0){
+						MaterialData.Lines.push({
+						  "HeaderIds": null,
+					      "HeaderId": null,
+					      "MaterialId": MaterialId,
+					      "MaterialNo": MaterialNo,
+					      "MaterialName": MaterialName,
+					      "CategoryId": CategoryId,
+					      "CategoryName":CategoryName,
+					      "Unit": StockUnit,
+					      "ApplyQuantity":StockQuantity,
+					      "Stock2ApplyFactor": 1,
+					      "StockUnit": StockUnit,
+					      "CostPrice":CostPrice,
+					      "PurchasePrice":CostPrice,
+					      "TotalAmount": CostPrice * StockQuantity,
+					      "Id": null,
+					      "GroupId":  USERID.GroupId,
+						  "CreateUser": USERID.Id,
+						  "ModifyUser": USERID.Id  
+						})
+					}
+				};
+				console.log(JSON.stringify(MaterialData));
+				if(MaterialData.Lines.length > 0){
+					$("#tips1").show();
+					$("#tips2").hide();
+					$("#tips3").hide();
+					$("#tips").fadeIn();
+					$("#btn").attr("disabled",true);
+					mui.ajax(localStorage.IP + 'ticketservice/transferinout/save', {
+						data:MaterialData,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'POST', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': 'Bearer ' + userId.access_token
+						},
+						success: function(data) {
+							console.log(JSON.stringify(data));
+							if(data == true){
+								$("#tips1").hide();
+								$("#tips2").show();
+								$("#tips3").hide();
+								$("#tips").fadeIn();
+								$("#btn").attr("disabled",false);
+								setTimeout(function(){
+									$("#tips2").hide();
+									$("#tips").fadeOut();
+								},1000);
+								$("#cityResult").empty();
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							$("#tips1").hide();
+							$("#tips2").hide();
+							$("#tips3").show();
+							$("#tips").fadeIn();
+							$("#btn").attr("disabled",false);
+							setTimeout(function(){
+								$("#tips3").hide();
+								$("#tips").fadeOut();
+							},1000);
+							console.log(JSON.stringify(xhr.response));
+							console.log(JSON.stringify(xhr.responseText));
+							console.log(JSON.stringify(xhr.statusText));
+							console.log(JSON.stringify(type));
+							console.log(JSON.stringify(errorThrown));
+						}
+					});
+				}else{
+					mui.alert('请至少选择一种菜品的数量', '友情提示');
+				}
+			})
+			
+			
+			//物料添加
+			var createFragment = function(count, MaterialId, MaterialNo,MaterialName,CategoryId,CategoryName,Unit,Stock2ApplyFactor,StockUnit,UnitPrice) {
+				var fragment = document.createDocumentFragment();
+				var li;
+				for(var i = 0; i < count; i++) {
+					li = document.createElement('div');
+					li.className = 'item clearfix mui-table-view-cell';
+					li.innerHTML = '<i id="MaterialId">'+MaterialId+'</i>'+
+					'<i id="MaterialNo">'+MaterialNo+'</i>'+
+					'<i id="CategoryId">'+CategoryId+'</i>'+
+					'<i id="CategoryName">'+CategoryName+'</i>'+
+					'<i id="Stock2ApplyFactor">'+Stock2ApplyFactor+'</i>'+
+					'<i id="Unit">'+Unit+'</i>'+
+					'<i id="UnitPrice">'+UnitPrice+'</i>'+
+					'<div class="mui-slider-handle">'+
+					'<h2 id="MaterialName">'+MaterialName+'</h2>'+
+					'<p>数量:<input type="number" placeholder="请输入"/><strong id="StockUnit">'+StockUnit+'</strong></p>'+
+					'<span>已选择</span></div>'+
+					'<div class="mui-slider-right mui-disabled"><a class="mui-btn" onclick="removeNode($(this).parents(\'.item\'));">删除</a></div>'
+					fragment.appendChild(li);
+				}
+				return fragment;
+			};
+			
+			var cityPicker3;
+			(function($, doc) {
+				$.ready(function() {
+					//-----------------------------------------
+					//级联示例
+					cityPicker3 = new $.PopPicker({
+						layer: 3
+					});
+					cityPicker3.setData(cityData3);
+					var showCityPickerButton = doc.getElementById('showCityPicker');
+					var cityResult3 = doc.getElementById('cityResult');
+					showCityPickerButton.addEventListener('tap', function(event) {
+						cityPicker3.show(function(items) {
+							var MaterialId = (items[1] || {}).value;//物料ID
+							var MaterialNo = (items[1] || {}).MaterialNo;//物料编号
+							var MaterialName = (items[1] || {}).text;//物料名称
+							var CategoryId = (items[0] || {}).value;//物料分类ID
+							var CategoryName = (items[0] || {}).text;//物料分类名称
+							var Unit = (items[1] || {}).Unit;//采购单位
+//							var ApplyQuantity = (items[1] || {}).text;//采购数量
+							var Stock2ApplyFactor = (items[1] || {}).Stock2PurchaseFactor;//采购单位与库存单位的比例
+							var StockUnit = (items[1] || {}).StockUnit;//库存单位
+							var UnitPrice = (items[1] || {}).UnitPrice;//库存价格
+//							var CostPrice = (items[1] || {}).value;//采购价格= UnitPrice*Stock2ApplyFactor
+//							var PurchasePrice = (items[2] || {}).text;//采购价格= UnitPrice*Stock2ApplyFactor
+//							var TotalAmount = (items[1] || {}).text;//总价
+							cityResult3.appendChild(createFragment(1, MaterialId, MaterialNo,MaterialName,CategoryId,CategoryName,Unit,Stock2ApplyFactor,StockUnit,UnitPrice));
+						});
+					}, false);
+				});
+			})(mui, document);
+			
+			//物料删除
+			function removeNode(object) {
+				var btnArray = ['否', '是'];
+				mui.confirm('是否移除？', '友情提示', btnArray, function(e) {
+					if(e.index == 1) {
+						object.remove();
+					}
+				})
+			};
+		</script>
+	</body>
+
+</html>

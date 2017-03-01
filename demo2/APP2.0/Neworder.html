@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>首页</title>
+		<!--重置浏览器样式-->
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<script src="js/hotcss.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			// Firefox, Google Chrome, Opera, Safari, Internet Explorer from version 9
+			function OnInput(event) {
+				console.log("The new content: " + event.target.value);
+				var searchTex = event.target.value;
+				console.log(typeof searchTex)
+				$("#materiel_content").find("ul").empty();
+				if(searchTex) {
+					for(var i = 0; i < cityData3.length; i++) {
+						for(var j = 0; j < cityData3[i].children.length; j++) {
+							if(cityData3[i].children[j].text.indexOf(searchTex) != -1) {
+								var bb = cityData3[i].children[j].value + '-' + cityData3[i].children[j].MaterialNo + '-' + cityData3[i].value + '-' + cityData3[i].text + '-' +cityData3[i].children[j].Stock2PurchaseFactor + '-' + cityData3[i].children[j].StockUnit + '-' + cityData3[i].children[j].UnitPrice + '-' + cityData3[i].children[j].Unit+ '-' + cityData3[i].children[j].IsInGroup;
+								$("#materiel_content ul").append(
+									'<li><span>' + cityData3[i].children[j].text + '</span>' +
+									'<input class="' + bb.split('-')[0] + '" name="' + bb + '"' + 'onblur="addList($(this));" type="number" placeholder="0" />' +
+									'<select class="mui-btn mui-btn-block" onchange="SelectUnit($(this))">' +
+									'<option value="' + cityData3[i].children[j].Unit + '" id="' + cityData3[i].children[j].Stock2PurchaseFactor + '">' + cityData3[i].children[j].Unit + '</option>' +
+									'<option value="' + cityData3[i].children[j].StockUnit + '" id="1">' + cityData3[i].children[j].StockUnit + '</option></select></li>');
+							}
+						}
+					}
+					$("#materiel_content").find("ul").css("paddingBottom", 9 + 'rem');
+				}
+			}
+			// Internet Explorer
+			function OnPropChanged(event) {
+				if(event.propertyName.toLowerCase() == "value") {
+					console.log("The new content: " + event.srcElement.value);
+					var searchTex = event.srcElement.value;
+					console.log(typeof searchTex)
+					$("#materiel_content").find("ul").empty();
+					if(searchTex) {
+						for(var i = 0; i < cityData3.length; i++) {
+							for(var j = 0; j < cityData3[i].children.length; j++) {
+								if(cityData3[i].children[j].text.indexOf(searchTex) != -1) {
+									var bb = cityData3[i].children[j].value + '-' + cityData3[i].children[j].MaterialNo + '-' + cityData3[i].value + '-' + cityData3[i].text + '-' +cityData3[i].children[j].Stock2PurchaseFactor + '-' + cityData3[i].children[j].StockUnit + '-' + cityData3[i].children[j].UnitPrice + '-' + cityData3[i].children[j].Unit+ '-' + cityData3[i].children[j].IsInGroup;
+									$("#materiel_content ul").append(
+										'<li><span>' + cityData3[i].children[j].text + '</span>' +
+										'<input class="' + bb.split('-')[0] + '" name="' + bb + '"' + 'onblur="addList($(this));" type="number" placeholder="0" />' +
+										'<select class="mui-btn mui-btn-block" onchange="SelectUnit($(this))">' +
+										'<option value="' + cityData3[i].children[j].Unit + '" id="' + cityData3[i].children[j].Stock2PurchaseFactor + '">' + cityData3[i].children[j].Unit + '</option>' +
+										'<option value="' + cityData3[i].children[j].StockUnit + '" id="1">' + cityData3[i].children[j].StockUnit + '</option></select></li>');
+								}
+							}
+						}
+						$("#materiel_content").find("ul").css("paddingBottom", 9 + 'rem');
+					}
+				}
+			}
+
+			function Scroll() {
+				$(".materiel_menu li").eq(0).addClass("on");
+				$(".materielList .item").eq(0).show();
+				$(".materielList").scrollTop(1);
+				$(".materielList").scroll(function() {
+					var _scrollTop = $(".materielList").scrollTop();
+					if(_scrollTop == 0) {
+						$(".materielList").scrollTop(1);
+					}
+				})
+
+			}
+		</script>
+	</head>
+
+	<body>
+		<div class="container" id="container">
+			<header>
+				<a class="back mui-action-back" id="back">返回</a>
+				<div class="topMenu">
+					<span>物料报单</span><span>菜品报单</span>
+				</div>
+				<div class="select">
+					<p></p>
+					<ul>
+						<i></i>
+						<!--<li>肉类供应商</li>-->
+					</ul>
+
+				</div>
+				<div id="mark"></div>
+			</header>
+			<div class="content">
+				<div class="materiel">
+					<aside class="search">
+						<!--onblur="searchOut($(this));"-->
+						<input type="text" onfocus='searchIn($(this));' oninput="OnInput (event);" onpropertychange="OnPropChanged (event);" id="search" placeholder="搜索" />
+						<span id="cancel">取消</span>
+					</aside>
+					<div id="materiel_content">
+						<ul>
+							<!--<li><span>鸡肉1鸡肉1鸡肉1</span><input class="鸡肉1鸡肉1鸡肉1" onblur="addList($(this));" type="number" placeholder="0" /><span>只</span></li>-->
+						</ul>
+					</div>
+					<section class="materiel_content">
+						<div class="materiel_menu">
+							<ul>
+								<!--<li class="on">最多1个字</li>
+								<li>最多2个字</li>-->
+							</ul>
+						</div>
+						<div class="materielList">
+							<!--<div class="item">
+								<ul>
+									<li><span>鸡肉1鸡肉1鸡肉1</span><span>只</span><input class="鸡肉1鸡肉1鸡肉1" onblur="addList($(this));" type="number" placeholder="0" /></li>
+								</ul>
+							</div>-->
+						</div>
+					</section>
+					<footer class="footer clearfix">
+						<button type="button" disabled>确认报单</button>
+						<a class="shopping">查看物料</a>
+					</footer>
+					<div class="wrapper">
+						<div class="content">
+							<p>物料列表&nbsp;&nbsp;&nbsp;&nbsp;报单总数量：<i style="font-style: normal;">0</i><span>关闭</span></p>
+							<ul>
+								<!--<li>
+									<span>鸡肉</span>
+									<span><input type="number" value="10" />只</span>
+								</li>-->
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="dish">
+					<div class="disList">
+						<ul>
+							<!--<li>
+								<span>鸡肉鸡肉鸡肉鸡肉鸡肉鸡肉鸡肉</span>
+								<span><input type="number" placeholder="请输入" /></span>
+							</li>-->
+						</ul>
+					</div>
+					<button id="dishSubmit" type="button">确认报单</button>
+				</div>
+			</div>
+
+			<div id="tips">
+				<div id="tips1"><span class="mui-spinner"></span><b>正在提交，请稍后</b></div>
+				<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+				<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>提交失败</b></div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var userId = JSON.parse(localStorage.token); //账户个人id信息
+			var USERID = JSON.parse(localStorage.USERID); //门店信息
+			var _SourceWarehouseId;
+			var _SourceWarehouseName;
+			//			console.log(JSON.stringify(userId));
+			//			console.log(JSON.stringify(USERID));
+			var cityData3; //系统所有物料数据
+			var TemporaryData; //临时数据
+			var materielData; //临时数据
+			var TotleCount = 0; //购物车总量
+			if(typeof localStorage['TemporaryData' + USERID.Id] == "undefined") {
+				TemporaryData = []; //临时数据
+				materielData = { "Lines": [] }; //临时数据
+			} else {
+				TemporaryData = JSON.parse(localStorage['TemporaryData' + USERID.Id]);
+				materielData = JSON.parse(localStorage['materielData' + USERID.Id]);
+			};
+			//			console.log(JSON.stringify(TemporaryData));
+			//			console.log(JSON.stringify(materielData));
+			var SubmitData = {
+				"DishLines": [],
+				"Lines": [],
+				"TicketTypeId": 0, //提交类型 菜品(91)或者原料(92)
+				"OperatorId": USERID.Id, //用户ID
+				"OperatorName": USERID.Name, //用户名
+				"BranchId": USERID.BranchId, //门店ID
+				"BranchName": USERID.BranchName, //门店名称
+				"SourceWarehouseId": null, //仓库ID
+				"SourceWarehouseName": null, //仓库名称
+				"SourceDepartmentId": USERID.BranchId, //门店ID
+				"SourceDepartmentName": USERID.BranchName, //门店名称
+				"GroupId": USERID.GroupId,
+				"CreateUser": USERID.Id,
+				"ModifyUser": USERID.Id
+			};
+
+			//仓库数据读取
+			mui.ajax(localStorage.IP + 'common/warehouse/listforemployee', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					//					console.log(JSON.stringify(data));
+					if(data.length > 0) {
+						for(var i = 0; i < data.length; i++) {
+							$("header ul").append('<li id=' + data[i].Id + ' onclick="WarehouseSelect($(this));">' + data[i].Name + '</li>')
+						}
+						$("header .select p").text(data[0].Name);
+						SubmitData.SourceWarehouseId = data[0].Id;
+						SubmitData.SourceWarehouseName = data[0].Name;
+						_SourceWarehouseId = data[0].Id;
+						dishAjax();
+					} else {
+						$("#tips").fadeIn();
+						$("#tips3").show().find("b").text("无可管理档口");
+					}
+
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+
+			//读取所有物料数据
+			mui.ajax(localStorage.IP + 'common/material/tree?searchType=0', {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + userId.access_token
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));
+					cityData3 = data;
+					for(var i = 0; i < data.length; i++) {
+						$(".materiel_menu ul").append('<li onclick="materielSelect($(this))">' + data[i].text + '</li>');
+						$(".materielList").append('<div class="item"><ul></ul></div>');
+						for(var j = 0; j < data[i].children.length; j++) {
+							var aa = data[i].children[j].value + '-' + data[i].children[j].MaterialNo + '-' + data[i].value + '-' + data[i].text + '-' + data[i].children[j].Stock2PurchaseFactor + '-' + data[i].children[j].StockUnit + '-' + data[i].children[j].UnitPrice + '-' + data[i].children[j].Unit+ '-' + data[i].children[j].IsInGroup;
+							if(jQuery.inArray(aa, TemporaryData) != -1) {
+								if(materielData.Lines[jQuery.inArray(aa, TemporaryData)].IsUnit) {
+									$(".materielList .item").eq(i).find("ul").append(
+										'<li><span>' + data[i].children[j].text + '</span>' +
+										'<input class="' + data[i].children[j].value + '" name="' + aa + '" onblur="addList($(this));" type="number" value="' + materielData.Lines[jQuery.inArray(aa, TemporaryData)].ApplyQuantity + '" />' +
+										'<select class="mui-btn mui-btn-block" onchange="SelectUnit($(this))">' +
+										'<option value="' + data[i].children[j].Unit + '" id="' + data[i].children[j].Stock2PurchaseFactor + '" selected>' + data[i].children[j].Unit + '</option>' +
+										'<option value="' + data[i].children[j].StockUnit + '" id="1">' + data[i].children[j].StockUnit + '</option></select></li>');
+								} else {
+									$(".materielList .item").eq(i).find("ul").append(
+										'<li><span>' + data[i].children[j].text + '</span>' +
+										'<input class="' + data[i].children[j].value + '" name="' + aa + '" onblur="addList($(this));" type="number" value="' + materielData.Lines[jQuery.inArray(aa, TemporaryData)].ApplyQuantity + '" />' +
+										'<select class="mui-btn mui-btn-block" onchange="SelectUnit($(this))">' +
+										'<option value="' + data[i].children[j].Unit + '" id="' + data[i].children[j].Stock2PurchaseFactor + '">' + data[i].children[j].Unit + '</option>' +
+										'<option value="' + data[i].children[j].StockUnit + '" id="1" selected>' + data[i].children[j].StockUnit + '</option></select></li>');
+								}
+							} else {
+								$(".materielList .item").eq(i).find("ul").append(
+									'<li><span>' + data[i].children[j].text + '</span>' +
+									'<input class="' + data[i].children[j].value + '" name="' + aa + '" onblur="addList($(this));" type="number" placeholder="0" />' +
+									'<select class="mui-btn mui-btn-block" onchange="SelectUnit($(this))">' +
+									'<option value="' + data[i].children[j].Unit + '" id="' + data[i].children[j].Stock2PurchaseFactor + '">' + data[i].children[j].Unit + '</option>' +
+									'<option value="' + data[i].children[j].StockUnit + '" id="1">' + data[i].children[j].StockUnit + '</option></select></li>');
+							}
+						}
+
+					}
+					addShopping(materielData);
+					Scroll();
+					setTimeout(function() {
+						$("#tips").fadeOut(300);
+						$("#tips3").hide().find("b").text("提交失败");
+					}, 1500);
+				}
+			});
+
+			//菜品数据读取
+			function dishAjax() {
+				mui.ajax(localStorage.IP + 'common/dish/listforwarehouse?warehouseId=' + _SourceWarehouseId, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + userId.access_token
+					},
+					success: function(data) {
+						$(".disList ul").empty();
+						//						console.log(JSON.stringify(data));
+						for(var i = 0; i < data.length; i++) {
+							var aa = data[i].DishId + '-' + data[i].CategoryId;
+							$(".disList ul").append('<li><span id=' + aa + '>' + data[i].DishName + '</span>' +
+								'<span><input type="number" placeholder="请输入" /></span></li>');
+						}
+						$(".disList ul").find("li").eq((data.length - 1)).css("marginBottom", 10 + 'rem');
+					}
+				});
+			};
+
+			//档口选择
+			function WarehouseSelect(id) {
+				id.parent().prev().text(id.text());
+				id.parent().fadeOut(0);
+				$("#mark").fadeOut(0);
+				_SourceWarehouseId = id.attr("id");
+				_SourceWarehouseName = id.text();
+				SubmitData.SourceWarehouseId = _SourceWarehouseId;
+				SubmitData.SourceWarehouseName = _SourceWarehouseName;
+				TemporaryData = []; //临时数据
+				materielData = { "Lines": [] }; //临时数据
+				localStorage['TemporaryData' + USERID.Id] = JSON.stringify(TemporaryData);
+				localStorage['materielData' + USERID.Id] = JSON.stringify(materielData);
+				console.log(localStorage['TemporaryData' + USERID.Id]);
+				console.log(localStorage['materielData' + USERID.Id]);
+				$(".materielList input").val('');
+				dishAjax();
+				setTimeout(function() {
+					$("input").attr("disabled", false);
+				}, 350);
+			}
+
+			//把获取到的物料插入购物车
+			function addShopping(data) {
+//				console.log(JSON.stringify(data));
+				$(".wrapper ul").empty();
+				TotleCount = 0;
+				for(var i = 0; i < data.Lines.length; i++) {
+					$(".wrapper ul").append('<li><span>' + data.Lines[i].MaterialName + '</span><span class="Unit" id="' + data.Lines[i].Stock2ApplyFactor + '">' + data.Lines[i].Unit + '</span>' +
+						'<input class="' + data.Lines[i].MaterialId.split('-')[0] + '" name=' + data.Lines[i].MaterialId + ' type="number" value="' + data.Lines[i].ApplyQuantity + '" onblur="addShoppingCat($(this));" /></li>');
+					$(".materielList").find("." + data.Lines[i].MaterialId).val(data.Lines[i].ApplyQuantity);
+					TotleCount += parseFloat(data.Lines[i].ApplyQuantity);
+				};
+				$(".wrapper .content").find("p").find("i").text(TotleCount);
+			}
+
+			//单位选择 交互
+			function SelectUnit(id) {
+				for(var i = 0; i < materielData.Lines.length; i++) {
+					if(id.prev().attr("name") == materielData.Lines[i].MaterialId) {
+						if(id.find("option:selected").index() == 1){
+							materielData.Lines[i].IsUnit=false;
+							materielData.Lines[i].Unit = id.find("option:selected").attr("value");
+							materielData.Lines[i].Stock2ApplyFactor = id.find("option:selected").attr("id");
+						}else{
+							materielData.Lines[i].IsUnit=true;
+							materielData.Lines[i].Unit = id.find("option:selected").attr("value");
+							materielData.Lines[i].Stock2ApplyFactor = id.find("option:selected").attr("id");
+						}
+						
+					}
+				}
+//				alert(JSON.stringify(materielData));
+				addShopping(materielData);
+				localStorage['materielData' + USERID.Id] = JSON.stringify(materielData);
+			}
+
+
+			//物料报单提交
+			$(".footer button").on('tap', function() {
+				$("#tips").fadeIn();
+				$("#tips1").show();
+				$("#tips2").hide();
+				$("#tips3").hide();
+				var _materielList = $(".wrapper li");
+				for(var i = 0; i < _materielList.length; i++) {
+					var lssj = _materielList.eq(i).find("input").attr("name").split('-');
+					console.log(JSON.stringify(lssj));
+					var MaterialId = lssj[0]; //物料ID
+					var MaterialNo = lssj[1]; //物料编号
+					var MaterialName = _materielList.eq(i).find("span").eq(0).text(); //物料名称
+					var CategoryId = lssj[2]; //分类ID
+					var CategoryName = lssj[3]; //分类名称
+					var Unit = _materielList.eq(i).find(".Unit").text(); //采购单位
+					var ApplyQuantity = parseFloat(_materielList.eq(i).find("input").val()); //物料数量
+					var Stock2ApplyFactor = parseFloat(_materielList.eq(i).find(".Unit").attr("id"));
+					var StockUnit = lssj[5]; //库存单位
+					var UnitPrice = parseFloat(lssj[6]); //库存价格
+					var CostPrice = UnitPrice * Stock2ApplyFactor;
+					var PurchasePrice = UnitPrice * Stock2ApplyFactor;
+					var TotalAmount = UnitPrice * Stock2ApplyFactor * ApplyQuantity;
+					var IsInGroup = lssj[8]
+					var GroupId = USERID.GroupId;
+					var CreateUser = USERID.Id;
+					var ModifyUser = USERID.Id;
+					SubmitData.Lines.push({
+						"MaterialId": MaterialId,
+						"MaterialNo": MaterialNo,
+						"MaterialName": MaterialName,
+						"CategoryId": CategoryId,
+						"CategoryName": CategoryName,
+						"Unit": Unit,
+						"ApplyQuantity": ApplyQuantity.toFixed(2),
+						"Stock2ApplyFactor": Stock2ApplyFactor,
+						"StockUnit": StockUnit,
+						"CostPrice": CostPrice.toFixed(2),
+						"PurchasePrice": PurchasePrice.toFixed(2),
+						"TotalAmount": TotalAmount.toFixed(2),
+						"IsInGroup":IsInGroup,
+						"GroupId": GroupId,
+						"CreateUser": CreateUser,
+						"ModifyUser": ModifyUser
+					})
+				}
+				SubmitData.TicketTypeId = 92;
+				console.log(JSON.stringify(SubmitData));
+				mui.ajax(localStorage.IP + 'ticketservice/reportticket/save', {
+						data: SubmitData,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 100000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': 'Bearer ' + userId.access_token
+						},
+						success: function(data) {
+							console.log(JSON.stringify(data));
+							$("#tips1").hide();
+							$("#tips2").show();
+							$("#tips3").hide();
+							$("input").attr("disabled",false);
+							setTimeout(function() {
+								$("#tips").fadeOut(300);
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide();
+								$(".wrapper ul").empty();
+								$(".wrapper").hide();
+								$(".materielList input").val('');
+								$(".footer button").attr("disabled",true);
+								TemporaryData = [];//临时数据
+								materielData={"Lines": []};//临时数据
+								localStorage['TemporaryData'+USERID.Id] = JSON.stringify(TemporaryData);
+								localStorage['materielData'+USERID.Id] = JSON.stringify(materielData);
+							}, 1500);
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							
+							var errortext = xhr.responseText.split(":");
+							var aa = errortext.length;
+							$("#tips1").hide();
+							$("#tips2").hide();
+							if(errortext[aa-1] == ''){
+								$("#tips3").show().find("b").text('请确保网络畅通');
+							}else{
+								$("#tips3").show().find("b").text(errortext[aa-1]);
+							}
+							
+							setTimeout(function() {
+								$("#tips").fadeOut(300);
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide().find("b").text("提交失败");
+							}, 1500);
+							SubmitData.Lines = [];
+						}
+					});
+			})
+			//菜品报单提交
+			$("#dishSubmit").on('tap', function() {
+				var _this = $(".disList li")
+				for(var i = 0; i < _this.length; i++) {
+					var lssj = _this.eq(i).find("span").eq(0).attr("id").split('-');
+					var DishId = lssj[0];
+					var DishName = _this.eq(i).find("span").eq(0).text();
+					var CategoryId = lssj[1];
+					var ApplyQuantity = parseFloat(_this.eq(i).find("input").val());
+					var GroupId = USERID.GroupId;
+					var CreateUser = USERID.Id;
+					var ModifyUser = USERID.Id;
+					if(!(isNaN(ApplyQuantity) || ApplyQuantity == 0)) {
+						SubmitData.DishLines.push({
+							"DishId": DishId,
+							"DishName": DishName,
+							"CategoryId": CategoryId,
+							"ApplyQuantity": ApplyQuantity,
+							"GroupId": GroupId,
+							"CreateUser": CreateUser,
+							"ModifyUser": ModifyUser
+						})
+					}
+				}
+				SubmitData.TicketTypeId = 91;
+				console.log(JSON.stringify(SubmitData));
+				if(SubmitData.DishLines.length > 0) {
+					$("#tips1").show();
+					$("#tips2").hide();
+					$("#tips3").hide();
+					$("#tips").fadeIn();
+					mui.ajax(localStorage.IP + 'ticketservice/reportticket/save', {
+						data: SubmitData,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': 'Bearer ' + userId.access_token
+						},
+						success: function(data) {
+							console.log(JSON.stringify(data));
+							$("#tips1").hide();
+							$("#tips2").show();
+							$("#tips3").hide();
+							setTimeout(function() {
+								$("#tips").fadeOut(300);
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide();
+								$(".disList input").val('');
+							}, 1500);
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							var errortext = xhr.responseText.split(":");
+							var aa = errortext.length;
+							$("#tips1").hide();
+							$("#tips2").hide();
+							if(errortext[aa - 1] == '') {
+								$("#tips3").show().find("b").text('请确保网络畅通');
+							} else {
+								$("#tips3").show().find("b").text(errortext[aa - 1]);
+							}
+							setTimeout(function() {
+								$("#tips").fadeOut(300);
+								$("#tips1").hide();
+								$("#tips2").hide();
+								$("#tips3").hide().find("b").text("提交失败");
+							}, 1500);
+							SubmitData.DishLines = [];
+						}
+					});
+				} else {
+					mui.alert('请至少选择一种菜品的数量', '友情提示');
+					$(".disList input").val('');
+				}
+
+			});
+
+			$(function() {
+				$(".materiel").css("height", $(".container").height() - ($("header").innerHeight() + $("footer").innerHeight()));
+				$(".dish").css("height", $(".container").height() - ($("header").innerHeight()));
+				$(".dish .disList").css("height", $(".container").height() - ($("header").innerHeight() + $("footer").innerHeight()));
+				$(".materiel_content").css("height", $(".materiel").height() - $(".search").innerHeight());
+				$("#materiel_content").css("height", $(".materiel").height() - $(".search").innerHeight());
+				$(".topMenu span").eq(0).addClass("on");
+				$(".content").children("div").eq(0).show();
+
+				$(".select p").on('tap', function() {
+					$(this).next().fadeToggle(0);
+					$("#mark").fadeToggle(0);
+					if($("#mark").css("display") == 'block') {
+						$("input").attr("disabled", true);
+					}
+				});
+				$("#mark").on('tap', function() {
+					$(".select ul").fadeOut(0);
+					$(this).fadeOut(0);
+					setTimeout(function() {
+						$("input").attr("disabled", false);
+					}, 350);
+				})
+				$(".topMenu span").on('tap', function() {
+					$(this).addClass("on").siblings().removeClass("on");
+					$(".content").children("div").eq($(this).index()).show().siblings().hide();
+				})
+				$(".shopping").on('tap', function() {
+					if(TemporaryData.length > 0) {
+						$(".wrapper").show();
+						$(".footer button").attr("disabled", false);
+						$(".materiel_content input").attr("disabled", true);
+					}
+
+				})
+				$(".wrapper p span").on('tap', function() {
+					$(".wrapper").hide();
+					$(".footer button").attr("disabled", true);
+					setTimeout(function() {
+						$("input").attr("disabled", false);
+					}, 350);
+				})
+				$(".wrapper").on('tap', function() {
+					$(".wrapper").hide();
+					$(".footer button").attr("disabled", true);
+					setTimeout(function() {
+						$("input").attr("disabled", false);
+					}, 350);
+				})
+				$(".wrapper .content").on("tap", function() {
+					if(document.all) {
+						window.event.cancelBubble = true;
+					} else {
+						event.stopPropagation();
+					}
+				});
+
+				$("#cancel").on('tap', function() {
+					$("#materiel_content").hide().find("ul").empty();
+					$(this).hide();
+					setTimeout(function() {
+						$("#cancel").prev().attr("class", "").val('');
+					}, 350);
+				})
+
+			});
+			//搜索获取焦点时触发搜索结果
+			function searchIn(id) {
+				$("#materiel_content").show()
+				id.attr("class", "text");
+				id.next().show();
+			}
+
+			//物料分类选择
+			function materielSelect(id) {
+				id.addClass("on").siblings().removeClass("on");
+				$(".materielList .item").eq(id.index()).show().siblings().hide();
+				$(".materielList").scrollTop(1);
+			}
+
+			//获取选择物料数量的数据
+			function addList(id) {
+				var _IsUnit = true;
+				var _thisName = id.prev().text();
+				var _thisNum = parseFloat(id.val());
+				var _thisUnit = id.next().find("option:selected").attr("value");
+				var _Stock2ApplyFactor = id.next().find("option:selected").attr("id");
+				var _thisId = id.attr("name");
+				var _thisClass = id.attr("class");
+				if(id.next().find("option:selected").index() == 1) {
+					_IsUnit = false;
+				}
+				if(!isNaN(_thisNum) && _thisNum != 0) {
+					console.log(_thisId);
+					console.log(jQuery.inArray(_thisId, TemporaryData));
+					$("." + _thisClass).val(_thisNum);
+					if(jQuery.inArray(_thisId, TemporaryData) == -1) {
+						TemporaryData.push(_thisId);
+						materielData.Lines.push({ "IsUnit": _IsUnit, "MaterialId": _thisId, "MaterialName": _thisName, "ApplyQuantity": _thisNum, "Unit": _thisUnit, "Stock2ApplyFactor": _Stock2ApplyFactor });
+						addShopping(materielData);
+					} else {
+						materielData.Lines[jQuery.inArray(_thisId, TemporaryData)].ApplyQuantity = _thisNum;
+						addShopping(materielData);
+					}
+				} else {
+					console.log(_thisId);
+					console.log(jQuery.inArray(_thisId, TemporaryData));
+					id.val('');
+					if(jQuery.inArray(_thisId, TemporaryData) != -1) {
+						materielData.Lines.splice(jQuery.inArray(_thisId, TemporaryData), 1);
+						TemporaryData.splice(jQuery.inArray(_thisId, TemporaryData), 1);
+						addShopping(materielData);
+					}
+				}
+				console.log(JSON.stringify(TemporaryData));
+				console.log(JSON.stringify(materielData));
+				localStorage['TemporaryData' + USERID.Id] = JSON.stringify(TemporaryData);
+				localStorage['materielData' + USERID.Id] = JSON.stringify(materielData);
+				console.log(localStorage['TemporaryData' + USERID.Id]);
+				console.log(localStorage['materielData' + USERID.Id]);
+			}
+
+			//修改购物车里数据
+			function addShoppingCat(id) {
+				var _thisNum = parseFloat(id.val());
+				var _thisId = id.attr("name");
+				var _thisClass = id.attr("class");
+				if(!isNaN(_thisNum) && _thisNum != 0) {
+					materielData.Lines[jQuery.inArray(_thisId, TemporaryData)].ApplyQuantity = _thisNum;
+					$("." + _thisClass).val(_thisNum);
+				} else {
+					if(confirm("确定删除此条数据？")) {
+						id.parents("li").remove();
+						$("." + _thisClass).val('');
+						materielData.Lines.splice(jQuery.inArray(_thisId, TemporaryData), 1);
+						TemporaryData.splice(jQuery.inArray(_thisId, TemporaryData), 1);
+						if(TemporaryData.length == 0) {
+							$(".wrapper").hide();
+							$(".materiel_content input").attr("disabled", false);
+							$(".footer button").attr("disabled", true);
+						}
+					} else {
+						$(id).val(materielData.Lines[jQuery.inArray(_thisId, TemporaryData)].ApplyQuantity);
+						$(".wrapper").show();
+						$(".materiel_content input").attr("disabled", true);
+						$(".footer button").attr("disabled", false);
+					}
+				}
+				TotleCount = 0;
+				for(var i = 0; i < materielData.Lines.length; i++) {
+					TotleCount += parseFloat(materielData.Lines[i].ApplyQuantity);
+				}
+				$(".wrapper .content").find("p").find("i").text(TotleCount);
+				console.log(JSON.stringify(TemporaryData));
+				console.log(JSON.stringify(materielData));
+				localStorage['TemporaryData' + USERID.Id] = JSON.stringify(TemporaryData);
+				localStorage['materielData' + USERID.Id] = JSON.stringify(materielData);
+				console.log(localStorage['TemporaryData' + USERID.Id]);
+				console.log(localStorage['materielData' + USERID.Id]);
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,742 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>欢迎光临</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<script type="text/javascript">
+		function Update(){
+			var wgtVer=null;
+			var checkUrl="http://app.joyeon.com/psi/update.txt";
+			// 获取本地应用资源版本号
+			plus.runtime.getProperty(plus.runtime.appid,function(inf){
+		   		 wgtVer=inf.version;
+		   		 console.log("当前应用版本："+wgtVer);
+		  		  document.getElementById("Version").innerHTML='版本号:'+wgtVer;
+		   		 checkUpdate();
+		   });
+			function checkUpdate(){
+			    var xhr=new XMLHttpRequest();
+			    xhr.onreadystatechange=function(){
+			        switch(xhr.readyState){
+			            case 4:
+			            if(xhr.status==200){
+			                console.log("检测更新成功："+xhr.responseText);
+			              	var data = JSON.parse(xhr.responseText)
+			                var newVer=data.version;
+			                document.getElementById("Version").innerHTML='版本号:'+newVer;
+			                console.log(newVer);
+			                if(wgtVer&&newVer&&(wgtVer!=newVer)){
+			                	plus.nativeUI.showWaiting("检测更新...");
+			                	var wgtUrl = data.url;
+			                	console.log(wgtUrl);
+			                	setTimeout(function(){
+			                		 downWgt(wgtUrl);  // 下载升级包
+			                	},1000)
+			                   
+			                }else{
+								plus.nativeUI.closeWaiting();
+			                }
+			            }else{
+			                console.log("检测更新失败！");
+			                plus.nativeUI.closeWaiting();
+			                plus.nativeUI.alert("检测更新失败！");
+			            }
+			            break;
+			            default:
+			            break;
+			        }
+			    }
+			    xhr.open('GET',checkUrl);
+			    xhr.send();
+			}
+			
+			function downWgt(wgtUrl){
+			    plus.nativeUI.showWaiting("下载更新包...");
+			    console.log(wgtUrl);
+			    plus.downloader.createDownload( wgtUrl, {"filename":"_doc/update/H565FB0B4.wgt","timeout": 5,"retry":1,"retryInterval":1}, function(d,status){
+			    	console.log(JSON.stringify(d));
+			        if ( status == 200) { 
+			            console.log("下载更新包成功："+d.filename);
+			            installWgt(d.filename); // 安装wgt包
+			        } else {
+			            console.log("下载更新包失败！");
+			            plus.nativeUI.closeWaiting();
+			            plus.nativeUI.alert("下载更新包失败！");
+			        }
+			    }).start();
+			}
+			function installWgt(path){
+			    plus.nativeUI.showWaiting("安装更新包文件...");
+			    plus.runtime.install(path,{},function(){
+			        plus.nativeUI.closeWaiting();
+			        console.log("安装更新包成功！");
+			        
+			        plus.nativeUI.alert("应用资源更新完成,确定后重启应用！",function(){
+			        	plus.nativeUI.closeWaiting();
+			            plus.runtime.restart();
+			        });
+			    },function(e){
+			        plus.nativeUI.closeWaiting();
+			        console.log("安装更新包失败["+e.code+"]："+e.message);
+			        plus.nativeUI.alert("安装更新包失败["+e.code+"]："+e.message);
+			    });
+			}
+		}	
+		</script>
+		<style>
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:25%;
+				z-index: 9999;
+				width: 50%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 1.6rem;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:8rem;
+				margin-left: -40px;
+				top: 0px;
+			}
+			#wrapper{display:none;width: 100%; height: 100%;position: fixed;left: 0;top: 0;background: rgba(50,50,50,0.6);z-index: 999;}
+			#wrapper .mui-content{
+				width: 80%;
+				height: 100px;
+				background: #fff;
+				margin: 75% auto 0;
+				line-height: 100px;
+				text-align: center;
+				border-radius: 5px;
+			}	
+			#wrapper .mui-content span{
+				display: inline-block;
+				width: 48%;
+				border-right: 1px #ccc solid;
+			}	
+			#wrapper .mui-content span:last-child{
+				border: none;
+			}
+			.mui-inner-wrap{
+				position: fixed !important;
+				left: 0;
+				top: 0;
+			}
+			
+			#center{
+				min-height: 216px;
+				max-height: 39%;
+				/*border: 1px #fff solid;*/
+				overflow-y:scroll;
+				-webkit-overflow-scrolling: touch;
+			}
+		</style>
+	</head>
+	<body id="body" class="clearfix">
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable mui-scalable">
+			<!--主界面部分-->
+			<div class="mui-inner-wrap" id="mui-inner-wrap">
+				<header class="mui-bar mui-bar-nav" style="box-shadow:0 0px 0px #ccc !important;">
+					<a href="#offCanvasSide" class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a>
+					<!--<a class="mui-btn-link  mui-pull-right"></a>-->
+					<h1 class="mui-title" id="refresh"></h1>
+				</header>
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style=" padding-top: 64px; height: 100%;">
+					<div class="mui-aside">
+						<p class="title" id="123123">昨日毛利率</p>
+						<h2 id="GrossProfit_content" title="maoli.html"><span id="GrossProfit">0</span><i>%</i></h2>
+						<div class="mui-row">
+							<div class="mui-col-sm-6 mui-col-xs-6">
+								<p>昨日销售额</p>
+								<span id="RealAmount">0元</span>
+							</div>
+							<div class="mui-col-sm-6 mui-col-xs-6">
+								<p>成本</p>
+								<span id="SystemAmount">0元</span>
+							</div>
+						</div>
+					</div>
+					<ul class="mui-section mui-row mui-table-view clearfix" id="mui-section">
+						<li class="index1 mui-col-sm-4 mui-col-xs-4" title="900001000" id="Neworder.html"><span style="background: url(images/index_icon_03.png);background-repeat:no-repeat ;background-size:45% ;background-position:center ;"></span>采购报单</li>
+						<li class="index9 mui-col-sm-4 mui-col-xs-4" title="900002000" id="order.html"><span style="background: url(images/index_icon_32.png);background-repeat:no-repeat ;background-size:45% ;background-position:center ;"></span>总厨报单</li>
+						<li class="index2 mui-col-sm-4 mui-col-xs-4" title="900004000" id="Newaddorder.html"><span style="background: url(images/index_icon_05.png);background-repeat:no-repeat ;background-size:45% ;background-position:center ;"></span>采购补货</li>
+						<li class="index5 mui-col-sm-4 mui-col-xs-4" title="900003000" id="Newyanshou.html"><span style="background: url(images/index_icon_17.png);background-repeat:no-repeat ;background-size:45% ;background-position:center ;"></span>物料验收</li>
+						<li class="index4 mui-col-sm-4 mui-col-xs-4" title="90000300100" id="Newfenpei.html"><span style="background: url(images/index_icon_14.png);background-repeat:no-repeat ;background-size:45% ;background-position:center ;"></span>物料分配</li>
+						<li class="index3 mui-col-sm-4 mui-col-xs-4" title="900006000" id="lingyong.html"><span style="background: url(images/index_icon_08.png);background-repeat:no-repeat ;background-size:45% ;background-position:center ;"></span>物料领用</li>
+						<li class="index6 mui-col-sm-4 mui-col-xs-4" title="900005000" id="diaobodisplay.html"><span style="background: url(images/index_icon_19.png);background-repeat:no-repeat ;background-size:45% ;background-position:center ;"></span>库存调拨</li>
+						<li class="index7 mui-col-sm-4 mui-col-xs-4" title="900007000" id="Newpandian.html"><span style="background: url(images/index_icon_25.png);background-repeat:no-repeat ;background-size:45% ;background-position:center ;"></span>库存盘点</li>
+						<li class="index8 mui-col-sm-4 mui-col-xs-4" title="900008000" id="pdbaobiao.html"><span style="background: url(images/index_icon_28.png);background-repeat:no-repeat ;background-size:45% ;background-position:center ;"></span>盘点报告</li>
+					</ul>
+				</div>
+				<!-- off-canvas backdrop -->
+				<div class="mui-off-canvas-backdrop" style="background:none;box-shadow: -11px 0 35px 15px rgba(30,32,53,.2), -11px 0 35px 15px rgba(30,32,53,.2);"></div>
+			</div>
+			
+			<!--侧滑菜单部分-->
+			<aside id="offCanvasSide" class="mui-off-canvas-left"  style="background: #1d1f36;">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
+					<div class="title" id="NameJob">
+						<i><span></span></i>
+						<p></p>
+					</div>
+					<ul id="center">
+						<li id="center_dd.html" style="display: none;"><span style="background:url(images/icon0_1.png);background-repeat:no-repeat ;background-size:48% ;background-position:center ;"></span>订单中心</li>
+						<li id="center_bd.html" style="display: none;"><span style="background:url(images/icon0_1.png);background-repeat:no-repeat ;background-size:48% ;background-position:center ;"></span>报单中心</li>
+						<li id="center_ly.html" style="display: none;"><span style="background:url(images/icon.png);background-repeat:no-repeat ;background-size:65% ;background-position:center ;"></span>今日领用</li>
+						<li id="center_fp.html" style="display: none;"><span style="background:url(images/icon1.png);background-repeat:no-repeat ;background-size:60% ;background-position:center ;"></span>今日分配</li>
+						<li id="Feedback.html"><span style="background:url(images/icon2.png);background-repeat:no-repeat ;background-size:60% ;background-position:center ;"></span>意见反馈</li>
+						<li class="StartApp"><span style="background:url(images/icon_openApp.png);background-repeat:no-repeat ;background-size:75% ;background-position:center ;"></span>烹烹大学</li>
+						<li><span style="background:url(images/icon2_1.png);background-repeat:no-repeat ;background-size:50% ;background-position:center ;"></span><i id="Version" style="font-style: normal;">版本号：0.0.0</i></li>
+						
+					</ul>
+					<a class="mui-btn mui-btn-block mui-back" id="backLoading">退出登录</a>
+				</div>
+			</aside>
+			
+		</div>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>加载中,请稍后</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>对不起，您没有权限</b></div>
+		</div>
+		<div id="wrapper">
+			<div class="mui-content" id="mui-content">
+				<span>非自主采购</span>
+				<span>自主采购</span>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/update.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script src="js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+		document.getElementById("mui-section").setAttribute('style','height:' + (document.getElementById("mui-inner-wrap").offsetHeight - 245 + 'px'));
+		$(function(){
+			document.getElementById("mui-section").setAttribute('style','height:' + (document.getElementById("mui-inner-wrap").offsetHeight - 245 + 'px'));
+			
+		})
+		
+		function plusReady() {
+			mui.init({
+				 gestureConfig:{
+				   tap: true, //默认为true
+				   doubletap: true, //默认为false
+				  }
+			});
+			
+			$("#refresh").on('doubletap',function(){
+				var ws=plus.webview.currentWebview();
+				ws.reload(true);
+
+			})
+			var isAndroid = false;
+			var isiOS = false;
+			var u = navigator.userAgent;
+			isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+			isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+			if(isAndroid){
+				$(".StartApp").on('tap',function(){
+					// 扩展API加载完毕，现在可以正常调用扩展API
+					// 导入android.content.Intent类对象
+					try{
+						var mainActivity= plus.android.runtimeMainActivity();
+						Intent = plus.android.importClass('android.content.Intent');
+						var intent = new Intent();
+						intent.setClassName('com.panpom.university','com.panpom.university.activity.WelcomeUI');//我试了其它的好像就这个能打开
+						mainActivity.startActivity(intent);//打开activity
+					}catch(err){
+						txt="暂未安装进销存APP，请到应用市场下载或联系烹烹客服。"
+					    mui.toast(txt);
+					}
+					
+				})
+			};
+			
+//			localStorage.IP = 'http://192.168.0.65:8082/';
+			localStorage.IP = 'http://psiapi.panpom.com/';
+//			localStorage.IP = 'http://192.168.0.65:8082/';
+			var data1;
+			var firstLoading ;
+			var lastLoading ;
+			var data1;
+			var Temporary = '-';
+			
+			if(showToken("token") != null){
+				var _data = GetDateStr(-1);
+				localStorage.MasterChef = false;//总厨权限
+				localStorage.CaiGou = false;//采购类型是否自采购
+				var userId = JSON.parse(localStorage.token); //账户个人id信息
+				var userId1 = JSON.parse(showToken("token"));
+//				mui.toast(userId1.access_token);
+//				console.log(userId1.access_token)
+				Update();
+				var wv=plus.webview.getWebviewById('loading');
+				plus.webview.close(wv);
+				
+				localStorage.timestamp2 = new Date().getTime();
+				Temporary += (localStorage.timestamp1 + '-' +localStorage.timestamp2 + '-');
+				firstLoading = Temporary.split('-')[1];
+				lastLoading = Temporary.split('-')[2];
+//				console.log(localStorage.timestamp1);
+//				console.log(localStorage.timestamp2);
+//				console.log(Temporary);
+//				console.log(JSON.stringify(Temporary.split('-')));
+//				alert(parseInt(lastLoading) - parseInt(firstLoading));
+				console.log(parseInt(lastLoading) - parseInt(firstLoading));
+//				mui.toast(parseInt(lastLoading) - parseInt(firstLoading));
+				if((parseInt(lastLoading) - parseInt(firstLoading)) >82800000){
+					data1={
+						"refresh_token": userId1.refresh_token,
+						"grant_type":"refresh_token",
+						"client_secret": "724459f0c5ea283aebc92c022a99ef8a",
+						"client_id": 10013
+					};
+					mui.ajax(localStorage.IP+'oauth2/token',{
+						data: data1,
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						headers:{'Content-Type':'application/json'},	              
+						success:function(data){
+//							mui.toast("刷新token成功"+ JSON.stringify(data));
+//							console.log(JSON.stringify(data));
+							localStorage.token = JSON.stringify(data);
+							plus.storage.setItem("token",JSON.stringify(data));
+							localStorage.timestamp1 = new Date().getTime();
+							userId1 = JSON.parse(showToken("token"));
+//							mui.toast(userId1.access_token);
+							console.log(userId1.access_token)
+							Ajax(userId1.access_token,_data);
+							
+						},
+						error:function(xhr,type,errorThrown){
+							//异常处理；
+							localStorage.timestamp2 = '';
+							localStorage.timestamp1 = '';
+							localStorage.token = 'undefined';
+							plus.storage.setItem("token",null);
+							localStorage.MasterChef = false;
+							mui.openWindow({
+								url:'login.html',
+								show:{
+								  autoShow: true,	
+							      aniShow:'slide-out-right',//页面显示动画，默认为”slide-in-right“；
+							      duration:0//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+							    },
+							    waiting: {
+									autoShow: false, //自动显示等待框，默认为true
+									title: '正在退出',
+								}
+							});	
+//							mui.toast("刷新token失败"+JSON.stringify(xhr.response)+'，'+JSON.stringify(xhr.responseText)+'，'+JSON.stringify(xhr.statusText)+'，'+JSON.stringify(type)+'，'+JSON.stringify(errorThrown));
+							console.log(JSON.stringify(xhr.response));
+							console.log(JSON.stringify(xhr.responseText));
+							console.log(JSON.stringify(xhr.statusText));
+							console.log(JSON.stringify(type));
+							console.log(JSON.stringify(errorThrown));
+						}
+					});
+				}else{
+					Ajax(userId1.access_token,_data);
+				}
+				
+			}else{
+				localStorage.timestamp2 = '';
+				localStorage.timestamp1 = '';
+				//个人中心退出跳转
+				localStorage.token = 'undefined';
+				plus.storage.setItem("token",null);
+				localStorage.MasterChef = false;
+				var wv=plus.webview.getWebviewById('index');
+				plus.webview.close(wv);
+				mui.openWindow({
+					url:'login.html',
+					id:'loading',
+					show:{
+					  autoShow: true,	
+				      aniShow:'slide-out-right',//页面显示动画，默认为”slide-in-right“；
+				      duration:0//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+				    },
+				    waiting: {
+						autoShow: false, //自动显示等待框，默认为true
+						title: '正在退出',
+					}
+				});	
+				
+			}
+				//个人中心退出跳转
+				$("#backLoading").on('tap', function() {
+					localStorage.timestamp2 = '';
+					localStorage.timestamp1 = '';
+					localStorage.token = 'undefined';
+					plus.storage.setItem("token",null);
+					localStorage.MasterChef = false;
+//					var wv=plus.webview.currentWebview();
+//					plus.webview.close(wv);
+					mui.openWindow({
+							url:'login.html',
+							id:'loading',
+							show:{
+							  autoShow: true,	
+						      aniShow:'slide-out-right',//页面显示动画，默认为”slide-in-right“；
+						      duration:0//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+						    },
+						    waiting: {
+								autoShow: false, //自动显示等待框，默认为true
+								title: '正在退出',
+							}
+						});	
+				});
+				//二级菜单页面跳转
+				$("#offCanvasContentScroll ul li").bind('tap', function() {
+					var _this = $(this).attr("id");
+					var _thisTitle = $(this).attr("title");
+					console.log(_this);
+					console.log(typeof _this);
+					if(_this && _this != "Newaddorder.html"){
+						mui.openWindow({
+							url: _this,
+							id:_thisTitle,
+							show: {
+								autoShow: true,
+								aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+								duration: 300 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+							},
+							waiting: {
+								autoShow: false, //自动显示等待框，默认为true
+								title: '正在载入', //等待对话框上显示的提示内容
+							}
+						});
+					}else if(_this == "Newaddorder.html"){
+						$("#wrapper").show();
+						$("#mui-content span").bind('tap',function(){
+							if($(this).index() ==0){
+								localStorage.CaiGou=false;
+								mui.openWindow({
+									url: _this,
+									id:_thisTitle,
+									show: {
+										autoShow: true,
+										aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+										duration: 300 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+									},
+									waiting: {
+										autoShow: false, //自动显示等待框，默认为true
+										title: '正在载入', //等待对话框上显示的提示内容
+									}
+								});
+							}else if($(this).index() ==1){
+								localStorage.CaiGou=true;
+								mui.openWindow({
+									url: _this,
+									id:_thisTitle,
+									show: {
+										autoShow: true,
+										aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+										duration: 300 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+									},
+									waiting: {
+										autoShow: false, //自动显示等待框，默认为true
+										title: '正在载入', //等待对话框上显示的提示内容
+									}
+								});
+							}
+							setTimeout(function(){
+								$("#wrapper").hide();
+							},100)
+							
+						})
+					}else{
+						$("#tips").fadeIn(0);
+						$("#tips3").show();
+						setTimeout(function(){
+							$("#tips").fadeOut(500);
+							$("#tips3").hide();
+						},1000)
+					}
+				});
+				
+				//采购补货点击消失效果
+				document.getElementById("wrapper").addEventListener("tap", function() {
+	
+					setTimeout(function() {
+						document.getElementById("wrapper").style.display = "none";
+					}, 320);
+	
+				});
+				document.getElementById("mui-content").addEventListener("tap", function() {
+					if(document.all) {
+						window.event.cancelBubble = true;
+					} else {
+						event.stopPropagation();
+					}
+				});
+					
+					
+				//个人中心页面跳转 
+				$("#offCanvasSideScroll ul li").on('tap', function() {
+					var _this = $(this).attr("id");
+					console.log(typeof _this);
+					if(_this !=undefined){
+						mui.openWindow({
+							url: _this,
+							show: {
+								autoShow: true,
+								aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+								duration: 300 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+							},
+							waiting: {
+								autoShow: false, //自动显示等待框，默认为true
+								title: '页面加载中。。。', //等待对话框上显示的提示内容
+	//							options:{
+	//								background:'#333',
+	//								color:'#fff'
+	//							}
+							}
+						});
+					}
+					
+				});
+				//毛利报表页面跳转 
+				$("#GrossProfit_content").on('tap', function() {
+					var _this = $(this).attr("title");
+					mui.openWindow({
+						url: _this,
+						show: {
+							autoShow: true,
+							aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+							duration: 300 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+						},
+						waiting: {
+							autoShow: false, //自动显示等待框，默认为true
+							title: '页面加载中。。。', //等待对话框上显示的提示内容
+						}
+					});
+				});
+				//获取当天时间
+				function GetDateStr(AddDayCount) { 
+					var dd = new Date(); 
+					dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+					var y = dd.getFullYear(); 
+					var m = dd.getMonth()+1;//获取当前月份的日期 
+					var d = dd.getDate(); 
+					if(m >= 1 && m <= 9) {
+						m = "0" + m;
+					}
+					if(d >= 0 && d <= 9) {
+						d = "0" + d;
+					}
+					return y+"/"+m+"/"+d; 
+				} 
+			
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			};
+			
+			function showToken(id) {
+				return plus.storage.getItem(id);
+			};
+			
+			function Ajax(Token,time){
+			 	console.log("页面又执行了一遍");
+			 	$(".mui-title").text("");
+				$("#NameJob").find("span").text("");
+				$("#NameJob").find("p").text("");
+			 	$("#GrossProfit").text(0);
+				$("#RealAmount").text('0元');
+				$("#SystemAmount").text('0元');
+			 	//获取用户操作权限
+				mui.ajax(localStorage.IP + 'user/permission/list', {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + Token
+					},
+					success: function(data) {
+						$("#offCanvasContentScroll ul li").attr("id","");
+//						alert(JSON.stringify(data));
+//						mui.toast("获取用户权限成功");
+//						console.log(data.length);
+						for(var i=0;i<data.length;i++){
+//							console.log(data[i]);
+							switch (data[i])
+							{
+								case '9000010-00':
+								$("#offCanvasContentScroll ul li").eq(0).attr("id","Neworder.html");
+//								$("#center").find("li").eq(0).css("display","block");
+								$("#center").find("li").eq(1).css("display","block");
+								$("#center").find("li").eq(2).css("display","block");
+								$("#center").find("li").eq(3).css("display","block");
+								break;
+								case '9000020-00':
+								$("#offCanvasContentScroll ul li").eq(1).attr("id","order.html");
+								$("#center").find("li").eq(0).css("display","block");
+								localStorage.MasterChef = true;
+								break;
+								case '9000040-00':
+								$("#offCanvasContentScroll ul li").eq(2).attr("id","Newaddorder.html");
+								break;
+								case '9000030-00':
+								$("#offCanvasContentScroll ul li").eq(3).attr("id","Newyanshou.html");
+								break;
+								case '900003001-00':
+								$("#offCanvasContentScroll ul li").eq(4).attr("id","Newfenpei.html");
+								break;
+								case '9000060-00':
+								$("#offCanvasContentScroll ul li").eq(5).attr("id","lingyong.html");
+								break;
+								case '9000050-00':
+								$("#offCanvasContentScroll ul li").eq(6).attr("id","diaobodisplay.html");
+								break;
+								case '9000070-00':
+								$("#offCanvasContentScroll ul li").eq(7).attr("id","Newpandian.html");
+								break;
+								case '9000080-00':
+								$("#offCanvasContentScroll ul li").eq(8).attr("id","pdbaobiao.html");
+								break;
+							}	
+						}
+					
+					},error: function(xhr, type, errorThrown) {
+							//异常处理；
+//							alert("请求权限失败");
+							mui.toast("获取用户权限失败"+JSON.stringify(xhr.response));
+							console.log(JSON.stringify(xhr.response));
+							console.log(JSON.stringify(xhr.responseText));
+							console.log(JSON.stringify(xhr.statusText));
+							console.log(JSON.stringify(type));
+							console.log(JSON.stringify(errorThrown));
+						}
+
+				});
+			 	
+			 	//获取个人信息
+				mui.ajax(localStorage.IP + 'common/employee/get', {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + Token
+					},
+					success: function(data) {
+						$(".mui-title").text("");
+						$("#NameJob").find("span").text("");
+						$("#NameJob").find("p").text("");
+//						alert(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
+//						mui.toast("获取用户信息成功");
+						localStorage.USERID = JSON.stringify(data);
+						plus.storage.setItem("USERID",JSON.stringify(data));
+						$(".mui-title").text(data.BranchName);
+						$("#NameJob").find("span").text(data.Name);
+						$("#NameJob").find("p").text(data.RoleName);
+					},error: function(xhr, type, errorThrown) {
+							//异常处理；
+//							alert('请求个人数据失败')
+							mui.toast("获取用户信息失败"+JSON.stringify(xhr.response))
+							if(JSON.stringify(xhr.response == '')){
+								var btnArray = ['取消', '确定'];
+								mui.confirm('点击确定，重新刷新？', '网络太差', btnArray, function(e) {
+									if (e.index == 1) {
+										Ajax(Token,time);
+									} else {
+										mui.toast("您已取消刷新！");
+									}
+								})
+							}
+							console.log(JSON.stringify(xhr.response));
+							console.log(JSON.stringify(xhr.responseText));
+							console.log(JSON.stringify(xhr.statusText));
+							console.log(JSON.stringify(type));
+							console.log(JSON.stringify(errorThrown));
+						}
+				});
+			 	//获取销售数据
+				mui.ajax(localStorage.IP + 'report/grossreport/list?date='+time, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + Token
+					},
+					success: function(data) {
+						$("#GrossProfit").text(0);
+						$("#RealAmount").text('0元');
+						$("#SystemAmount").text('0元');
+//						alert(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
+//						mui.toast("获取销售数据成功");
+//						console.log(data.length);
+						if(data.length == 0){
+							$("#GrossProfit").text(0);
+							$("#RealAmount").text('0元');
+							$("#SystemAmount").text('0元');
+						}else{
+							if(data[0].RealAmount == 0){
+								$("#GrossProfit").text(0);
+								$("#RealAmount").text('0元');
+								$("#SystemAmount").text(parseFloat(data[0].SystemAmount).toFixed(2)+'元');
+							}else{
+								$("#RealAmount").text(parseFloat(data[0].RealAmount).toFixed(2)+'元');
+								$("#SystemAmount").text(parseFloat(data[0].SystemAmount).toFixed(2)+'元');
+								$("#GrossProfit").text(parseFloat(((data[0].RealAmount-data[0].SystemAmount)/data[0].RealAmount)*100).toFixed(2));	
+							}
+						}	
+					},error: function(xhr, type, errorThrown) {
+							//异常处理；
+//							alert('请求销售数据失败')
+							mui.toast("获取销售数据"+JSON.stringify(xhr.response))
+							console.log(JSON.stringify(xhr.response));
+							console.log(JSON.stringify(xhr.responseText));
+							console.log(JSON.stringify(xhr.statusText));
+							console.log(JSON.stringify(type));
+							console.log(JSON.stringify(errorThrown));
+						}
+
+					});
+			 }
+		</script>
+	</body>
+
+</html>
