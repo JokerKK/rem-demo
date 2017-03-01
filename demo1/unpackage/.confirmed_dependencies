@@ -1,0 +1,228 @@
+{
+  "index.html": {
+    "resources": [
+      "css/default.css",
+      "img/icon.png",
+      "img/icon2.png",
+      "img/icon4.png",
+      "js/hotcss.js",
+      "css/common.css",
+      "img/center_bg.jpg",
+      "img/tx.png",
+      "img/icon3.png",
+      "img/icon1.png",
+      "Coupon.html",
+      "Payment.html",
+      "img/icon11.jpg",
+      "js/jquery-3.1.1.min.js",
+      "img/plus.png",
+      "img/icon10_1.png",
+      "img/icon10.png",
+      "img/shoppingCat.png",
+      "img/dish.jpg",
+      "js/fastclick.min.js",
+      "img/minus.png",
+      "img/shoppingCat_1.png",
+      "img/delete.png",
+      "js/mui.min.js",
+      "img/banner.png",
+      "js/TouchSlide.1.1.js",
+      "img/ban.jpg",
+      "img/icon12.png",
+      "img/icon13.png",
+      "img/icon13_2.png",
+      "img/icon13_1.png",
+      "img/icon13_3.png",
+      "img/icon12_1.png",
+      "js/jquery.lazyload.min.js",
+      "img/card_bg.png",
+      "js/echo.min.js",
+      "css/echo.css",
+      "img/blank.gif"
+    ],
+    "refer": [
+      "Coupon.html",
+      "Payment.html"
+    ]
+  },
+  "Coupon.html": {
+    "resources": [
+      "img/Coupon_bg.png",
+      "fonts/FZJTH.ttf",
+      "css/default.css",
+      "js/hotcss.js",
+      "css/common.css",
+      "CouponDisplay.html"
+    ],
+    "refer": [
+      "CouponDisplay.html"
+    ]
+  },
+  "Payment.html": {
+    "resources": [
+      "css/default.css",
+      "img/icon7.png",
+      "js/hotcss.js",
+      "css/common.css",
+      "img/icon6.png",
+      "img/icon5.png",
+      "img/icon8.png",
+      "img/icon9.png",
+      "img/icon9_1.png",
+      "img/icon4_1.png",
+      "img/icon4.png",
+      "js/jquery-3.1.1.min.js",
+      "img/vipcard2.png",
+      "img/vipcard3.png",
+      "img/vipcard1.png",
+      "img/card_bg.png",
+      "js/mui.min.js",
+      "js/fastclick.min.js"
+    ],
+    "refer": []
+  },
+  "center.html": {
+    "resources": [
+      "css/default.css",
+      "img/icon.png",
+      "img/icon2.png",
+      "img/icon4.png",
+      "js/hotcss.js",
+      "css/common.css",
+      "img/center_bg.jpg",
+      "img/tx.png",
+      "img/icon3.png",
+      "img/icon1.png",
+      "Payment.html",
+      "Coupon.html"
+    ],
+    "refer": [
+      "Payment.html",
+      "Coupon.html"
+    ]
+  },
+  "Sale.html": {
+    "resources": [
+      "css/default.css",
+      "img/back_icon.png",
+      "css/mobiscroll.custom.min.css",
+      "js/jquery-1.11.1.min.js",
+      "js/hotcss.js",
+      "css/common.css",
+      "js/mobiscroll.min.js",
+      "img/icon4_1.png",
+      "js/fastclick.min.js",
+      "css/sm.min.css",
+      "js/zepto.min.js",
+      "js/sm.min.js",
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "css/mui.picker.min.css",
+      "img/bg_icon.png",
+      "js/echarts.min.js",
+      "js/TouchSlide.1.1.js",
+      "img/left.png",
+      "img/right.png"
+    ],
+    "refer": []
+  },
+  "Member.html": {
+    "resources": [
+      "css/default.css",
+      "img/back_icon.png",
+      "js/echarts.min.js",
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "js/jquery-1.11.1.min.js",
+      "js/hotcss.js",
+      "css/common.css",
+      "css/mui.min.css",
+      "img/bg_icon.png",
+      "css/mui.picker.min.css",
+      "img/icon4_1.png",
+      "js/TouchSlide.1.1.js"
+    ],
+    "refer": []
+  },
+  "dish.html": {
+    "resources": [
+      "css/default.css",
+      "img/back_icon.png",
+      "js/echarts.min.js",
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "js/jquery-1.11.1.min.js",
+      "js/hotcss.js",
+      "css/common.css",
+      "css/mui.min.css",
+      "img/bg_icon.png",
+      "css/mui.picker.min.css",
+      "img/icon4_1.png",
+      "img/error.png",
+      "bestdish.html",
+      "lastdish.html"
+    ],
+    "refer": [
+      "lastdish.html",
+      "bestdish.html"
+    ]
+  },
+  "lastdish.html": {
+    "resources": [
+      "css/default.css",
+      "img/back_icon.png",
+      "js/echarts.min.js",
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "js/jquery-1.11.1.min.js",
+      "js/hotcss.js",
+      "css/common.css",
+      "css/mui.min.css",
+      "img/bg_icon.png",
+      "css/mui.picker.min.css",
+      "img/error.png",
+      "dish.html"
+    ],
+    "refer": [
+      "dish.html"
+    ]
+  },
+  "bestdish.html": {
+    "resources": [
+      "css/default.css",
+      "img/back_icon.png",
+      "js/echarts.min.js",
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "js/jquery-1.11.1.min.js",
+      "js/hotcss.js",
+      "css/common.css",
+      "css/mui.min.css",
+      "css/mui.picker.min.css",
+      "img/error.png",
+      "dish.html"
+    ],
+    "refer": [
+      "dish.html"
+    ]
+  },
+  "NewSale.html": {
+    "resources": [
+      "css/default.css",
+      "img/back_icon.png",
+      "js/echarts.min.js",
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "js/jquery-1.11.1.min.js",
+      "js/hotcss.js",
+      "css/common.css",
+      "css/mui.min.css",
+      "img/bg_icon.png",
+      "js/TouchSlide.1.1.js",
+      "css/mui.picker.min.css",
+      "img/icon4_1.png"
+    ],
+    "refer": []
+  }
+}

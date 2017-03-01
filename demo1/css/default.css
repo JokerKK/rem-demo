@@ -1,0 +1,310 @@
+body {
+  background: #efeff7;
+}
+
+#tips {
+  position: fixed;
+  top: 50%;
+  left: 20%;
+  z-index: 9999;
+  width: 60%;
+  height: 2.56rem;
+  padding: 2.56rem 0 1.49333rem;
+  background: #2f2f2f;
+  color: #fff;
+  font-size: 0.64rem;
+  border-radius: 10px;
+  text-align: center;
+  display: none;
+}
+
+#tips #tips1 {
+  display: none;
+}
+
+#tips #tips2 {
+  display: none;
+}
+
+#tips #tips3 {
+  display: none;
+}
+
+#tips span {
+  position: absolute;
+  top: 0.42667rem;
+  left: 50%;
+  margin-left: -0.64rem;
+  width: 1.28rem;
+  height: 1.28rem;
+}
+
+#tips #tips2 span.mui-icon-checkmarkempty {
+  font-size: 0.64rem;
+  margin-left: -0.85333rem;
+  top: 0px;
+}
+
+#tips #tips3 span {
+  font-size: 0.64rem;
+  margin-left: -0.85333rem;
+  top: 0.32rem;
+  background: url(../img/error.png) center no-repeat;
+  background-size: 150%;
+}
+
+#tips4 {
+  position: absolute;
+  width: 1.6rem;
+  height: 1.6rem;
+  left: 50%;
+  margin-left: -0.8rem;
+  top: 0.32rem;
+}
+
+#tips4 span {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+header {
+  height: 2.28267rem;
+  border-bottom: 1px #dbdbdb solid;
+  line-height: 2.28267rem;
+  position: relative;
+  padding: 0 0.42667rem;
+  text-align: center;
+  background: #fff;
+}
+
+header .back {
+  display: block;
+  width: 1.024rem;
+  height: 100%;
+  background: url(../img/back_icon.png) left center no-repeat;
+  background-size: 50%;
+  position: absolute;
+  left: 0.42667rem;
+  top: 0;
+}
+
+header h2 {
+  font-size: 0.768rem;
+  color: #000;
+  font-weight: normal;
+  height: 100%;
+  display: inline-block;
+  margin: 0;
+}
+
+header h2 span {
+  display: inline-block;
+  float: left;
+  height: 100%;
+  line-height: 2.28267rem;
+}
+
+header h2 i {
+  display: inline-block;
+  width: 0.704rem;
+  height: 100%;
+  background: url(../img/icon4_1.png) center no-repeat;
+  background-size: contain;
+  float: left;
+  margin-left: 0.21333rem;
+}
+
+header select {
+  position: absolute;
+  left: 50%;
+  margin: 0 0 0-3.2rem;
+  width: 6.4rem;
+  height: 2.28267rem;
+  border: 1px #ccc solid;
+  top: 0;
+  opacity: 0;
+  padding: 0;
+}
+
+#dataSelect {
+  width: 3.2rem;
+  height: 2.28267rem;
+  text-align: center;
+  font-size: 0.768rem;
+  line-height: 2.28267rem;
+  position: fixed;
+  right: 0.32rem;
+  top: 0;
+  margin: 0;
+}
+
+#demo2 {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 2.28267rem;
+  width: 3.2rem;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+}
+
+.section .aside {
+  padding: 0 0.42667rem;
+  margin-bottom: 0.85333rem;
+  position: relative;
+}
+
+.section .aside h3 {
+  font-size: 1.06667rem;
+  color: #ff5722;
+  line-height: 1.6rem;
+}
+
+.section .aside #table {
+  width: 100%;
+  height: 10.24rem;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.section .aside #table1 {
+  width: 100%;
+  height: 12.8rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 0px 40px #aaa;
+  margin: 0 0 0.64rem;
+}
+
+.section .aside #table2 {
+  width: 100%;
+  height: 12.8rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 0px 40px #aaa;
+  margin: 0;
+}
+
+.section .aside ul {
+  width: 100%;
+}
+
+.section .aside ul li {
+  background: #fff;
+  border-radius: 10px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0.32rem 0 0 !important;
+  box-shadow: 0px 0px 40px #aaa;
+}
+
+.section .aside ul li h4 {
+  font-size: 0.64rem;
+  color: #656565;
+  font-weight: normal;
+  margin: 0;
+  position: absolute;
+  left: 0.32rem;
+  top: 0.32rem;
+}
+
+.section .aside ul li .data {
+  text-align: center;
+}
+
+.section .aside ul li .data p {
+  font-size: 0.512rem;
+  color: #656565;
+  margin: 0;
+}
+
+.section .aside ul li .data > div {
+  line-height: 2.176rem;
+  padding-top: 1.06667rem;
+}
+
+.section .aside ul li .data > div span {
+  font-size: 0.68267rem;
+  color: #656565;
+}
+
+.section .aside ul li .data > div span strong {
+  font-size: 1.28rem;
+  color: #ff5722;
+}
+
+.section .aside dl {
+  background: url(../img/bg_icon.png) center top no-repeat;
+  background-size: contain;
+}
+
+.section .aside dl dd {
+  width: 33.3333%;
+  float: left;
+  font-size: 0.64rem;
+  color: #989898;
+  padding-top: 1.06667rem;
+  text-align: center;
+}
+
+.section .aside dl dd i {
+  font-style: normal;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+  display: block;
+  line-height: 1;
+}
+
+.section .aside dl dd span {
+  display: block;
+  font-size: 0.68267rem;
+  color: #282828;
+  padding: 0.74667rem 0;
+}
+
+.section .aside #tableList {
+  width: 100%;
+  background: #fff;
+}
+
+.section .aside #tableList .title {
+  line-height: 1.28rem;
+  font-size: 0.68267rem;
+}
+
+.section .aside #tableList .title span {
+  width: 25%;
+  display: block;
+  text-align: center;
+  border: 1px #ccc solid;
+  float: left;
+  border-right: none;
+}
+
+.section .aside #tableList .title span:first-child {
+  width: 50%;
+}
+
+.section .aside .list .item span {
+  text-align: center;
+  line-height: 1.06667rem;
+  font-size: 0.59733rem;
+  border: 1px #ccc solid;
+  border-right: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+  width: 25%;
+  display: block;
+  float: left;
+  margin: -1px 0 0 0;
+}
+
+.section .aside .list .item span:first-child {
+  width: 50%;
+}

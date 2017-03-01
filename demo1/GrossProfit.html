@@ -1,0 +1,694 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/mui.picker.min.css"/>
+		<style type="text/css">
+			body{
+				font-family: "微软雅黑";
+			}
+			header a{
+				color: #000;
+				font-size: 28px !important;
+			}
+			.ui-alert{
+				height: 44px;
+				width: 100px;
+				position: absolute;
+				right:15px;
+				top: 0;
+				line-height: 44px;
+				text-align: right;
+			}
+			#demo6{
+				width: 100px;
+				height: 44px;
+				position: absolute;
+				right: 0;
+				top: 0;
+				opacity: 0;
+				
+			}
+			.mui-content{
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				padding:0 5px;
+			}
+			#table{
+				margin:10px 0;
+				height: 30%;
+				width:100%;
+				background: #fff;
+				border-radius: 5px;
+				
+			}
+			#table1{
+				margin:10px 0;
+				height: 30%;
+				width:100%;
+				background: #fff;
+				border-radius: 5px;
+			}
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:15%;
+				z-index: 9999;
+				width: 70%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 16px;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:100px;
+				margin-left: -50px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:100px;
+				margin-left: -50px;
+				top: 0px;
+			}
+			.aside{
+				width: 100%;
+				background: #fff;
+				border-radius: 5px;
+				overflow-y: scroll;
+				-webkit-overflow-scrolling: touch;
+				text-align: center;
+				font-size: 14px;
+			}
+			.aside .title,.aside .item{
+				border-bottom: 1px #ccc solid;
+			}
+			.aside span{
+				display:inline-block;
+				width: 25%;
+				border-right: 1px #ccc solid;
+			}
+			.aside span:first-child{
+				width: 50%;
+			}
+			.aside span:last-child{
+				border-right: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">天都大酒店</h1>
+		    <div id='result' class="ui-alert">2017-01</div>
+		    <button id='demo6' class="btn mui-btn mui-btn-block"></button>
+		</header>
+		<div class="mui-content">
+		    <div id="table"></div>
+		    <div id="table1"></div>
+		    <div class="aside" style="display: none;">
+		    	<div class="title"><span>菜品名称</span><span>销量</span><span>销售额</span></div>
+		    	<!--<div class="item"><span>红烧鱼</span><span>10</span><span>100</span></div>-->
+		    </div>
+		</div>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在刷新数据，请稍后...</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>加载成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>加载失败</b></div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			var isAndroid = false;
+			var isiOS = false;
+			var u = navigator.userAgent;
+			isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+			isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+			
+			$("#demo6").attr("data-options",'{"type":"month","beginYear":2015,"endYear":'+GetDateStr(0).split('-')[0]+'}');
+			$(".aside").css("height",$(".mui-content").height()*0.4 -40);
+			var _thisurl = window.location.href;//当前页面的url地址
+	      	console.log(_thisurl);
+	      	console.log(JSON.stringify(_thisurl.split('=')));
+	      	var _branchid = _thisurl.split('=')[1];
+	      	var _groupid = _thisurl.split('=')[3];
+			var _thisMon = _thisurl.split('=')[5];
+			var _Average = _thisurl.split('=')[7];
+			console.log(_branchid);
+			console.log(_groupid);
+			console.log(_thisMon);
+			console.log(_Average);
+			$("#result").text(_thisMon.split('-')[0]+'-'+_thisMon.split('-')[1]);
+			
+			//查询可查看的门店数
+			mui.ajax('http://baseapi.panpom.com/api/Common/GetBranchList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+_groupid, {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 30000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				success: function(data) {
+					for(var i=0;i<data.data.length;i++){
+						if(_branchid == data.data[i].Id){
+							$("h1").text(data.data[i].Name);
+							Saledata(_groupid,_branchid,_thisMon.split('-')[0]+'-'+_thisMon.split('-')[1]);
+							return false;
+						}
+					}
+					
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+			
+			//毛利数据
+	   		function Saledata(groupid,branchid,time){
+	   			var GrossProfit=[];//毛利区间对应的菜品数量
+	   			var aa=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	   			var bb=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	   			var cc=[];
+	   			var dd={"dd5":[],"dd10":[],"dd15":[],"dd20":[],"dd25":[],"dd30":[],"dd35":[],"dd40":[],"dd45":[],"dd50":[],"dd55":[],"dd60":[],"dd65":[],"dd70":[],"dd75":[],"dd80":[],"dd85":[],"dd90":[],"dd95":[],"dd100":[]};
+ 				mui.ajax('http://baseapi.panpom.com:9988/api/BillDB/GetDishSalesVolumeCountList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+groupid+'\&branchid='+branchid+'\&date='+time, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 60000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+//						console.log(JSON.stringify(data));
+						var _GrossProfit = 0;
+						for(var i=0;i<data.data.length;i++){
+							var salesvolume = parseFloat(data.data[i].salesvolume);//销售额
+							var cost = parseFloat(data.data[i].cost);//成本
+							if(salesvolume == 0){
+								_GrossProfit = 0;
+							}else{
+								_GrossProfit = (salesvolume - cost)/salesvolume*100;
+							}
+							GrossProfit.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"cost":data.data[i].cost,
+								"salesvolume":data.data[i].salesvolume,
+								"GrossProfit":_GrossProfit})
+						}
+//						console.log(JSON.stringify(GrossProfit));
+						for(var i=0;i<GrossProfit.length;i++){
+							if(GrossProfit[i].GrossProfit < 5){
+								aa[0]+=1;
+								bb[0]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd5.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 5 && GrossProfit[i].GrossProfit < 10){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[1]+=1;
+								bb[1]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd10.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 10 && GrossProfit[i].GrossProfit < 15){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[2]+=1;
+								bb[2]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd15.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 15 && GrossProfit[i].GrossProfit < 20){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[3]+=1;
+								bb[3]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd20.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 20 && GrossProfit[i].GrossProfit < 25){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[4]+=1;
+								bb[4]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd25.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 25 && GrossProfit[i].GrossProfit < 30){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[5]+=1;
+								bb[5]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd30.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 30 && GrossProfit[i].GrossProfit < 35){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[6]+=1;
+								bb[6]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd35.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 35 && GrossProfit[i].GrossProfit < 40){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[7]+=1;
+								bb[7]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd40.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 40 && GrossProfit[i].GrossProfit < 45){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[8]+=1;
+								bb[8]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd45.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 45 && GrossProfit[i].GrossProfit < 50){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[9]+=1;
+								bb[9]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd50.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 50 && GrossProfit[i].GrossProfit < 55){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[10]+=1;
+								bb[10]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd55.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 55 && GrossProfit[i].GrossProfit < 60){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[11]+=1;
+								bb[11]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd60.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 60 && GrossProfit[i].GrossProfit < 65){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[12]+=1;
+								bb[12]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd65.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 65 && GrossProfit[i].GrossProfit < 70){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[13]+=1;
+								bb[13]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd70.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 70 && GrossProfit[i].GrossProfit < 75){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[14]+=1;
+								bb[14]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd75.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 75 && GrossProfit[i].GrossProfit < 80){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[15]+=1;
+								bb[15]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd80.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 80 && GrossProfit[i].GrossProfit < 85){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[16]+=1;
+								bb[16]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd85.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 85 && GrossProfit[i].GrossProfit < 90){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[17]+=1;
+								bb[17]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd90.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else if(GrossProfit[i].GrossProfit >= 90 && GrossProfit[i].GrossProfit < 95){
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[18]+=1;
+								bb[18]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd95.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}else{
+//								console.log(GrossProfit[i].GrossProfit)
+								aa[19]+=1;
+								bb[19]+=parseFloat(GrossProfit[i].salesvolume);
+								dd.dd100.push({
+									"food_title":data.data[i].food_title,
+									"count":data.data[i].count,
+									"cost":data.data[i].cost,
+									"salesvolume":data.data[i].salesvolume,
+									"GrossProfit":_GrossProfit
+								})
+							}
+						}
+						
+						for(var i =0 ;i<bb.length;i++){
+//							console.log(typeof (i*5+2.5));
+							cc[i]= parseFloat((bb[i]*((i*5+2.5) - parseFloat(_Average))/1000).toFixed(2));
+						}
+						console.log(JSON.stringify(aa));
+						console.log(JSON.stringify(bb));
+						console.log(JSON.stringify(cc));
+						console.log(JSON.stringify(dd));
+						showTable("table","利润贡献值",cc);
+						showTable("table1","毛利率",aa ,dd);
+						
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+	//					alert("请求超时");
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+	   		}
+			
+			//毛利折线图
+			function showTable(id,name,data,dataList){
+				var myChart = echarts.init(document.getElementById(id));
+				var Name;
+				var Isshow;
+				var Isshow1;
+				if(id == "table"){
+					Name = '(1:1000)';
+					Isshow =false;
+					Isshow1 =true;
+					markLine={
+						data : [
+			                    {type : 'average', name: '平均值'}
+			                ],
+			                lineStyle:{
+			                	normal:{
+			                		color:"#000"
+			                	}
+			                }
+					}
+				}else{
+					Name = '数量';
+					Isshow =true;
+					Isshow1 =true;
+					markLine={};
+				}
+				option = {
+					 title: {
+				        text:name+'分布图',
+				        left:'center'
+				    },
+					backgroundColor:'#fff',
+					tooltip: {
+						show:Isshow1,
+						trigger: 'axis',
+						axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+						    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+						}
+					},
+				    grid: {
+				    	x:0,
+				    	x2:45,
+				    	y:40,
+				    	y2:5,
+				        containLabel: true,
+				        borderWidth:0,
+				    },
+				    
+				    xAxis : [
+				        {
+				            type : 'category',
+				            name:'毛利率',
+				            nameGap:0,
+				            nameTextStyle:{
+				            	fontSize:10,
+				            },
+				            data :[5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],
+				            axisLabel:{
+				            	interval:1,
+				            	textStyle:{
+				            		fontSize:12,
+				            	}
+				            },
+				            splitLine:{
+				            	show:false,
+				            },
+				            axisLine: {
+					            lineStyle: {
+					                color: '#989898'
+					            }
+					        }
+				        }
+				    ],
+				    yAxis : [
+				        {
+				        	name:Name,
+				        	nameGap:10,
+				        	nameTextStyle:{
+				        		fontSize:12, 
+				        		
+				        	},
+				        	type: 'value',
+				            splitLine:{
+				            	show:false,
+				            },
+				            axisLabel:{
+				            	textStyle:{
+				            		fontSize:12,
+				            	}
+				            },
+				            axisLine: {
+					            lineStyle: {
+					                color: '#989898'
+					            }
+					        }
+				        }
+				    ],
+				    series : [
+				        {
+				            name:'利润贡献值',
+				            type:'bar',
+				            barWidth: '60%',
+				            data:data,
+				            label: {
+				                normal: {
+				                    show: Isshow,
+				                    position:'top',
+				                    textStyle:{
+				                    	color:"#000"
+				                    }
+				                }
+				            },
+				            markLine :markLine
+				        }
+				        
+				    ]
+				};
+				myChart.setOption(option, true);
+				
+				
+				$("#tips1").hide();
+				$("#tips2").show();
+				setTimeout(function(){
+					$("#tips").hide();
+					$("#tips1").hide();
+					$("#tips2").hide();
+				},1000);
+				if(id=="table1"){
+					myChart.on('click',function(params){
+						if(params.componentType === 'series'){
+							if(params.seriesType === 'bar'){
+								$(".aside").show();
+								$(".aside").empty();
+								$(".aside").html('<div class="title"><span>菜品名称</span><span>销量</span><span>销售额</span></div>')
+								var ListName = "dd"+(params.dataIndex+1)*5;
+								var data = bubbleSort(dataList[ListName]);
+								for(var i=0;i<data.length;i++){
+									if(data.length == 0){
+										$(".aside").hide();
+									}else{
+										$(".aside").append('<div class="item">'+
+													'<span>'+data[i].food_title+'</span>'+
+														'<span>'+parseFloat(data[i].count).toFixed(2)+'</span>'+
+														'<span>'+data[i].salesvolume+'</span></div>');	
+									}
+									
+								}
+								
+							}
+						}
+					})
+				}
+			}
+			
+			function bubbleSort(arr) {  
+			    for(var i = 0,l=arr.length;i<l-1;i++) {
+			        for(var j = i+1;j<l;j++) { 
+			        	var aa = parseFloat(arr[i].count);
+			        	var bb = parseFloat(arr[j].count);
+			          if(aa<bb) {
+			                var tem = arr[i];
+			                arr[i] = arr[j];
+			                arr[j] = tem;
+			            }
+			        }
+			    }
+			    return arr;
+			}
+			
+			
+			//获取当天日期
+	      	function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				if(m >= 1 && m <= 9) {
+					m = "0" + m;
+				}
+				if(d >= 0 && d <= 9) {
+					d = "0" + d;
+				}
+				return y+"-"+m+"-"+d; 
+			}	
+			
+			
+			(function($) {
+				$.init();
+				var result = $('#result')[0];
+				var btns = $('.btn');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							result.innerText = rs.text;
+							_thisMon =  rs.text;
+							Saledata(_groupid,_branchid,_thisMon);
+							picker.dispose();
+							document.getElementsByClassName("aside")[0].style.display='none';
+							document.getElementById("tips").style.display = 'block';
+							document.getElementById("tips1").style.display = 'block';
+						});
+					}, false);
+				});
+			})(mui);
+		</script>
+	</body>
+
+</html>

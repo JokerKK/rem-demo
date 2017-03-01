@@ -1,0 +1,793 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/mui.picker.min.css"/>
+		<style type="text/css">
+			body{
+				font-family: "微软雅黑";
+			}
+			header a{
+				color: #000;
+				font-size: 28px !important;
+			}
+			.clear {
+						display: block;
+						height: 0;
+						overflow: hidden;
+						clear: both
+					}
+					
+					.clearfix:after {
+						content: '\20';
+						display: block;
+						height: 0;
+						clear: both;
+					}
+					
+					.clearfix {
+						*zoom: 1;
+					}
+			.ui-alert{
+				height: 44px;
+				width: 100px;
+				position: absolute;
+				right:15px;
+				top: 0;
+				line-height: 44px;
+				text-align: right;
+			}
+			#demo6{
+				width: 100px;
+				height: 44px;
+				position: absolute;
+				right: 0;
+				top: 0;
+				opacity: 0;
+				
+			}
+			.mui-content{
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				padding:0 10px;
+			}
+			#table{
+				margin-top: 20px;
+				height: 70%;
+				width:200%;
+				background: #fff;
+				border-radius: 5px;
+				transform: scale(0.5,0.5);
+				-webkit-transform: scale(0.5,0.5); 
+				margin:-25% 0 -30% -50%;
+			}
+			ul{
+				list-style: none;
+				width: 100%;
+				margin: 20px auto 0; 
+				height: calc(65% - 40px);
+				padding: 0;
+			}
+			.aside li{
+				width:49%;
+				height:47%;
+				background: #fff;
+				margin-bottom: 10px;
+				border-radius: 5px;
+				text-align: center;
+				font-size:18px;
+				padding-top: 10px;
+				position: relative;
+			}
+			.aside li:nth-child(2n){
+				float: right;
+			}
+			.aside li:nth-child(2n+1){
+				float: left;
+			}
+			ul li a{
+				color: #000;
+				
+			}
+			ul li:active{
+				
+				background: #e5e5e5;
+			}
+			ul li:active a{
+				color:#000 ;
+			}
+			
+			ul li a span{
+				display: block;
+				width: 100%;
+			}
+			ul li canvas{
+				width: 80px;
+				height:80px;
+				margin:10% auto 0;
+				background: #ccc;
+			}
+			ul li div{
+				width: 80px;
+				height:80px;
+				margin:15% auto 0;
+			}
+			ul li div canvas{
+				background: none;
+			}
+			#SalesVolume{
+				transform: rotate(180deg);
+				-webkit-transform: rotate(180deg);
+				background: none;
+			}
+			#Ingredients,#FlavorType{
+				transform: scale(2,1);
+				-webkit-transform: scale(2,1);
+				background: none;
+			}
+			#Select{
+				position: absolute;
+				left:25%;
+				top: 0;
+				display: inline-block;
+				width: 50%;
+				height: 44px;
+				opacity: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title"><span class="mui-icon mui-icon-arrowdown"></span></h1>
+		    <select id="Select">
+		    	<option value="集团" id="0">集团</option>
+		    </select>
+		    <div id='result' class="ui-alert">2017-02</div>
+		    <button id='demo6' class="btn mui-btn mui-btn-block"></button>
+		</header>
+		<div class="mui-content">
+			<a id="GrossProfit" href="#">
+				<div id="table"></div>
+			</a>
+		    
+		    <ul class="aside clearfix">
+		    	<li><a id="SalesVolume1" href="#"><span>销量分析</span><canvas id="SalesVolume"></canvas></a></li>
+		    	<li><a id="Efficiency1" href="#"><span>ABC分析</span><div id="Efficiency"></div></a></li>
+		    	<li><a id="Ingredients1" href="#"><span>食材分析</span><canvas id="Ingredients"></canvas></a></li>
+		    	<li><a id="FlavorType1" href="#"><span>味型分析</span><canvas id="FlavorType"></canvas></a></li>
+		    </ul>
+		</div>
+		
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			var isAndroid = false;
+			var isiOS = false;
+			var u = navigator.userAgent;
+			isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+			isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+			$("header .back").click(function(){
+				if(isAndroid){
+					control.finishAc();
+					return false ;
+				}else{
+					window.webkit.messageHandlers.JSCallScenicSpotInfo.postMessage({});
+					return false ;
+				}
+			});
+//			alert($(".mui-content").innerHeight());
+			$(".aside").height($(".mui-content").innerHeight()*0.65 - 80);
+			var _thisurl = window.location.href;//当前页面的url地址
+			var _groupid = _thisurl.split('=')[1];
+//			var _groupid = 2262;
+			var _today;
+			var _Average;//平均毛利
+	      	if(GetDateStr(0).split('-')[2] == '01'){
+	      		_today = GetDateStr(0);
+	      	}else{
+	      		_today = GetDateStr(-1);
+	      	}
+	      	
+			var count=[80,40,100,70,120];
+			var IngredientsData = [{"color":"#FFFF00","count":60},{"color":"#FF0000","count":120},{"color":"#BFEFFF","count":45},{"color":"#9B30FF","count":135}];
+			var FlavorTypeData = [{"color":"#FF0000","count":120},{"color":"#BFEFFF","count":45},{"color":"#FFFF00","count":60},{"color":"#9B30FF","count":135}];
+			var EfficiencyData =[35,76,83,61];
+			$("#demo6").attr("data-options",'{"type":"month","beginYear":2015,"endYear":'+GetDateStr(0).split('-')[0]+'}');
+		
+			//门店列表
+			GetBranchList(_groupid);
+			//选择门店
+			$("#Select").change(function(){
+				var _optionValue = $(this).find("option:selected").attr("value");
+				$(this).prev().html(_optionValue+'<span class="mui-icon mui-icon-arrowdown"></span>');
+				var _optionId = $(this).find("option:selected").attr("id");
+				$(this).prev().attr("id",_optionId);
+				_branchid = _optionId;
+				Saledata(_groupid,_branchid,_today.split('-')[0]+'-'+_today.split('-')[1]);
+				EliminateFood(_groupid,_branchid,_today.split('-')[0]+'-'+_today.split('-')[1]);
+				FlavorTypeFood(_groupid,_branchid,_today.split('-')[0]+'-'+_today.split('-')[1]);
+				Eliminate(_groupid,_branchid,_today.split('-')[0]+'-'+_today.split('-')[1]);
+				$("#SalesVolume1").attr("href",'bestdish.html?branchid='+_branchid+'=groupid='+_groupid+'=time='+_today);
+				$("#Efficiency1").attr("href",'Efficiency.html?branchid='+_branchid+'=groupid='+_groupid+'=time='+_today);
+				$("#Ingredients1").attr("href",'Ingredients.html?branchid='+_branchid+'=groupid='+_groupid+'=time='+_today);
+				$("#FlavorType1").attr("href",'FlavorType.html?branchid='+_branchid+'=groupid='+_groupid+'=time='+_today);
+				
+			});
+			
+			//查询可查看的门店数
+			function GetBranchList(groupid){
+				mui.ajax('http://baseapi.panpom.com/api/Common/GetBranchList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+groupid, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 30000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						$("header select").empty();
+						$("header h1").html('<span class="mui-icon mui-icon-arrowdown"></span>');
+	//					console.log(JSON.stringify(data));
+						if(data.data.length>1){
+							for(var i = 0; i < data.data.length; i++) {
+								$("header select").append('<option value='+data.data[i].Name+' id='+data.data[i].Id+'>'+data.data[i].Name+'</option>');
+							};
+							$("header h1").html(data.data[0].Name+'<span class="mui-icon mui-icon-arrowdown"></span>');
+							$("header h1").attr("id",data.data[0].Id);
+							_branchid = data.data[0].Id;
+						}else{
+							$("header select").empty().hide();
+							$("header h1").html(data.data[0].Name+'<span class="mui-icon mui-icon-arrowdown"></span>');
+							$("header h1").attr("id",data.data[0].Id);
+							_branchid = data.data[0].Id;
+						}
+						Saledata(groupid,_branchid,GetDateStr(0).split('-')[0]+'-'+GetDateStr(0).split('-')[1]);
+						EliminateFood(groupid,_branchid,GetDateStr(0).split('-')[0]+'-'+GetDateStr(0).split('-')[1]);
+						FlavorTypeFood(groupid,_branchid,GetDateStr(0).split('-')[0]+'-'+GetDateStr(0).split('-')[1]);
+						Eliminate(groupid,_branchid,GetDateStr(0).split('-')[0]+'-'+GetDateStr(0).split('-')[1]);
+						$("#SalesVolume1").attr("href",'bestdish.html?branchid='+_branchid+'=groupid='+groupid+'=time='+_today);
+						$("#Efficiency1").attr("href",'Efficiency.html?branchid='+_branchid+'=groupid='+groupid+'=time='+_today);
+						$("#Ingredients1").attr("href",'Ingredients.html?branchid='+_branchid+'=groupid='+groupid+'=time='+_today);
+						$("#FlavorType1").attr("href",'FlavorType.html?branchid='+_branchid+'=groupid='+groupid+'=time='+_today);
+						
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+			}
+			
+			//查询毛利数据
+	   		function Saledata(groupid,branchid,time){
+	   			var GrossProfit=[];
+ 				mui.ajax('http://baseapi.panpom.com:9988/api/BillDB/GetBillSales?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+groupid+'\&branchid='+branchid+'\&date='+time, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 60000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+//						console.log(JSON.stringify(data));
+						if(time.split('-')[0] == GetDateStr(0).split('-')[0] && time.split('-')[1] == GetDateStr(0).split('-')[1]){
+							if(GetDateStr(0).split('-')[2]=='01'){
+								if(data.data[0].Sales == null){
+									data.data[0].Sales =0;
+								}
+								if(data.data[0].Costs == null){
+									data.data[0].Costs =0;
+								}
+								if(data.data[0].Sales == 0){
+									GrossProfit[0] = 0
+								}else{
+									var Sales = parseFloat(data.data[0].Sales);//销售额
+									var Costs = parseFloat(data.data[0].Costs);//成本
+									GrossProfit[0]=((Sales - Costs)/Sales*100).toFixed(2);
+								}
+							}else{
+								for(var i=0;i<GetDateStr(-1).split('-')[2];i++){
+									if(data.data[i].Sales == null){
+										data.data[i].Sales =0;
+									}
+									if(data.data[i].Costs == null){
+										data.data[i].Costs =0;
+									}
+									if(data.data[i].Sales == 0){
+										GrossProfit[i] = 0
+									}else{
+										var Sales = parseFloat(data.data[i].Sales);//销售额
+										var Costs = parseFloat(data.data[i].Costs);//成本
+										GrossProfit[i]=((Sales - Costs)/Sales*100).toFixed(2);
+									}
+								}
+							}
+						}else{
+							for(var i=0;i<data.data.length;i++){
+								
+								if(data.data[i].Sales == null){
+									data.data[i].Sales =0;
+								}
+								if(data.data[i].Costs == null){
+									data.data[i].Costs =0;
+								}
+								if(data.data[i].Sales == 0){
+									GrossProfit[i] = 0
+								}else{
+									var Sales = parseFloat(data.data[i].Sales);//销售额
+									var Costs = parseFloat(data.data[i].Costs);//成本
+									GrossProfit[i]=((Sales - Costs)/Sales*100).toFixed(2);
+								}
+							}
+						}
+						console.log(JSON.stringify(GrossProfit));
+						var count = 0;
+						for(var i=0;i<GrossProfit.length;i++){
+							count += parseFloat(GrossProfit[i]);
+						}
+						_Average = (count/GrossProfit.length).toFixed(2)
+						console.log(_Average);
+						$("#GrossProfit").attr("href",'GrossProfit.html?branchid='+branchid+'=groupid='+groupid+'=time='+time+'=Average='+_Average);
+						showTable(GrossProfit);
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+	//					alert("请求超时");
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+	   		}
+			
+			//计算销量小图标
+	      	function EliminateFood(groupid,branchid,time){
+	      		var data1=['1-20','21-50','51-100','101-200','201--'];//味型数据
+	      		var data2=[];//味型数据
+	      		var count0 = [];
+	      		var count1 =[];
+	      		var count2 = [];
+	      		var count3 =[];
+	      		var count4 =[];
+				mui.ajax('http://baseapi.panpom.com/api/BillDB/GetDishSalesVolumeCountList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+groupid+'\&branchid='+branchid+'\&date='+time, {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				success: function(data) {
+//					console.log(JSON.stringify(data));
+					for(var i=0;i<data.data.length;i++ ){
+						if(data.data[i].count.split('.').length == 2){
+							data.data[i].count = parseFloat(data.data[i].count).toFixed(2);
+						}
+						if(parseInt(data.data[i].count) < 21){
+							count0.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"salesvolume":data.data[i].salesvolume
+							});
+						}else if(parseInt(data.data[i].count) < 51){
+							count1.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"salesvolume":data.data[i].salesvolume
+							});
+						}else if(parseInt(data.data[i].count) < 101){
+							count2.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"salesvolume":data.data[i].salesvolume
+							});
+						}else if(parseInt(data.data[i].count) < 201){
+							count3.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"salesvolume":data.data[i].salesvolume
+							});
+						}else{
+							count4.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"salesvolume":data.data[i].salesvolume
+							});
+						}
+					}
+					if(count0.length == 0){
+						data2[0] = 20;
+					}else{
+						data2[0] = count0.length;
+					}
+					if(count1.length == 0){
+						data2[1] = 40;
+					}else{
+						data2[1] = count1.length;
+					}
+					if(count2.length == 0){
+						data2[2] = 60;
+					}else{
+						data2[2] = count2.length;
+					}
+					if(count3.length == 0){
+						data2[3] = 80;
+					}else{
+						data2[3] = count3.length;
+					}
+					if(count4.length == 0){
+						data2[4] = 100;
+					}else{
+						data2[4] = count4.length;
+					}
+					
+					//销量小图标
+					SalesVolume(data2);
+				},
+				error: function(xhr, type, errorThrown) {
+					
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+	  	}
+			
+			//食材、味型小图标
+	      	function FlavorTypeFood(groupid,branchid,time){
+	      		var color1=['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622','#2f4554','#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622','#2f4554','#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#2f4554','#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622','#2f4554','#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a'];
+	      		var data2=[];//味型数据
+	      		var data4=[];//食材数据
+	      				mui.ajax('http://baseapi.panpom.com/api/BillDB/GetFlaovrAndIngredients?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+groupid+'\&branchid='+branchid+'\&date='+time, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 30000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+//						console.log(JSON.stringify(data));
+						var TotleCount = 0;
+						var aa = 0
+						if(data.Flaovr.length == 0){
+							Ingredients(IngredientsData,"Ingredients");
+						}else{
+							for(var i = 0 ;i<data.Flaovr.length ; i++){
+								TotleCount += parseFloat(data.Flaovr[i].FlaovrRatio);
+							}
+							for(var i = 0 ;i<data.Flaovr.length ; i++){
+								var _thisAng = parseFloat(data.Flaovr[i].FlaovrRatio)/TotleCount*360
+								data2.push({"color":color1[i],"count":_thisAng});
+							}
+//							console.log(JSON.stringify(data2));
+							Ingredients(data2,"FlavorType");
+						}
+						
+						if(data.Ingredients.length == 0){
+							Ingredients(FlavorTypeData,"FlavorType");
+						}else{
+							for(var i = 0 ;i<data.Ingredients.length ; i++){
+								aa += parseFloat(data.Ingredients[i].IngredientsRatio);
+							}
+							for(var i = 0 ;i<data.Ingredients.length ; i++){
+								var _thisAng = parseFloat(data.Ingredients[i].IngredientsRatio)/aa*360
+								data4.push({"color":color1[i],"count":_thisAng});
+							}
+//							console.log(JSON.stringify(data4));
+							Ingredients(data4,"Ingredients");
+						}
+						
+						
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+	      	}
+			
+			//效能小图标
+	      	function Eliminate(groupid,branchid,time){
+	      		var dish = [];//淘汰菜品
+				mui.ajax('http://baseapi.panpom.com/api/BillDB/GetEliminateDishByEfficiencyList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+groupid+'\&branchid='+branchid+'\&date='+time, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 30000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+//						console.log(JSON.stringify(data));
+						if(data.data.length > 0){
+					  		var SalesEfficiency = 0;//销售效能
+					  		var AmountEfficiency = 0;//金额效能
+					  		var CostEfficiency = 0;//成本效能
+					  		var EatingEfficiency = 0;//食味效能
+					  		for(var i=0;i<data.data.length;i++){
+					  			SalesEfficiency += parseFloat(data.data[i].salesCountEfficiency);
+					  			AmountEfficiency += parseFloat(data.data[i].amountEfficiency);
+					  			CostEfficiency += parseFloat(data.data[i].costEfficiency);
+					  			EatingEfficiency += parseFloat(data.data[i].ingredientsTasteEfficiency);
+					  		}
+//					  		console.log(SalesEfficiency);
+//					  		console.log(AmountEfficiency);
+//					  		console.log(CostEfficiency);
+//					  		console.log(EatingEfficiency);
+					  		dish=[
+					  			SalesEfficiency/data.data.length, 
+					  			AmountEfficiency/data.data.length,
+					  			CostEfficiency/data.data.length,
+					  			EatingEfficiency/data.data.length
+					  		]
+//					  		console.log(JSON.stringify(dish));
+					  		Efficiency(dish);
+					  		
+						}else{
+							Efficiency(EfficiencyData);
+						}
+						
+					},
+					error: function(xhr, type, errorThrown) {
+						
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+		  	}
+			
+			//销量canvas
+			function SalesVolume(count){
+//				console.log(JSON.stringify(count));
+				var c=document.getElementById("SalesVolume");
+				var ctx=c.getContext("2d");
+				ctx.clearRect(0,30,241,200);
+				
+				ctx.beginPath();
+				ctx.fillStyle="#f96268";
+				ctx.fillRect(1,30,40,count[4]);
+				
+				ctx.beginPath();
+				ctx.fillStyle="#f96268";
+				ctx.fillRect(61,30,40,count[3]);
+				
+				ctx.beginPath();
+				ctx.fillStyle="#f96268";
+				ctx.fillRect(121,30,40,count[2]);
+				
+				ctx.beginPath();
+				ctx.fillStyle="#f96268";
+				ctx.fillRect(181,30,40,count[1]);
+				
+				ctx.beginPath();
+				ctx.fillStyle="#f96268";
+				ctx.fillRect(241,30,40,count[0]);
+			}
+			
+			//食材 味型饼图
+			function Ingredients(IngredientsData,id){
+				var c=document.getElementById(id);
+				var ctx=c.getContext("2d");
+				CanvasRenderingContext2D.prototype.sector = function(x,y,r,angle1,angle2){
+		            this.save();
+		            this.beginPath();
+		            this.moveTo(x,y);
+		            this.arc(x,y,r,angle1*Math.PI/180,angle2*Math.PI/180,false);
+		            this.closePath();    
+		            this.restore();
+		            return this;
+		        }
+				var aa = bb = 0;
+				for(var i=0;i<IngredientsData.length;i++){
+					bb +=IngredientsData[i].count
+					if(i==0){
+						aa = 0;
+					}else{
+						aa +=IngredientsData[i-1].count;
+					}
+					ctx.fillStyle = IngredientsData[i].color;
+	       			ctx.sector(150,75,75,aa,bb).fill();
+				}
+				
+			}
+			//效能雷达图
+			function Efficiency(EfficiencyData){
+				var myChart = echarts.init(document.getElementById('Efficiency'));
+				option = {
+					    radar: [
+					        {
+					            indicator: [
+					                {text: '销售效能', max: 100},
+					                {text: '金额效能', max: 100},
+					                {text: '毛利效能', max: 100},
+					                {text: '食味效能', max: 100}
+					            ],
+					            center: ['50%','50%'],
+					            radius: 40
+					        }
+					    ],
+					    series: [
+					        {
+					            type: 'radar',
+					             tooltip: {
+					                trigger: 'item'
+					            },
+					            itemStyle: {normal: {areaStyle: {type: 'default'}}},
+					            data: [
+					                {
+					                    value: EfficiencyData,
+					                    name: '某软件'
+					                }
+					            ]
+					        }
+					    ]
+					};
+				myChart.setOption(option, true);
+			}
+			//获取当天日期
+	      	function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				if(m >= 1 && m <= 9) {
+					m = "0" + m;
+				}
+				if(d >= 0 && d <= 9) {
+					d = "0" + d;
+				}
+				return y+"-"+m+"-"+d; 
+			}	
+			//毛利折线图
+			function showTable(GrossProfit){
+				var myChart = echarts.init(document.getElementById('table'));
+				option = {
+					backgroundColor:'#fff',
+					tooltip: {
+						show:false,
+						trigger: 'axis',
+						axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+						    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+						}
+					},
+				    grid: {
+				    	x:20,
+				    	x2:50,
+				    	y:40,
+				    	y2:10,
+				        containLabel: true,
+				        borderWidth:0,
+				    },
+				    
+				    xAxis : [
+				        {
+				            type : 'category',
+				            name:'日期',
+				            nameGap:5,
+				            data : [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+				            axisLabel:{
+				            	interval:3,
+				            	textStyle:{
+				            		fontSize:12,
+				            	}
+				            },
+				            splitLine:{
+				            	show:false,
+				            },
+				            axisLine: {
+					            lineStyle: {
+					                color: '#989898'
+					            }
+					        }
+				        }
+				    ],
+				    yAxis : [
+				        {
+				        	name:'毛利率（%）',
+				        	nameGap:10,
+				        	nameTextStyle:{
+				        		fontSize:12, 
+				        		
+				        	},
+				        	type: 'value',
+				            splitLine:{
+				            	show:false,
+				            },
+				            axisLabel:{
+				            	textStyle:{
+				            		fontSize:12,
+				            	}
+				            },
+				            axisLine: {
+					            lineStyle: {
+					                color: '#989898'
+					            }
+					        }
+				        }
+				    ],
+				    series : [
+				        {
+				            name:'毛利额',
+				            type:'line',
+				            barWidth: '60%',
+				            smooth:true,
+				            data:GrossProfit
+				        }
+				        
+				    ]
+				};
+				myChart.setOption(option, true);
+			}
+			
+			//获取当天日期
+	      	function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				if(m >= 1 && m <= 9) {
+					m = "0" + m;
+				}
+				if(d >= 0 && d <= 9) {
+					d = "0" + d;
+				}
+				return y+"-"+m+"-"+d; 
+			}
+			
+			(function($) {
+				$.init();
+				var result = $('#result')[0];
+				var btns = $('.btn');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							result.innerText = rs.text;
+							_today = rs.text;
+							Saledata(_groupid,_branchid,_today.split('-')[0]+'-'+_today.split('-')[1]);
+							EliminateFood(_groupid,_branchid,_today.split('-')[0]+'-'+_today.split('-')[1]);
+							FlavorTypeFood(_groupid,_branchid,_today.split('-')[0]+'-'+_today.split('-')[1]);
+							Eliminate(_groupid,_branchid,_today.split('-')[0]+'-'+_today.split('-')[1]);
+							document.getElementById('SalesVolume1').setAttribute("href",'bestdish.html?branchid='+_branchid+'=groupid='+_groupid+'=time='+_today);
+							document.getElementById('Efficiency1').setAttribute("href",'Efficiency.html?branchid='+_branchid+'=groupid='+_groupid+'=time='+_today);
+							document.getElementById('Ingredients1').setAttribute("href",'Ingredients.html?branchid='+_branchid+'=groupid='+_groupid+'=time='+_today);
+							document.getElementById('FlavorType1').setAttribute("href",'FlavorType.html?branchid='+_branchid+'=groupid='+_groupid+'=time='+_today);
+							picker.dispose();
+						});
+					}, false);
+				});
+			})(mui);
+		</script>
+	</body>
+</html>

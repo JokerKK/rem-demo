@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>个人中心</title>
+		<!--重置浏览器样式-->
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css"/>
+		<script src="js/hotcss.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			body{
+				position: absolute;
+	    		width: 100%;
+	    		height: 100%;
+			}
+			#table{
+	    		width: 100%;
+	    		height: 100%;
+	    	}
+	    	.section{
+	    		overflow-y: scroll;
+	    		-webkit-overflow-scrolling: touch; 
+	    	}
+		</style>
+		<script type="text/javascript">
+			$(function(){
+				$(".section").css('height',$("body").height() - ($("header").height()+$("#dataSelect").height())*1.2);
+				$("#table").css('min-height',$("body").height() - ($("header").height()+$("#dataSelect").height())*1.2);
+			})
+		</script>
+	</head>
+	<body>
+		<header>
+			<a class="back mui-action-back"></a>
+			<h2>淘汰菜品</h2>
+		</header>
+		<p id="dataSelect"></p>
+		<button id='demo2' data-options='{"type":"month"}' class="btn mui-btn mui-btn-block">选择月份 ...</button>
+		<div class="section" style="position: relative;">
+			<div id="tips4"><span class="mui-spinner"></span></div>
+			<div id="table"></div>
+		</div>
+		
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在刷新数据，请稍后...</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>加载失败</b></div>
+		</div>
+		<script type="text/javascript">
+		$(function(){
+			mui.init();
+	      	var _thisMon= GetDateStr(0).split('-')[0]+'-'+GetDateStr(0).split('-')[1];//获取当天的日期；
+	      	var _thisurl = window.location.href;//当前页面的url地址
+	      	console.log(_thisurl);
+			var _branchid ;
+			var _groupid = _thisurl.split('=')[3];
+			_branchid = _thisurl.split('=')[1];
+			
+//			_groupid = 2262;
+//			_branchid = 1214179;
+			console.log(_groupid);
+			console.log(_branchid);
+			console.log(_thisMon);
+			EliminateFood(_branchid,_thisMon);
+			$("#demo2").attr("data-options",'{"type":"month","beginYear":2015,"endYear":'+GetDateStr(0).split('-')[0]+'}');
+			$("#dataSelect").text(_thisMon);
+			//淘汰菜品查询
+	      	function EliminateFood(branchid,time){
+	      		dish = [];//淘汰菜品
+		  		Efficiencycount = [];//综合效能
+		  		SalesEfficiency = [];//销售效能
+		  		AmountEfficiency = [];//金额效能
+		  		CostEfficiency = [];//成本效能
+		  		EatingEfficiency = [];//食味效能
+	      			mui.ajax('http://baseapi.panpom.com/api/BillDB/GetEliminateDishByEfficiencyList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+_groupid+'\&branchid='+branchid+'\&date='+time, {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 30000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));
+					if(data.data.length > 0){
+						$("#table").show().html('');
+						var aa = parseInt(data.data.length*0.9);
+						console.log(data.data.length);
+						console.log(aa);
+						for(var i=0;i<data.data.length;i++ ){
+							dish.push(data.data[i].Name);
+							Efficiencycount.push(parseInt(data.data[i].efficiencycount));
+							SalesEfficiency.push(parseInt(data.data[i].salesCountEfficiency));
+							AmountEfficiency.push(parseInt(data.data[i].amountEfficiency));
+							CostEfficiency.push(parseInt(data.data[i].costEfficiency));
+							EatingEfficiency.push(parseInt(data.data[i].ingredientsTasteEfficiency));
+						}
+						console.log(JSON.stringify(dish));
+						console.log(dish.length);
+						console.log(JSON.stringify(Efficiencycount));
+						console.log(Efficiencycount.length);
+						console.log(JSON.stringify(SalesEfficiency));
+						console.log(SalesEfficiency.length);
+						console.log(JSON.stringify(AmountEfficiency));
+						console.log(AmountEfficiency.length);
+						console.log(JSON.stringify(CostEfficiency));
+						console.log(CostEfficiency.length);
+						console.log(JSON.stringify(EatingEfficiency));
+						console.log(EatingEfficiency.length);
+						var aa = dish.length * 10;
+						var tableHei = document.getElementById("table").style.minHeight;
+						if(aa > parseInt(tableHei.split('.')[0])){
+							$("#table").height(aa);
+						}
+						tableShow(dish,SalesEfficiency,AmountEfficiency,CostEfficiency,EatingEfficiency);
+					}else{
+						$("#table").show().html('<p>暂无数据</p>');
+					}
+					
+				},
+				error: function(xhr, type, errorThrown) {
+					
+					//异常处理；
+					$("#tips1").hide();
+					$("#tips").fadeIn();
+					$("#tips3").show();
+					setTimeout(function(){
+						$("#tips").fadeOut(300);
+						$("#tips3").hide();
+						$("#tips4").hide();
+					},1000)
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+	  	}
+  	
+  	//获取当天日期
+  	function GetDateStr(AddDayCount) { 
+		var dd = new Date(); 
+		dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+		var y = dd.getFullYear(); 
+		var m = dd.getMonth()+1;//获取当前月份的日期 
+		var d = dd.getDate(); 
+		if(m >= 1 && m <= 9) {
+			m = "0" + m;
+		}
+		if(d >= 0 && d <= 9) {
+			d = "0" + d;
+		}
+		return y+"-"+m+"-"+d; 
+	}
+  	
+	// 基于准备好的dom，初始化echarts实例
+	function tableShow(dish,SalesEfficiency,AmountEfficiency,CostEfficiency,EatingEfficiency){
+		var myChart = echarts.init(document.getElementById('table'));
+		option = {
+			    tooltip : {
+			        trigger: 'axis',
+			        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+			            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+			        }
+			    },
+			    legend: {
+			        data: ['销量效能', '金额效能','成本效能','食味效能'],
+			        x:'left'
+			    },
+			    grid: {
+			       x:5,
+			       y:30,
+			       x2:20,
+			       y2:'1%',
+			        containLabel: true
+			    },
+			    xAxis:  {
+			        type: 'value'
+			    },
+			    yAxis: {
+			        type: 'category',
+			        data: dish
+			    },
+			    series: [
+			        {
+			            name: '销量效能',
+			            type: 'bar',
+			            stack: '总量',
+			            label: {
+			                normal: {
+			                    show: false,
+			                    position: 'insideRight'
+			                }
+			            },
+			            data: SalesEfficiency
+			        },
+			        {
+			            name: '金额效能',
+			            type: 'bar',
+			            stack: '总量',
+			            label: {
+			                normal: {
+			                    show: false,
+			                    position: 'insideRight'
+			                }
+			            },
+			            data: AmountEfficiency
+			        },
+			        {
+			            name: '成本效能',
+			            type: 'bar',
+			            stack: '总量',
+			            label: {
+			                normal: {
+			                    show: false,
+			                    position: 'insideRight'
+			                }
+			            },
+			            data:CostEfficiency
+			        },
+			        {
+			            name: '食味效能',
+			            type: 'bar',
+			            stack: '总量',
+			            label: {
+			                normal: {
+			                    show: false,
+			                    position: 'insideRight'
+			                }
+			            },
+			            data: EatingEfficiency
+			        }
+			    ]
+			};
+		myChart.setOption(option, true);
+		$("#tips").fadeOut();
+		$("#tips1").hide();
+		$("#tips4").hide();
+	}
+			
+			(function($) {
+				$.init();
+				var result = $('#dataSelect')[0];
+				var btns = $('.btn');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							result.innerText =rs.text;
+							_thisMon = rs.text;
+							console.log(_branchid);
+							console.log(_thisMon);
+							EliminateFood(_branchid,_thisMon);
+							picker.dispose();
+							document.getElementById("tips").style.display = 'block';
+       						document.getElementById("tips1").style.display = 'block';
+       						document.getElementById("table").style.display = 'none';
+						});
+					}, false);
+				});
+			})(mui);
+		})
+		</script>
+	</body>
+</html>

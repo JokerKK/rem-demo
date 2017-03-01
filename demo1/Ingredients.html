@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/mui.picker.min.css"/>
+		<style type="text/css">
+			/*body{
+				font-family: "微软雅黑";
+			}*/
+			header a{
+				color: #000;
+				font-size: 28px !important;
+			}
+			.ui-alert{
+				height: 44px;
+				width: 100px;
+				position: absolute;
+				right:15px;
+				top: 0;
+				line-height: 44px;
+				text-align: right;
+			}
+			#demo6{
+				width: 100px;
+				height: 44px;
+				position: absolute;
+				right: 0;
+				top: 0;
+				opacity: 0;
+				
+			}
+			.mui-content{
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				padding:0 15px;
+			}
+			#table{
+				margin-top: 20px;
+				height: 90%;
+				width:100%;
+				/*background: #fff;*/
+				border-radius: 5px;
+			}
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:15%;
+				z-index: 9999;
+				width: 70%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 16px;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:100px;
+				margin-left: -50px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:100px;
+				margin-left: -50px;
+				top: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title"></h1>
+		    <div id='result' class="ui-alert"></div>
+		    <button id='demo6' class="btn mui-btn mui-btn-block"></button>
+		</header>
+		<div class="mui-content">
+		    <div id="table"></div>
+		</div>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在刷新数据，请稍后...</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>加载成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>加载失败</b></div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			$("#demo6").attr("data-options",'{"type":"month","beginYear":2015,"endYear":'+GetDateStr(0).split('-')[0]+'}');
+			var _thisurl = window.location.href;//当前页面的url地址
+	      	console.log(_thisurl);
+	      	console.log(JSON.stringify(_thisurl.split('=')));
+	      	var _branchid = _thisurl.split('=')[1];
+	      	var _groupid = _thisurl.split('=')[3];
+			var _thisMon = _thisurl.split('=')[5];
+			console.log(_branchid);
+			console.log(_groupid);
+			console.log(_thisMon);
+			$("#result").text(_thisMon.split('-')[0]+'-'+_thisMon.split('-')[1]);
+			//查询可查看的门店数
+			mui.ajax('http://baseapi.panpom.com/api/Common/GetBranchList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+_groupid, {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 30000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				success: function(data) {
+					for(var i=0;i<data.data.length;i++){
+						if(_branchid == data.data[i].Id){
+							$("h1").text(data.data[i].Name);
+							FlavorTypeFood(_groupid,_branchid,_thisMon.split('-')[0]+'-'+_thisMon.split('-')[1]);
+							return false;
+						}
+					}
+					
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+			
+			//味型销售数据
+	      	function FlavorTypeFood(groupid,branchid,time){
+	      		var color1=['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
+	      		var data1=[];//味型数据
+	      		var data2=[];//味型数据
+	      		var data3=[];//食材数据
+	      		var data4=[];//食材数据
+	      				mui.ajax('http://baseapi.panpom.com/api/BillDB/GetFlaovrAndIngredients?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+groupid+'\&branchid='+branchid+'\&date='+time, {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 30000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						$("#table").html('');
+						console.log(JSON.stringify(data));
+						if(data.Ingredients.length == 0){
+							$("#tips").hide();
+							$("#tips1").hide();
+							
+							
+							$("#table").html('<p style="text-align: center;">暂无数据</p>');
+						}else{
+							for(var j=0;j<data.Ingredients.length;j++){
+								if(data.Ingredients[j].IngredientsName == "0"){
+									data.Ingredients[j].IngredientsName ="其他";
+								}
+								data3.push({'name':data.Ingredients[j].IngredientsName,'icon':'rect'});
+								data4.push({'value':parseFloat(data.Ingredients[j].IngredientsRatio.toFixed(2)),'name':data.Ingredients[j].IngredientsName});
+							};
+							PieChart('table','食材',color1,data3,data4);
+						}
+						
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+	      	}
+			
+			//获取当天日期
+	      	function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				if(m >= 1 && m <= 9) {
+					m = "0" + m;
+				}
+				if(d >= 0 && d <= 9) {
+					d = "0" + d;
+				}
+				return y+"-"+m+"-"+d; 
+			}	
+			
+			// 基于准备好的dom，初始化echarts实例
+	  		function PieChart(id,name,color,data1,data2){
+				var myChart = echarts.init(document.getElementById(id));
+				option = {
+				    title : {
+				        text:name+'销量占比',
+				        x:'center'
+				    },
+				    color:color,
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c} ({d}%)"
+				    },
+				    legend: {
+					        orient: 'horizontal',
+					        x: '0',
+					        y:'5%',
+					        data: data1,
+					        itemGap:3,
+					        itemWidth:15,
+					        itemHeight:10
+					   },
+				    series : [
+				        {
+				            name: '访问来源',
+				            type: 'pie',
+				            radius : '55%',
+				            center: ['50%', '75%'],
+				            data:data2,
+				           avoidLabelOverlap: false,
+				            label: {
+				                normal: {
+				                    show: false,
+				                    position: 'outside'
+				                },
+				                emphasis: {
+				                    show: false,
+				                    textStyle: {
+				                        fontSize: '30',
+				                        fontWeight: 'bold'
+				                    }
+				                }
+				            },
+				            labelLine: {
+				                normal: {
+				                    show: false,
+				                    
+				                }
+				            },
+				        }
+				    ]
+				};
+				myChart.setOption(option, true);
+				$("#tips1").hide();
+				$("#tips2").show();
+				setTimeout(function(){
+					$("#tips").hide();
+					
+					$("#tips2").hide();
+				},1000)
+	  		}
+			
+			
+			(function($) {
+				$.init();
+				var result = $('#result')[0];
+				var btns = $('.btn');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							result.innerText = rs.text;
+							_thisMon = rs.text;
+							FlavorTypeFood(_groupid,_branchid,_thisMon);
+							picker.dispose();
+							document.getElementById("tips").style.display = 'block';
+							document.getElementById("tips1").style.display = 'block';
+						});
+					}, false);
+				});
+			})(mui);
+		</script>
+	</body>
+
+</html>

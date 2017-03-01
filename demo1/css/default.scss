@@ -1,0 +1,338 @@
+@import 'px2rem.scss';
+$designWidth: 750;
+
+body{
+    background: #efeff7;
+}
+#tips {
+    position: fixed;
+    top:50%;
+    left: 20%;
+    z-index: 9999;
+    width: 60%;
+    height: px2rem(120);
+    padding: px2rem(120) 0 px2rem(70);
+    background: #2f2f2f;
+    color: #fff;
+    font-size:px2rem(30);
+    border-radius: 10px;
+    text-align: center;
+    display: none;
+}
+
+#tips #tips1 {
+    display: none;
+}
+
+#tips #tips2 {
+    display: none;
+}
+
+#tips #tips3 {
+    display: none;
+}
+
+#tips span {
+    position: absolute;
+    top: px2rem(20);
+    left: 50%;
+    margin-left: -(px2rem(30));
+    width: px2rem(60);
+    height: px2rem(60);
+}
+
+#tips #tips2 span.mui-icon-checkmarkempty {
+    font-size:px2rem(30);
+    margin-left: -(px2rem(40));
+    top: 0px;
+}
+
+#tips #tips3 span {
+    font-size:px2rem(30);
+    margin-left: -(px2rem(40));
+    top: px2rem(15);
+    background: url(../img/error.png) center no-repeat;
+    background-size:150% ;
+}
+#tips4{
+    position: absolute;
+    width: px2rem(75);
+    height: px2rem(75);
+    left: 50%;
+    margin-left: -(px2rem(37.5));
+    top: px2rem(15);
+}
+#tips4 span{
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+//.mui-dtpicker{
+//  -webkit-transform:translateY(px2rem(490));
+//}
+//.mui-dtpicker-body{
+// height: px2rem(350) !important;
+//}
+//.mui-pciker-list li{
+//  font-size: px2rem(40) !important;
+//}
+//.mui-dtpicker-title h5{
+//  font-size: px2rem(32) !important;
+//  padding: px2rem(15) px2rem(8) !important;
+//}
+//.mui-dtpicker-header button{
+//  padding: px2rem(10) px2rem(20) !important;
+//  font-size: px2rem(30) !important;
+//  border-radius: 5px;
+//}
+//.mui-pciker-list, .mui-pciker-rule{
+//  height: px2rem(50) !important;
+//  line-height: px2rem(50) !important;
+//}
+
+header{
+    height:px2rem(107);
+    border-bottom: 1px #dbdbdb solid;
+    line-height: px2rem(107);
+    position: relative;
+    padding: 0 px2rem(20);
+    text-align: center;
+    background: #fff;
+}
+header .back{
+    display:block;
+    width: px2rem(48);
+    height: 100%;
+    background: url(../img/back_icon.png) left center no-repeat;
+    background-size:50%;
+    position: absolute;
+    left: px2rem(20);
+    top: 0;
+}
+header h2{
+    font-size: px2rem(36);
+    color: #000;
+    font-weight: normal;
+    height: 100%;
+    display: inline-block;
+     margin: 0;
+}
+header h2 span{
+    display: inline-block;
+    float: left;
+    height: 100%;
+   line-height: px2rem(107);
+}
+header h2 i{
+    display: inline-block;
+    width: px2rem(33);
+    height: 100%;
+    background: url(../img/icon4_1.png) center no-repeat;
+    background-size: contain;
+    float: left;
+    margin-left: px2rem(10);
+}
+header select{
+    position: absolute;
+    left: 50%;
+    margin:0 0 0 -(px2rem(150));
+    width: px2rem(300);
+    height: px2rem(107);
+    border: 1px #ccc solid;
+    top:0;
+    opacity: 0;
+    padding: 0;
+}
+#dataSelect{
+     width: px2rem(150);
+     height: px2rem(107);
+     text-align: center;
+     font-size: px2rem(36);
+     line-height: px2rem(107);
+    position: fixed;
+    right: px2rem(15);
+    top: 0;
+    margin: 0;
+}
+#demo2{
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: px2rem(107);
+    width: px2rem(150);
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+}
+
+.section .aside{
+    padding: 0 px2rem(20);
+    margin-bottom: px2rem(40);
+    position: relative;
+}
+.section .aside h3{
+    font-size: px2rem(50);
+    color: #ff5722;
+    line-height: px2rem(75);
+}
+.section .aside #table{
+    width:100%;
+    height: px2rem(480);
+    background: #fff;
+    border-radius: 10px;
+//   box-shadow: 0px 0px 60px -(20px) #aaa;
+}
+.section .aside #table1{
+    width:100%;
+    height: px2rem(600);
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 60px -(20px) #aaa;
+//   float: left;
+    margin: 0 0 px2rem(30);
+}
+.section .aside #table2{
+    width:100%;
+    height: px2rem(600);
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 60px -(20px) #aaa;
+    margin: 0;
+//  float: right;
+//  margin: 0 px2rem(10);
+//  position: absolute;
+//  right: px2rem(30);
+//  top:0
+     
+}
+.section .aside ul{
+    width: 100%;
+}
+.section .aside ul li{
+    background: #fff;
+    border-radius: 10px;
+    margin: 0 auto;
+    position: relative;
+    padding: px2rem(15) 0 0 !important;
+    box-shadow: 0px 0px 60px -(20px) #aaa;
+}
+.section .aside ul li h4{
+    font-size: px2rem(30);
+    color: #656565;
+    font-weight: normal;
+    margin: 0;
+    position: absolute;
+    left: px2rem(15);
+    top: px2rem(15);
+}
+.section .aside ul li .data{
+    text-align: center;
+}
+.section .aside ul li .data p{
+    font-size: px2rem(24);
+    color: #656565;
+    margin: 0;
+}
+.section .aside ul li .data >div{
+    line-height: px2rem(102);
+    padding-top: px2rem(50);
+}
+.section .aside ul li .data >div span{
+    font-size: px2rem(32);
+    color: #656565;
+}
+.section .aside ul li .data >div span strong{
+    font-size: px2rem(60);
+    color: #ff5722;
+}
+.section .aside dl{
+    background: url(../img/bg_icon.png) center top no-repeat;
+    background-size:contain;
+}
+.section .aside dl dd{
+    width: 33.3333%;
+    float: left;
+    font-size: px2rem(30);
+    color: #989898;
+    padding-top: px2rem(50);
+    text-align: center;
+}
+.section .aside dl dd i{
+    font-style: normal;
+    overflow:  hidden; 
+    white-space: nowrap;
+    text-overflow:  ellipsis;
+    width: 100%;
+    display: block;
+    line-height: 1;
+}
+.section .aside dl dd span{
+    display: block;
+    font-size: px2rem(32);
+    color: #282828;
+    padding: px2rem(35) 0;
+}
+.section .aside #tableList{
+    width: 100%;
+    background: #fff;
+//  box-shadow: 0px 0px 60px -(20px) #aaa;
+    
+}
+.section .aside #tableList .title{
+    line-height: px2rem(60);
+    font-size: px2rem(32);
+}
+.section .aside #tableList .title span{
+    width: 25%;
+    display:block;
+    text-align: center;
+    border: 1px #ccc solid;
+    float: left;
+    border-right: none;
+}
+.section .aside #tableList .title span:first-child{
+    width: 50%;
+}
+.section .aside .list .item span{
+    text-align: center;
+    line-height: px2rem(50);
+    font-size: px2rem(28);
+    border: 1px #ccc solid;
+    border-right: 0;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    overflow:hidden; 
+    text-align: center;
+    width: 25%;
+    display:block;
+    float: left;
+    margin: -1px 0 0 0;
+    
+}
+.section .aside .list .item span:first-child{
+    width: 50%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

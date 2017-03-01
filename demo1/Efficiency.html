@@ -1,0 +1,736 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/mui.picker.min.css"/>
+		<style type="text/css">
+			body{
+				font-family: "微软雅黑";
+				width: 100%;
+				height: 100%;
+				position: fixed;
+			}
+			header a{
+				color: #000;
+				font-size: 28px !important;
+			}
+			.ui-alert{
+				height: 44px;
+				width: 100px;
+				position: absolute;
+				right:15px;
+				top: 0;
+				line-height: 44px;
+				text-align: right;
+			}
+			#demo6{
+				width: 100px;
+				height: 44px;
+				position: absolute;
+				right: 0;
+				top: 0;
+				opacity: 0;
+				
+			}
+			.mui-content{
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				background: #fff;
+			}
+			
+			#tips{
+				position: fixed;
+				top: 30%;
+				left:15%;
+				z-index: 9999;
+				width: 70%;
+				height: 120px;
+				padding-top:80px;
+				background: #2f2f2f;
+				color: #fff;
+				font-size: 16px;
+				border-radius: 5px;
+				text-align: center;
+				display: none;
+			}
+			#tips #tips1{
+				display: none;
+			}
+			#tips #tips2{
+				display: none;
+			}
+			#tips #tips3{
+				display: none;
+			}
+			#tips span{
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				margin-left: -16px;
+				width: 32px;
+				height: 32px;
+			}
+			#tips #tips2 span.mui-icon-checkmarkempty{
+				font-size:100px;
+				margin-left: -50px;
+				top: 0px;
+			}
+			#tips #tips3 span.mui-icon-closeempty{
+				font-size:100px;
+				margin-left: -50px;
+				top: 0px;
+			}
+			nav{
+				width: 100%;
+				height: 60px;
+				line-height: 60px;
+				font-size:18px;
+				text-align: center;
+				border-bottom: 1px #ccc solid;
+			}
+			nav span{
+				display: block;
+				float: left;
+				width: 25%;
+			}
+			nav span.current{
+				color: #fff;
+				background: #f96268;
+			}	
+			ul{
+				list-style: none;
+				margin: 0;
+				padding:15px;
+				font-size: 16px;
+			}
+			ul li{
+				height: 30px;
+				line-height: 30px;
+			}
+			ul li label{
+				display: block;
+				float: left;
+				width:31%;
+			}
+			ul li span{
+				display: block;
+				float:left;
+				text-align: right;
+				width:23%;
+				position: relative;
+			}
+			ul li span i{
+				display: block;
+				width: 30px;
+				height: 30px;
+				background: url(img/radio_1.png) center no-repeat;
+				background-size:60% ;
+				position: absolute;
+				right: 20%;
+				top: 0;
+			}
+			ul li span.on i{
+				background: url(img/radio.png) center no-repeat;
+				background-size:60% ;
+			}
+			.dishList{
+				/*border-top: 1px #ccc solid;*/
+				font-size: 14px;
+				text-align: center;
+				height: calc(100% - 214px);
+				overflow-y: scroll;
+				-webkit-overflow-scrolling: touch;
+				position: relative;
+			}
+			.dishList .ListTitle{
+				font-size: 16px;
+				height: 30px;
+				line-height: 30px;
+				border-bottom: 1px #ccc solid;
+				border-top: 1px #ccc solid;
+			}
+			.dishList .ListItem{
+				height: 30px;
+				line-height: 30px;
+				border-bottom: 1px #ccc solid;
+				
+			}
+			.dishList span{
+				display: block;
+				float: left;
+				 width: 40%;
+				 border-left: 1px #ccc solid;
+			}
+			.dishList span:first-child{
+				width: 60%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">菜品效能分析</h1>
+		    <div id='result' class="ui-alert">2017-02</div>
+		    <button id='demo6' class="btn mui-btn mui-btn-block"></button>
+		</header>
+		<div class="mui-content">
+		    <nav>
+		    	<span>淘汰菜品</span>
+		    	<span>诱客菜</span>
+		    	<span>高利菜</span>
+		    	<span>招牌菜</span>
+		    </nav>
+		    <ul>
+		    	<li class="clearfix">
+					<label>销量效能</label>
+					<span >低<i></i></span>
+					<span>中<i></i></span>
+					<span>高<i></i></span>
+					
+				</li>
+				<li class="clearfix">
+					<label>金额效能</label>
+					<span>低<i></i></span>
+					<span>中<i></i></span>
+					<span>高<i></i></span>
+					
+				</li>
+				<li class="clearfix">
+					<label>毛利效能</label>
+					<span>低<i></i></span>
+					<span>中<i></i></span>
+					<span>高<i></i></span>
+					
+				</li>
+				<li class="clearfix">
+					<label>食味效能</label>
+					<span>低<i></i></span>
+					<span>中<i></i></span>
+					<span>高<i></i></span>
+					
+				</li>
+		    </ul>
+		    <div class="dishList">
+		    	<div class="ListTitle"><span>菜名</span><span>综合效能</span></div>
+		    	<!--<div class="ListItem"><span>红烧鱼</span><span>10</span></div>-->
+		    	
+		    </div>
+		</div>
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在刷新数据，请稍后...</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>加载成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>加载失败</b></div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			
+			$("#demo6").attr("data-options",'{"type":"month","beginYear":2015,"endYear":'+GetDateStr(0).split('-')[0]+'}');
+			$(".dishList").css("height",$("body").height() - 275);
+			var _thisurl = window.location.href;//当前页面的url地址
+	      	console.log(_thisurl);
+	      	console.log(JSON.stringify(_thisurl.split('=')));
+	      	var _branchid = _thisurl.split('=')[1];
+	      	var _groupid = _thisurl.split('=')[3];
+			var _thisMon = _thisurl.split('=')[5];
+			var dishData;
+			console.log(_branchid);
+			console.log(_groupid);
+			console.log(_thisMon);
+			$("#result").text(_thisMon.split('-')[0]+'-'+_thisMon.split('-')[1]);
+			
+			//查询可查看的门店数
+			mui.ajax('http://baseapi.panpom.com/api/Common/GetBranchList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+_groupid, {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 30000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				success: function(data) {
+					for(var i=0;i<data.data.length;i++){
+						if(_branchid == data.data[i].Id){
+							$("h1").text(data.data[i].Name);
+							EliminateFood(_groupid,_branchid,_thisMon.split('-')[0]+'-'+_thisMon.split('-')[1]);
+							return false;
+						}
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+			
+			function EliminateFood(groupid,branchid,time){
+	      		dish = [];//淘汰菜品
+		  		Efficiencycount = [];//综合效能
+		  		SalesEfficiency = [];//销售效能
+		  		AmountEfficiency = [];//金额效能
+		  		CostEfficiency = [];//成本效能
+		  		EatingEfficiency = [];//食味效能				
+				mui.ajax('http://baseapi.panpom.com/api/BillDB/GetEliminateDishByEfficiencyList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+_groupid+'\&branchid='+branchid+'\&date='+time+'\&isAll=true', {
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					timeout: 30000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+//						console.log(JSON.stringify(data));
+						console.log(data.data.length);
+						dishData = data;
+						EliminateIsert(0,data);
+						$("#tips1").hide();
+						$("#tips2").show();
+						setTimeout(function(){
+							$("#tips").hide();
+							$("#tips1").hide();
+							$("#tips2").hide();
+						},1000);
+					},
+					error: function(xhr, type, errorThrown) {
+						
+						//异常处理；
+						$("#tips1").hide();
+						$("#tips3").show();
+						setTimeout(function(){
+							$("#tips").hide();
+							$("#tips1").hide();
+							$("#tips3").hide();
+						},1000);
+						console.log(JSON.stringify(xhr.response));
+						console.log(JSON.stringify(xhr.responseText));
+						console.log(JSON.stringify(xhr.statusText));
+						console.log(JSON.stringify(type));
+						console.log(JSON.stringify(errorThrown));
+					}
+				});
+	  		}
+			
+			
+			$("nav span").on('tap',function(){
+				var _thisIndex = $(this).index();
+				$("ul span").removeClass("on");
+				$(this).addClass("current").siblings().removeClass("current");
+				if(_thisIndex == 0){
+					$("ul li").eq(0).find("span").eq(0).addClass("on");
+					$("ul li").eq(1).find("span").eq(0).addClass("on");
+					$("ul li").eq(2).find("span").eq(0).addClass("on");
+				}else if(_thisIndex == 1){
+					$("ul li").eq(0).find("span").eq(1).addClass("on");
+					$("ul li").eq(0).find("span").eq(2).addClass("on");
+					$("ul li").eq(2).find("span").eq(0).addClass("on");
+				}else if(_thisIndex == 2){
+					$("ul li").eq(1).find("span").eq(2).addClass("on");
+					$("ul li").eq(2).find("span").eq(2).addClass("on");
+				}else{
+					$("ul li").eq(1).find("span").eq(2).addClass("on");
+					$("ul li").eq(2).find("span").eq(1).addClass("on");
+					$("ul li").eq(3).find("span").eq(2).addClass("on");
+				}
+				DataInsert(_thisIndex,dishData);
+			})
+			
+			
+			$("ul li").each(function(){
+				$(this).find("span").on('tap',function(){
+					$(this).toggleClass("on");
+					CustomSelect();
+				})
+			})
+			
+			//默认插入淘汰菜品列表
+			function EliminateIsert(num,data){
+				$("nav span").eq(num).addClass("current");
+				$("ul li").eq(0).find("span").eq(0).addClass("on");
+				$("ul li").eq(1).find("span").eq(0).addClass("on");
+				$("ul li").eq(2).find("span").eq(0).addClass("on");
+				DataInsert(num,data);
+			}
+			
+			//条件插入数据
+			function DataInsert(index,data){
+				$(".dishList").empty();
+				$(".dishList").html('<div class="ListTitle"><span>菜名</span><span>综合效能</span></div>');
+				switch(index)
+				{
+				case 0:
+				  	for(var i=0;i<data.data.length;i++){
+				  		if(data.data[i].salesCountEfficiency < 30 && data.data[i].amountEfficiency < 30 && data.data[i].costEfficiency < 30){
+				  			$(".dishList").append('<div class="ListItem"><span>'+data.data[i].Name+'</span><span>'+data.data[i].efficiencycount+'</span></div>');
+				  		}	
+					}
+				break;
+				case 1:
+				  	for(var i=0;i<data.data.length;i++){
+						if(data.data[i].salesCountEfficiency >= 30 && data.data[i].costEfficiency < 30){
+				  			$(".dishList").append('<div class="ListItem"><span>'+data.data[i].Name+'</span><span>'+data.data[i].efficiencycount+'</span></div>');
+				  		}	
+					}
+				break;
+				case 2:
+				  	for(var i=0;i<data.data.length;i++){
+						if(data.data[i].amountEfficiency >= 70 && data.data[i].costEfficiency >= 70 ){
+				  			$(".dishList").append('<div class="ListItem"><span>'+data.data[i].Name+'</span><span>'+data.data[i].efficiencycount+'</span></div>');
+				  		}
+					}
+				break;
+				case 3:
+				  	for(var i=0;i<data.data.length;i++){
+						if(data.data[i].amountEfficiency >= 70 && data.data[i].costEfficiency >=30 &&  data.data[i].costEfficiency < 70 && data.data[i].ingredientsTasteEfficiency >= 70 ){
+				  			$(".dishList").append('<div class="ListItem"><span>'+data.data[i].Name+'</span><span>'+data.data[i].efficiencycount+'</span></div>');
+				  		}
+					}
+				break;
+				}
+				
+			}
+			function CustomSelect(){
+				var eliminateKind =[[1,0,0],
+					[1,0,0],
+					[1,0,0],
+					[0,0,0]];//淘汰菜品选择组合
+				var PassengerKind =[[0,1,1],
+					[0,0,0],
+					[1,0,0],
+					[0,0,0]];//诱客菜选择组合
+				var GregoryKind =[[0,0,0],
+					[0,0,1],
+					[0,0,1],
+					[0,0,0]];//高利菜品选择组合
+				var SignKind =[[0,0,0],
+					[0,0,1],
+					[0,1,0],
+					[0,0,1]];//招牌菜品选择组合
+				
+				var IsSelect =[
+					[0,0,0],
+					[0,0,0],
+					[0,0,0],
+					[0,0,0]];
+				var _LiNum = $('ul li');
+				for(var i=0;i<_LiNum.length;i++){
+					for(var j=0;j<3;j++){
+						if(_LiNum.eq(i).find("span").eq(j).hasClass("on")){
+							IsSelect[i][j] = 1;
+						}
+						
+					}
+				}
+				if(JSON.stringify(eliminateKind) == JSON.stringify(IsSelect)){
+					$("nav span").eq(0).addClass("current");
+				}else if(JSON.stringify(PassengerKind) == JSON.stringify(IsSelect)){
+					$("nav span").eq(1).addClass("current");
+				}else if(JSON.stringify(GregoryKind) == JSON.stringify(IsSelect)){
+					$("nav span").eq(2).addClass("current");
+				}else if(JSON.stringify(SignKind) == JSON.stringify(IsSelect)){
+					$("nav span").eq(3).addClass("current");
+				}else{
+					$("nav span").removeClass("current")
+				}
+//				console.log(JSON.stringify(dishData));
+				console.log(JSON.stringify(IsSelect));
+//				console.log(dishData.data.length);
+				SelectDataInert(IsSelect,dishData);
+			}
+			
+			//自定义查询数据插入
+			function SelectDataInert(selected,data){
+				var Null = {"data":[]};
+				var aa = data;
+				var count =0;
+				for(var i=0;i<4;i++){
+					for(var j=0;j<3;j++){
+						if(selected[i][j] !=0){
+							count+=1;
+						}
+					}
+				}
+				console.log(count);
+				$(".dishList").html('<div class="ListTitle"><span>菜名</span><span>综合效能</span></div>');
+				for(var i=0;i<4;i++){
+					var bb = {"data":[]};
+					console.log(JSON.stringify(aa));
+					for(var j=0;j<3;j++){
+						if(selected[i][0]==0&&selected[i][1]==0&&selected[i][2]==0){
+							bb = aa;
+						}else{
+							if(selected[i][j]==1){
+								if(j == 0){
+									for(var k=0;k<aa.data.length;k++){
+										if(i==0){
+											if(aa.data[k].salesCountEfficiency<30){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}else if(i==1){
+											if(aa.data[k].amountEfficiency<30){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}else if(i==2){
+											if(aa.data[k].costEfficiency<30){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}else{
+											if(aa.data[k].ingredientsTasteEfficiency<30){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}
+										
+									}
+								}else if(j==1){
+									for(var k=0;k<aa.data.length;k++){
+										if(i==0){
+											if(aa.data[k].salesCountEfficiency>=30&&aa.data[k].salesCountEfficiency<70){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}else if(i==1){
+											if(aa.data[k].amountEfficiency>=30&&aa.data[k].amountEfficiency<70){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}else if(i==2){
+											if(aa.data[k].costEfficiency>=30&&aa.data[k].costEfficiency<70){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}else{
+											if(aa.data[k].ingredientsTasteEfficiency>=30&&aa.data[k].ingredientsTasteEfficiency<70){
+											bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}
+										
+									}
+								}else{
+									for(var k=0;k<aa.data.length;k++){
+										if(i==0){
+											if(aa.data[k].salesCountEfficiency>=70){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}else if(i==1){
+											if(aa.data[k].amountEfficiency>=70){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}else if(i==2){
+											if(aa.data[k].costEfficiency>=70){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}else{
+											if(aa.data[k].ingredientsTasteEfficiency>=70){
+												bb.data.push({
+													"Id":aa.data[k].Id,
+													"Name":aa.data[k].Name,
+													"efficiencycount":aa.data[k].efficiencycount,
+													"salesCountEfficiency":aa.data[k].salesCountEfficiency,
+													"amountEfficiency":aa.data[k].amountEfficiency,
+													"costEfficiency":aa.data[k].costEfficiency,
+													"ingredientsTasteEfficiency":aa.data[k].ingredientsTasteEfficiency,
+												})
+											}
+										}
+										
+									}
+								}
+							}
+						}
+					}
+					aa=bb;
+				}				
+				console.log(JSON.stringify(bubbleSort(aa)));
+				if(count == 0){
+					AllIsert(Null);
+				}else{
+					AllIsert(aa);
+				}
+				
+			}
+			
+			//数组去重
+			function DuplicateRemoval(data){
+				var res={"data":[]};
+				for(var i = 1; i < data.data.length; i++){
+					var repeat = false;
+					for(var j = 0; j < res.data.length; j++){
+						if(data.data[i].Id == res.data[j].Id){
+							repeat = true;
+							break;
+						}
+					}
+					if(!repeat){
+						res.data.push(data.data[i]);
+					}
+				}
+				return res;
+			}
+			
+			
+			//数据排序
+			function bubbleSort(arr) {  
+			    for(var i = 0,l=arr.data.length;i<l-1;i++) {
+			        for(var j = i+1;j<l;j++) { 
+			          if(arr.data[i].efficiencycount<arr.data[j].efficiencycount) {
+			                var tem = arr.data[i];
+			                arr.data[i] = arr.data[j];
+			                arr.data[j] = tem;
+			            }
+			        }
+			    }
+			    return arr;
+			}
+			
+			
+			//插入所有数据
+			function AllIsert(data){
+				$(".dishList").empty();
+				$(".dishList").html('<div class="ListTitle"><span>菜名</span><span>综合效能</span></div>');
+				if(data.data.length>0){
+					for(var i=0;i<data.data.length;i++){
+				  		$(".dishList").append('<div class="ListItem"><span>'+data.data[i].Name+'</span><span>'+data.data[i].efficiencycount+'</span></div>');
+					}
+				}else{
+					$(".dishList").append('<div class="ListItem">暂无符合条件的菜品！</div>');
+				};
+				
+			}
+			
+			//获取当天日期
+	      	function GetDateStr(AddDayCount) { 
+				var dd = new Date(); 
+				dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+				var y = dd.getFullYear(); 
+				var m = dd.getMonth()+1;//获取当前月份的日期 
+				var d = dd.getDate(); 
+				if(m >= 1 && m <= 9) {
+					m = "0" + m;
+				}
+				if(d >= 0 && d <= 9) {
+					d = "0" + d;
+				}
+				return y+"-"+m+"-"+d; 
+			}
+			(function($) {
+				$.init();
+				var result = $('#result')[0];
+				var btns = $('.btn');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							result.innerText = rs.text;
+							_thisMon = rs.text;
+							EliminateFood(_groupid,_branchid,_thisMon);
+							picker.dispose();
+							document.getElementById("tips").style.display = 'block';
+							document.getElementById("tips1").style.display = 'block';
+						});
+					}, false);
+				});
+			})(mui);
+		</script>
+	</body>
+
+</html>

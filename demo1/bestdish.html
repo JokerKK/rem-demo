@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>个人中心</title>
+		<!--重置浏览器样式-->
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css"/>
+		<script src="js/hotcss.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			body{
+				position: fixed;
+				width: 100%;
+				height: 100%;
+			}
+			#unit{
+				position: absolute;
+				left: 20px;
+				bottom:15px;
+				color: #ff4951;
+				font-weight: bold;
+			}
+		</style>
+		<script type="text/javascript">
+			$(function(){
+				$("#tableList").parent().height($("body").height() - ($("header").height() + $(".section").find(".aside").eq(0).height()+80));
+			})
+		</script>
+	</head>
+	<body>
+		<header>
+			<a class="back mui-action-back"></a>
+			<h2></h2>
+		</header>
+		<p id="dataSelect"></p>
+		<button id='demo2' data-options='{"type":"month"}' class="btn mui-btn mui-btn-block">选择月份 ...</button>
+		<section class="section" style="margin-top: 20px;">
+			<aside class="aside">
+				<div id="tips4"><span class="mui-spinner"></span></div>
+				<div id="table"></div>
+				<span id="unit">单位：份</span>
+			</aside>
+			<aside class="aside" style="overflow-y: scroll; -webkit-overflow-scrolling: touch;">
+				<div id="tableList" border="0" cellspacing="0" cellpadding="0">
+					<!--<div class="title clearfix">
+						<span>菜品</span>
+						<span>销量</span>
+						<span>销售额</span>
+					</div>
+					<div class="list">
+						<div class="item clearfix">
+							<span>油咋花生米</span>
+							<span>10</span>
+							<span>422.33</span>
+						</div>
+					</div>-->
+				</div>
+			</aside>
+		</section>
+			
+		<div id="tips">
+			<div id="tips1"><span class="mui-spinner"></span><b>正在刷新数据，请稍后...</b></div>
+			<div id="tips2"><span class="mui-icon mui-icon-checkmarkempty"></span><b>提交成功</b></div>
+			<div id="tips3"><span class="mui-icon mui-icon-closeempty"></span><b>加载失败</b></div>
+		</div>
+		<script type="text/javascript">
+		$(function(){
+			mui.init();
+			var IsAndroid = false;
+			var U = navigator.userAgent;
+			IsAndroid = U.indexOf('Android') > -1 || U.indexOf('Adr') > -1; //android终端
+//	      	var _thisMon= GetDateStr(0).split('-')[0]+'-'+GetDateStr(0).split('-')[1];//获取当天的日期；
+	      	var count0 = [];count1 =[];count2 = [];count3 =[];count4 =[];
+	      	var _thisurl = window.location.href;//当前页面的url地址
+	      	console.log(_thisurl);
+	      	console.log(JSON.stringify(_thisurl.split('=')));
+	      	var _branchid = _thisurl.split('=')[1];
+	      	var _groupid = _thisurl.split('=')[3];
+			var _thisMon = _thisurl.split('=')[5];
+			console.log(_branchid);
+			console.log(_groupid);
+			console.log(_thisMon);
+			EliminateFood(_branchid,_thisMon);
+			$("#demo2").attr("data-options",'{"type":"month","beginYear":2015,"endYear":'+GetDateStr(0).split('-')[0]+'}');
+			
+			
+			//查询可查看的门店数
+			mui.ajax('http://baseapi.panpom.com/api/Common/GetBranchList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+_groupid, {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 30000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				success: function(data) {
+					for(var i=0;i<data.data.length;i++){
+						if(_branchid == data.data[i].Id){
+							$("h2").text(data.data[i].Name);
+							$("#dataSelect").text(_thisMon.split('-')[0]+'-'+_thisMon.split('-')[1]);
+							return false;
+						}
+					}
+					
+				},
+				error: function(xhr, type, errorThrown) {
+					//异常处理；
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+			
+			
+			
+			
+			
+			//畅销菜品查询
+	      	function EliminateFood(branchid,time){
+	      		var color1=['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
+	      		var data1=['1-20','21-50','51-100','101-200','201--'];//味型数据
+	      		var data2=[];//味型数据
+				mui.ajax('http://baseapi.panpom.com/api/BillDB/GetDishSalesVolumeCountList?token=b3c00d977dfd457989e88841ce34a7fa&groupId='+_groupid+'\&branchid='+branchid+'\&date='+time, {
+				dataType: 'json', //服务器返回json格式数据
+				type: 'get', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				success: function(data) {
+//					console.log(JSON.stringify(data));
+//					console.log(data.data.length);
+					for(var i=0;i<data.data.length;i++ ){
+						if(data.data[i].count.split('.').length == 2){
+							data.data[i].count = parseFloat(data.data[i].count).toFixed(2);
+						}
+						if(parseInt(data.data[i].count) < 21){
+							count0.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"salesvolume":data.data[i].salesvolume
+							});
+						}else if(parseInt(data.data[i].count) < 51){
+							count1.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"salesvolume":data.data[i].salesvolume
+							});
+						}else if(parseInt(data.data[i].count) < 101){
+							count2.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"salesvolume":data.data[i].salesvolume
+							});
+						}else if(parseInt(data.data[i].count) < 201){
+							count3.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"salesvolume":data.data[i].salesvolume
+							});
+						}else{
+							count4.push({
+								"food_title":data.data[i].food_title,
+								"count":data.data[i].count,
+								"salesvolume":data.data[i].salesvolume
+							});
+						}
+					}
+					data2=[{
+						value:count0.length,
+						name:'1-20'
+					},{
+						value:count1.length,
+						name:'21-50'
+					},{
+						value:count2.length,
+						name:'51-100'
+					},{
+						value:count3.length,
+						name:'101-200'
+					},{
+						value:count4.length,
+						name:'201--'
+					}];
+//					console.log(JSON.stringify(count0));
+//					console.log(JSON.stringify(count1));
+//					console.log(JSON.stringify(count2));
+//					console.log(JSON.stringify(count3));
+//					console.log(JSON.stringify(count4));
+					bubbleSort(count0);
+					bubbleSort(count1);
+					bubbleSort(count2);
+					bubbleSort(count3);
+					bubbleSort(count4);
+					PieChart('table',color1,data1,data2);
+				},
+				error: function(xhr, type, errorThrown) {
+					
+					//异常处理；
+					$("#tips1").hide();
+					$("#tips").fadeIn();
+					$("#tips3").show();
+					setTimeout(function(){
+						$("#tips").fadeOut(300);
+						$("#tips3").hide();
+					},1000)
+					console.log(JSON.stringify(xhr.response));
+					console.log(JSON.stringify(xhr.responseText));
+					console.log(JSON.stringify(xhr.statusText));
+					console.log(JSON.stringify(type));
+					console.log(JSON.stringify(errorThrown));
+				}
+			});
+	  	}
+  	
+	  	//获取当天日期
+	  	function GetDateStr(AddDayCount) { 
+			var dd = new Date(); 
+			dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+			var y = dd.getFullYear(); 
+			var m = dd.getMonth()+1;//获取当前月份的日期 
+			var d = dd.getDate(); 
+			if(m >= 1 && m <= 9) {
+				m = "0" + m;
+			}
+			if(d >= 0 && d <= 9) {
+				d = "0" + d;
+			}
+			return y+"-"+m+"-"+d; 
+		}
+	  	
+	  	//数组排序
+	  	function bubbleSort(arr) {  
+		    for(var i = 0,l=arr.length;i<l-1;i++) {
+		        for(var j = i+1;j<l;j++) { 
+		          if(parseInt(arr[i].count) > parseInt(arr[j].count)) {
+		                var tem = arr[i];
+		                arr[i] = arr[j];
+		                arr[j] = tem;
+		            }
+		        }
+		    }
+		    return arr;
+		}
+  	
+		//基于准备好的dom，初始化echarts实例
+  		function PieChart(id,color,data1,data2){
+			var myChart = echarts.init(document.getElementById(id));
+			var fontSize;
+			var legend ={};
+			if(IsAndroid){
+				fontSize = 15;
+			}else{
+				fontSize = 26;
+			}
+			option = {
+				title:{
+					text:'菜品销量分布统计',
+					x:'center',
+					y:'top',
+					textStyle:{
+						fontSize:fontSize
+					}
+				},
+				color:color,
+				backgroundColor:'#fff',
+			    tooltip: {
+			        trigger: 'item',
+			        formatter: "{a}<br/>{b}<br/>数量 : {c}<br/>占比 : {d}%"
+			    },
+			    legend: {
+			        orient: 'vertical',
+			        x: '10',
+			        y:'10',
+			        data:data1,
+			        itemGap:3
+			    },
+			    series: [
+			        {
+			            name:'销量占比',
+			            type:'pie',
+			            radius: [0, '75%'],
+						center: ['65%', '55%'],
+			            avoidLabelOverlap: false,
+			            label: {
+			                normal: {
+			                    show: false,
+			                    position: 'center'
+			                },
+			                emphasis: {
+			                    show: false,
+			                    textStyle: {
+			                        fontSize: '30',
+			                        fontWeight: 'bold'
+			                    }
+			                }
+			            },
+			            labelLine: {
+			                normal: {
+			                    show: false
+			                }
+			            },
+			            data:data2
+			        }
+			    ]
+			};
+			myChart.setOption(option, true);
+			$("#tips").fadeOut();
+			$("#tips1").hide();
+			$("#tips4").hide();
+			myChart.on('click',function(params){
+				$("#tableList").empty();
+				if (params.componentType === 'series') {
+			        if (params.seriesType === 'pie') {
+			            if(params.name == '1-20'){
+			            	if(count0.length == 0){
+								$("#tips").fadeIn();
+								$("#tips3").show().find("b").text("暂无数据");
+								setTimeout(function(){
+									$("#tips").fadeOut(300);
+									$("#tips3").hide().find("b").text("加载失败");
+								},1000)
+			            	}else{
+			            		$("#tableList").append('<div class="title clearfix"><span>菜品</span><span>销量</span><span>销售额</span></div>');
+				            	for(var i= count0.length -1;i>=0; i--){
+				            		$("#tableList").append('<div class="list"><div class="item clearfix"><span>'+count0[i].food_title+'</span>'+
+									'<span>'+count0[i].count+'</span>'+
+									'<span>'+count0[i].salesvolume+'</span></div></div>');
+				            	}
+			            	}
+			            	
+			            }
+			            if(params.name == '21-50'){
+			            	if(count1.length == 0){
+								$("#tips").fadeIn();
+								$("#tips3").show().find("b").text("暂无数据");
+								setTimeout(function(){
+									$("#tips").fadeOut(300);
+									$("#tips3").hide().find("b").text("加载失败");
+								},1000)
+			            	}else{
+				            	$("#tableList").append('<div class="title clearfix"><span>菜品</span><span>销量</span><span>销售额</span></div>');
+				            	for(var i= count1.length -1;i>=0; i--){
+				            		$("#tableList").append('<div class="list"><div class="item clearfix"><span>'+count1[i].food_title+'</span>'+
+									'<span>'+count1[i].count+'</span>'+
+									'<span>'+count1[i].salesvolume+'</span></div></div>');
+				            	}
+			            	}
+			            }
+			            if(params.name == '51-100'){
+			            	if(count2.length == 0){
+								$("#tips").fadeIn();
+								$("#tips3").show().find("b").text("暂无数据");
+								setTimeout(function(){
+									$("#tips").fadeOut(300);
+									$("#tips3").hide().find("b").text("加载失败");
+								},1000)
+			            	}else{
+				            	$("#tableList").append('<div class="title clearfix"><span>菜品</span><span>销量</span><span>销售额</span></div>');
+				            	for(var i= count2.length -1;i>=0; i--){
+				            		$("#tableList").append('<div class="list"><div class="item clearfix"><span>'+count2[i].food_title+'</span>'+
+									'<span>'+count2[i].count+'</span>'+
+									'<span>'+count2[i].salesvolume+'</span></div></div>');
+				            	}
+			            	}
+			            }
+			            if(params.name == '101-200'){
+			            	if(count3.length == 0){
+								$("#tips").fadeIn();
+								$("#tips3").show().find("b").text("暂无数据");
+								setTimeout(function(){
+									$("#tips").fadeOut(300);
+									$("#tips3").hide().find("b").text("加载失败");
+								},1000)
+			            	}else{
+				            	$("#tableList").append('<div class="title clearfix"><span>菜品</span><span>销量</span><span>销售额</span></div>');
+				            	for(var i= count3.length -1;i>=0; i--){
+				            		$("#tableList").append('<div class="list"><div class="item clearfix"><span>'+count3[i].food_title+'</span>'+
+									'<span>'+count3[i].count+'</span>'+
+									'<span>'+count3[i].salesvolume+'</span></div></div>');
+				            	}
+			            	}
+			            }
+			            if(params.name == '201--'){
+			            	if(count4.length == 0){
+								$("#tips").fadeIn();
+								$("#tips3").show().find("b").text("暂无数据");
+								setTimeout(function(){
+									$("#tips").fadeOut(300);
+									$("#tips3").hide().find("b").text("加载失败");
+								},1000)
+			            	}else{
+				            	$("#tableList").append('<div class="title clearfix"><span>菜品</span><span>销量</span><span>销售额</span></div>');
+				            	for(var i= count4.length -1;i>=0; i--){
+				            		$("#tableList").append('<div class="list"><div class="item clearfix"><span>'+count4[i].food_title+'</span>'+
+									'<span>'+count4[i].count+'</span>'+
+									'<span>'+count4[i].salesvolume+'</span></div></div>');
+				            	}
+			            	}
+			            }
+			        }
+			    }
+			})
+  		}
+			
+			(function($) {
+				$.init();
+				var result = $('#dataSelect')[0];
+				var btns = $('.btn');
+				var _tables = document.getElementById("tableList");
+				var _tablesTr = _tables.getElementsByTagName("div");
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							result.innerText =rs.text;
+							_thisMon = rs.text;
+							console.log(_branchid);
+							console.log(_thisMon);
+							EliminateFood(_branchid,_thisMon);
+							console.log(_tablesTr.length);
+							if(_tablesTr.length >0){
+								_tables.innerText = ' ';
+							}
+							count0 = [];count1 =[];count2 = [];count3 =[];count4 =[];
+							picker.dispose();
+							document.getElementById("tips").style.display = 'block';
+       						document.getElementById("tips1").style.display = 'block';
+						});
+					}, false);
+				});
+			})(mui);
+		})
+		</script>
+	</body>
+</html>
